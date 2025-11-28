@@ -1,0 +1,47 @@
+
+% DNNs
+\IEEEPARstart{D}{igital} pathology, particularly through whole-slide imaging (WSI), has rapidly become a major application area for deep
+learning models. However, the black-box nature of these models presents a major barrier to clinical adoption.
+
+Clinical image-text pairs are more challenging to amass
+
+Interpretability and explainability techniques are therefore essential for validating predictions, identifying failure modes, and ensuring human trust in highstakes domains like cancer diagnostics.
+
+Human-suggested exogenous concept data might even encode confirmation bias.
+
+VLMs are unfortunately not yet an accurate substitute for high-quality expert annotations
+
+CBM explanations are interpretable only as long as the concepts are aligned with the semantics that humans associate to them
+
+Decisions are grounded in a community ontology rather than hand-crafted heuristics.
+
+It has been demonstrated that carefully selected concept sets can enhance sample efficiency and improve out-of-distribution robustness under suitable conditions.
+
+In radiology, chest X-ray pathologies are established clinical lexicon that allows clinicians to describe physical exam findings to one another
+
+
+A recent cross-sectional study \cite{zech2018variable} showed that CNN models trained to predict pneumonia from x-rays learned to exploit large differences in pathology prevalence between hospital systems in training data by calibrating their predictions to the baseline prevalence in each hospital system rather than exclusively discriminating on the basis of direct pathology findings
+
+Concept bottleneck models are interpretable predictive models that are often used in domains where model trust is a key priority, such as healthcare. They identify a small number of human-interpretable concepts in the data, which they then use to make predictions.
+
+Learning relevant concepts from data proves to be a challenging task.
+
+Directly employing CLIP’s alignment scores [31, 23] can produce unintuitive concept associations, as CLIP’s training objective aligns images with full sentences or captions rather than prioritizing the descriptive accuracy of individual words or concepts in a human-like manner.
+
+
+
+
+CoCoX limitation; The embedding difference (stimulus – neutral) assumes linear semantic structure in the embedding space; this is somewhat heuristic. The textual prompts (``An image of chest xray with …") encapsulate some biases (the choice of prompt template matters). The derived concept vectors are only as good as the VLM's embedding space for this domain (i.e. how well it captures medical textual-visual relationships).
+
+
+Learned ``latent concepts" often do not carry human-comprehensible semantics.
+
+% % Summarized contributions
+% In summary, the key contributions of this work are summarized:
+% \begin{enumerate}
+%     \item Proposing a novel 
+%     \item Demonstrating the applicability 
+%     \item Localizing
+% \end{enumerate}
+
+% This paper unfolds as follows: Section X outlines the body of works on the topic of interpretable artificial intelligence. Section X begins by giving a brief background on concept-based interpretable neural models and then expounds on the proposed method. Section X elucidates the evaluation criteria of the proposed method and both the predictive and interpretability performances. Finally, Section X concludes the paper and discusses its implications for future research.

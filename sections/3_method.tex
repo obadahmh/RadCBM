@@ -1,0 +1,173 @@
+% \begin{figure*}[!htbp]
+%     \centering
+%     \includegraphics[width=\linewidth]{figures/method/system_overview_compressed.pdf}
+%     \caption{Overview of the proposed schema.}
+%     \label{fig:system_overview}
+% \end{figure*}
+
+
+The UMLS Metathesaurus and Semantic Network were further applied to restrict the extracted UMLS CUIs within clinically relevant semantic groups and semantic types.
+
+We define the concept vocabulary as all UMLS CUIs whose semantic-type belongs to \{Anatomy, Observation, Device\}, and that occur in at least 25 reports in the training set. We do not manually curate concepts; this is a deterministic filter applied to the ontology.
+
+
+We build explanations around the same units radiologists use. Using RadGraph + SapBERT, we mine ontology-grounded concepts from clinical reports (semantic-type filtered, curated labels) and train a concept predictor on MedCLIP features. A transparent CBM label head then maps these concepts to downstream labels (e.g., CheXpert), with tuned thresholds, calibration checks, and semantic-type breakdowns. The result is a task-agnostic, purpose-neutral concept space that mirrors human descriptions and makes the vision model's decisions inspectable, rather than opaque.
+
+
+
+We selected semantic types that capture radiologically observable findings. Our inclusion criteria required types to represent: (1) visual abnormalities detectable on imaging, or (2) anatomical structures for localization.
+We excluded unmapped terms to ensure semantic consistency
+
+
+% \subsection{Text-Side Targets and Ontology Grounding}
+% \paragraph{RadGraph–style parsing.}
+% Each report $r$ is parsed into entity spans with types (observation, anatomy), their modifiers, and relations such as \texttt{located\_at}, \texttt{negated\_by}, and \texttt{associated\_with}.
+
+% \paragraph{UMLS normalization.}
+% Surface forms are mapped to CUIs; we collect alias sets and lift each CUI to its parents. For study $i$ this yields:
+% (i) a CUI bag $C_i \subset \mathcal{V}$ with presence and (optional) uncertainty/negation flags, and
+% (ii) relation triples $R_i$ over observations, anatomy, and modifiers.
+
+% \paragraph{Open vocabulary.}
+% We build $\mathcal{V}$ from frequent CUIs and their parents, and keep hierarchy links $\mathcal{H} = \{(p \!\to\! q)\}$. This provides multi–granular supervision and a principled back–off for long–tail terms.
+
+% \subsection{Visual Encoder}
+% The image encoder $\phi_v$ is a ViT/DINO–style backbone producing token features $F = \phi_v(x)$.
+% Tokens preserve spatial correspondence, which we exploit with multiple–instance pooling to obtain weak localization at concept time.
+
+% \subsection{Open–Vocabulary Concept Scoring}
+% We avoid one head per concept. Instead, we use one of two realizations that scale to thousands of concepts while retaining interpretability.
+
+% \subsubsection*{A. Text–Conditioned Shared Scorer (CLIP–style)}
+% Let $e_c = \phi_t(\text{name/aliases}(c)) \in \mathbb{R}^{d_t}$ be a text embedding for CUI $c$.
+% We learn projections $W_v, W_t$ into a shared space and score concepts by the best–matching token:
+% \[
+% s_c(x) \;=\; \tau \; \max_{1 \le p \le P} \;
+% \cos\!\big( W_v F_p,\; W_t e_c \big),
+% \qquad
+% \hat{c}_c \;=\; \sigma\!\big(s_c(x)\big).
+% \]
+% The maximizing token index produces a heatmap for $c$ out of the box.
+% This single shared scorer supports truly open vocabularies: new concepts are scored by embedding their text at test time; no per–concept parameters are added.
+
+% \subsubsection*{B. Factorized Atoms (Observation $\times$ Anatomy $\times$ Modifier)}
+% We predict compact \emph{atoms} once: $p_O \in [0,1]^{|O|}$, $p_A \in [0,1]^{|A|}$, $p_M \in [0,1]^{|M|}$ from $F$ using small heads.
+% For a phrase parsed to $(o,a,m)$, we form co–localization features
+% $r_{o,a} = \text{co\mbox{-}loc}(o,a; F, \hat{\ell})$
+% and compose a score
+% \[
+% s_{o,a,m}
+% \;=\;
+% u_o^\top Z v_a \;+\; b_m \;+\; g(r_{o,a}),
+% \qquad
+% \hat{c}_{(o,a,m)} \;=\; \sigma(s_{o,a,m}),
+% \]
+% with a low–rank interaction $Z$ and a small $g(\cdot)$ over co–localization cues.
+% Open–vocabulary phrases map to atoms via the RadGraph schema and ontology, keeping the bottleneck compact and explicitly compositional.
+
+% \subsection{Concept Graph Construction}
+% Nodes represent observation CUIs/atoms, anatomy CUIs/atoms, and modifiers.
+% Edges encode \texttt{located\_at}, \texttt{negates}, and \texttt{associated\_with}.
+% We assemble $\hat{G}=(\hat{V}, \hat{E})$ from $(\hat{c}, \hat{m}, \hat{\ell})$: node features include scores and localization summaries; edge features include co–activations and co–location statistics.
+
+% \subsection{Readout and Explanations}
+% We predict labels from graph features $h(\hat{G})$ using a sparse linear readout:
+% \[
+% \hat{y}_k \;=\; \Theta_k^\top h(\hat{G}),
+% \qquad
+% \text{with}\;\; \|\Theta\|_1 \;\; \text{penalized for sparsity}.
+% \]
+% Each decision depends on a short list of weighted (concept, anatomy, modifier) terms and/or edges.
+% We report the top–$K$ contributors and render the associated token heatmaps to produce concise, faithful rationales.
+
+% \subsection{Learning Objectives}
+% For study $i$ with targets $C_i$ and modifier labels $M_i$, the full loss is
+% \[
+% \mathcal{L}
+% \;=\;
+% \alpha\,\mathcal{L}_{\text{pres}}
+% +\beta\,\mathcal{L}_{\text{align}}
+% +\gamma\,\mathcal{L}_{\text{mod}}
+% +\delta\,\mathcal{L}_{\text{onto}}
+% +\zeta\,\mathcal{L}_{\text{rel}}
+% +\eta\,\mathcal{L}_{\text{cls}}
+% +\lambda \|\Theta\|_1.
+% \]
+% \noindent
+% \textbf{Presence} ($\mathcal{L}_{\text{pres}}$):
+% multi–label BCE over CUIs (Variant A) or over composed $(o,a,m)$ concepts (Variant B).
+% \textbf{Alignment} ($\mathcal{L}_{\text{align}}$):
+% InfoNCE between pooled visual features for each concept and its alias embeddings (Variant A).
+% \textbf{Modifiers} ($\mathcal{L}_{\text{mod}}$):
+% BCE/CE for negation, uncertainty, severity.
+% \textbf{Ontology constraints} ($\mathcal{L}_{\text{onto}}$):
+% (i) \emph{Monotonicity} for parent–child pairs $(p\!\to\!q) \in \mathcal{H}$,
+% $\sum \max(0, \hat{c}_q - \hat{c}_p - \varepsilon)$;\;
+% (ii) \emph{Mutual exclusivity} via hinge penalties for curated pairs.
+% \textbf{Relational coherence} ($\mathcal{L}_{\text{rel}}$):
+% consistency between node activations and \texttt{located\_at} edges, penalizing conflicting (observation, anatomy) pairings.
+% \textbf{Classification} ($\mathcal{L}_{\text{cls}}$):
+% CheXpert–style label loss on $\hat{y}$ (class–balanced when needed).
+% \textbf{Sparsity}:
+% $\|\Theta\|_1$ to ensure succinct rationales.
+
+% \subsection{Optimization and Curriculum}
+% We optimize end–to–end with AdamW and cosine decay.
+% To stabilize long–tail learning, we adopt a curriculum:
+% (i) supervise \emph{parents} first,
+% (ii) introduce \emph{children} next,
+% (iii) add \emph{relations} and modifiers.
+% Sampling emphasizes rare concepts; thresholds are calibrated per semantic type.
+% For efficiency in Variant~A, we shortlist per–image concept candidates using approximate nearest neighbors in the shared space $(W_v F, W_t e_c)$.
+
+% \subsection{Inference (Image–Only) and Zero–Shot Querying}
+% At test time, given $x$ we compute $(\hat{c}, \hat{m}, \hat{\ell})$, assemble $\hat{G}$, and predict $\hat{y}$.
+% Explanations display the top–$K$ contributing nodes/edges and their spatial evidence.
+% For zero–shot concepts, Variant~A embeds the new phrase and scores it directly; Variant~B parses the phrase to $(o,a,m)$ and composes its score. When parsing is uncertain, we back off to the nearest parent CUI.
+
+% \subsection{Why This Is Still an Image Classifier}
+% Reports serve only to derive concept and relation supervision and to normalize vocabulary during training.
+% At inference, predictions and explanations depend solely on image–derived concept activations and their relations.
+% This preserves the CBM paradigm while enabling open–vocabulary coverage and ontology–level stability.
+
+\subsection{Representation and Weak Supervision}
+We consider chest X-ray (CXR) \emph{studies} that contain one or more projections (e.g., PA and lateral) and an associated narrative report. A compact $D$-dimensional image representation $x\in\mathbb{R}^D$ is extracted for each projection using a fixed, pre-trained medical vision encoder. To prevent distributional leakage, data splits are performed at the \emph{study} level and are shared across all concepts. We compute the training-set mean $\mu$ of image embeddings and center all features as $\tilde{x}=x-\mu$; the same $\mu$ is used at validation and inference.
+
+A Tier-A concept bank $\mathcal{C}$ (e.g., pneumothorax, pleural effusion) is curated with canonical names and synonyms. Study-level weak labels are mined from reports by (i) exact/fuzzy lexical matching to the concept lexicon and (ii) sentence-level negation/uncertainty filtering. The miner yields for each study $s$ a subset $\mathcal{Y}_s\subseteq\mathcal{C}$ of positive concepts, aligning supervision with how reports are authored and reducing spurious positives from phrases such as ``no pneumothorax.''
+
+\subsection{Study-Level Concept Heads and Optimization}
+Each concept $c\in\mathcal{C}$ is modeled by a linear head over centered image features. For image $i$ in study $s$,
+\begin{equation}
+z_{i,c} \;=\; \tilde{x}_{i}^\top w_c + b_c,\quad w_c\in\mathbb{R}^{D},\; b_c\in\mathbb{R}.
+\end{equation}
+Image-level evidence is pooled to a single study-level logit $\hat{z}_{s,c}$ using either (i) \emph{max} pooling,
+$\hat{z}_{s,c}=\max_{i\in s} z_{i,c}$, which favors focal findings, or (ii) a \emph{noisy-OR} rule that operates in probability space $p_{i,c}=\sigma(z_{i,c})$:
+\begin{equation}
+\hat{p}_{s,c} \;=\; 1 - \prod_{i\in s} (1-p_{i,c}), 
+\qquad \hat{z}_{s,c}\;=\;\mathrm{logit}(\hat{p}_{s,c}).
+\end{equation}
+Unless stated otherwise, max pooling is the default; the pooling rule may be chosen per concept on validation.
+
+Given study-level binary labels $y_{s,c}\in\{0,1\}$, we minimize a class-balanced logistic loss over studies,
+\begin{equation}
+\mathcal{L} \;=\; \frac{1}{|\mathcal{S}|}\sum_{s\in\mathcal{S}}\sum_{c\in\mathcal{C}}
+\Bigl[\,
+\omega_c^+\,y_{s,c}\,\log\bigl(1+\mathrm{e}^{-\hat{z}_{s,c}}\bigr)
++\omega_c^-\, (1-y_{s,c})\,\log\bigl(1+\mathrm{e}^{\hat{z}_{s,c}}\bigr)
+\Bigr],
+\end{equation}
+with $\omega_c^+=\tfrac{N_c^-}{N_c^+}$ and $\omega_c^-=1$ (clipped to a reasonable range) to mitigate class imbalance. For rare concepts we optionally replace the per-concept term with focal BCE (focusing parameter $\gamma=2$, balance $\alpha=0.75$). We optimize with Adam, apply mild $\ell_2$ regularization on $w_c$, and optionally include a light row-orthogonality penalty $\|WW^\top-\mathrm{diag}\|_F^2$ (where $W$ stacks $\{w_c\}$) to reduce redundancy across heads.
+
+\paragraph{Text-aware initialization (optional).}
+To align heads with clinical semantics from the outset, we derive a text centroid $t_c$ by averaging embeddings of a concept's synonyms from a co-trained text encoder. Because vision and text spaces are aligned by pre-training, we initialize $w_c \propto t_c$ and perform a short bias-only warm-up (2--3 epochs with $w_c$ frozen), after which $w_c$ is unfrozen and trained with a reduced learning rate. This stabilizes optimization under weak supervision and improves early recall.
+
+\subsection{Calibration, Thresholding, and Inference}
+Raw logits are not guaranteed to be calibrated. For each concept $c$ we therefore fit a \emph{temperature} $T_c>0$ on a held-out validation set by minimizing the negative log-likelihood of calibrated probabilities $p_{s,c}=\sigma(\hat{z}_{s,c}/T_c)$; isotonic regression can be used instead when a non-parametric monotone mapping is preferred. After calibration, we select a per-concept decision threshold $\tau_c$ on validation. By default we choose $\tau_c$ that maximizes F1; when high precision is required, we select the smallest $\tau_c$ attaining a user-specified precision target (e.g., $\ge 0.80$), trading recall under a clear operating constraint. The chosen pooling rule, temperature, and threshold are fixed for subsequent runs.
+
+At inference, study embeddings are centered with the training mean $\mu$, mapped through the learned linear heads, pooled across images to obtain $\hat{z}_{s,c}$, transformed into calibrated probabilities $p_{s,c}$ via temperature scaling, and thresholded at $\tau_c$ to produce binary decisions. To render human-readable evidence for positive predictions, we select, for each concept, the synonym whose text embedding has the highest cosine similarity to the pooled study representation, often surfacing clinically meaningful aliases (e.g., ``meniscus sign'' for pleural effusion).
+
+\paragraph{Open-vocabulary query mapping.}
+Free-text clinician queries are mapped to the concept bank in two stages. First, a lexical stage normalizes the query and performs exact/fuzzy matching against canonical names and synonyms; any reliable matches are returned. Otherwise, a semantic stage embeds the query with the text encoder and ranks concepts by cosine similarity to their text centroids $\{t_c\}$, returning the top-$k$ with a preference for lexical ties. This provides a stable bridge from arbitrary clinical phrasing (e.g., ``bat-wing pattern'') to the bottleneck used by the heads.
+
+\paragraph{Model selection and reporting.}
+For each concept we evaluate both pooling rules on validation and retain the better according to PR-AUC (or a task-specific objective). We report macro/micro PR-AUC, ROC-AUC, F1 at the selected operating point, precision/recall at threshold, predicted positive rates, and calibration error (ECE). We also inspect inter-head correlations to identify near-duplicates that warrant synonym merging or stronger orthogonality. All experiments ensure (i) splits are by study, (ii) centering uses only the training mean, and (iii) device placement is consistent across tensors.

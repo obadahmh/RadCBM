@@ -1,0 +1,50 @@
+
+Interpretable machine learning is a broad term and can refer to models that are either \textit{post-hoc interpretable} or \textit{interpretable-by-design}, which try to understand what the model has learned and present it in human-understandable terms. Further, interpretability can be classified based on the type of explanation provided (e.g., logical rules, hidden semantics, or attribution maps) and whether they explain a single instance (local) or the entire model (global). 
+According to \cite{zhang2021survey}, the explanatory power afforded by each explanation format differs, with logical rules often being regarded as the most interpretable. In contrast, hidden semantics and attributions are considered comparatively less interpretable.
+
+
+\subsection{Post-hoc interpretability}
+The literature on post-hoc explanations is extensive. These methods mainly produce \textit{a posteriori} interpretations for trained models either via (1) input attribution or (2) logical rules (e.g., counterfactual explanations). They often consider the model as a black box and either work with gradients to generate saliency maps for a given input \cite{selvaraju2017grad,draelos2020hirescam} or generate input perturbation to flip the network's output \cite{jeanneret2023adversarial}. 
+Post-hoc explanation techniques—such as LIME \cite{ribeiro2016should}, SHAP \cite{lundberg2017unified}, and GradCAM \cite{selvaraju2017grad}—aim to explain deep neural network decisions by identifying the input features (e.g., specific pixels) that most influence a given output. Although these methods allow the black-box model to maintain its performance, they often lack fidelity to the model's internal workings \cite{adebayo2018sanity} and do not offer a \textit{mechanistic} explanation of its decision-making process \cite{yosinski2015understanding}. Moreover, post-hoc explanations tend to be computationally intensive and susceptible to confirmation bias \cite{kindermans2019reliability,wan2022explainability}.
+
+\subsection{Interpretability-by-design}
+Due to the limitations of post-hoc methods in
+explaining a deep neural network, models that are \textit{interpretable-by-design} are becoming more relevant \cite{al2020contextual,alvarez2018towards,bohle2022bcos,gautam2022protovae}. These methods attempt to incorporate the interpretability objective into the learning process. They typically either modify the predictor's architecture or add regularizing penalties to the loss function to enforce interpretability.
+In \cite{alvarez2018towards}, authors propose Self Explaining Neural Networks (SENN). These networks extract meaningful features from the input and compute corresponding weights that show each feature's contribution to the prediction. They combine these weighted features linearly to produce the final output, making the decision process more transparent.
+Within supervised concept-based interpretable models, Concept Bottleneck Models (CBMs) \cite{koh2020concept} are widely adopted, as they channel the prediction process through a dedicated layer of human-understandable concepts. In CBMs, the input is first mapped to a set of predefined concepts, and these concept activations are then used exclusively to make the final prediction.
+
+
+\subsection{Mechanistic interpretability and disentanglement}
+Mechanistic interpretability seeks to translate neural network representations into human-understandable concepts. However, the phenomenon of \textit{superposition} shows that these representations are not ``cleanly'' separated; rather, multiple features are entangled within single neurons. 
+One way this phenomenon manifests in neural networks is through \textit{polysemanticity}. The presence of polysemantic neurons—units that react to several unrelated features—-makes it challenging to assign clear-cut roles to individual neurons. A host of studies have explored this challenge \cite{zhou2018interpretable,adel2018discovering,ramesh2018spectral,conmy2023towards}.
+
+% In representation learning, high-dimensional data (e.g., natural images) is often assumed to be the manifestation of a set of low-dimensional ground truth factors of variations (e.g., pose, content, and lighting in the case of images).
+
+Disentangled representation learning, introduced in \cite{bengio2013representation}, aims to discover the hidden explanatory factors of variations in the observed data.
+Disentangled representations promise to be both interpretable and robust and able to simplify downstream prediction tasks.
+In \cite{bhagat2020discont}, self-supervised contrastive learning is used to disentangle learned representations. In \cite{wei2021orthogonal}, authors encourage deep generative models to learn disentangled representations through orthogonal Jacobian regularization.
+That said, it has been proven that learning disentangled representations is theoretically impossible \cite{locatello2019challenging} without a form of supervision or inductive bias on the model and data.
+
+
+
+
+\subsection{Concept-based explanations}
+Only recently has providing explanations for neural model decisions via human-understandable concepts emerged as a central focus of interpretability research \cite{koh2020concept,desantis2024visualtcav,yuksekgonul2022post,oikarinen2023labelfree,kim2024what}. These concepts are either learned in a \textit{supervised} way using ground-truth concepts annotations or in an \textit{unsupervised} manner (often) by imposing loss functions to extract concepts that are both interpretable and of predictive utility.
+
+CBMs often require concept annotations from human experts and usually perform worse than end-to-end models. 
+Post-hoc CBM \cite{yuksekgonul2022post} was proposed to tackle both issues; however, they face a key hurdle: they rely on limited knowledge bases that struggle to scale to large or domain-specific tasks, such as fine-grained classification.
+Further, the post-hoc CBM falls short of resolving the original CBM's issues, as it still requires annotated concept data for TCAV and depends on the CLIP \cite{radford2021learning} image encoder for its feature extractor.
+Likewise, Testing with Concept Activation Vectors (TCAVs) \cite{desantis2024visualtcav} extracts interpretable, high-level concepts that are used to explain predictions through the extracted concepts. They require human supervision, i.e., by correlating human-defined visual concepts with class scores using Concept Activation Vectors (CAVs) derived from a linear classifier trained to distinguish concept activations from random ones.
+Still, these CAV-based methods are confined to post-hoc interpretations and require human supervision.
+
+
+When working in an unsupervised setting,
+learned concepts have to not only be extracted but also interpreted, usually through visualization.
+Authors in \cite{parekh2021framework} propose FLINT. FLINT accesses the input features of several hidden layers of a feature extractor network to learn a dictionary of concepts that are then used for downstream classification. FLINT, however, is not a by-design interpretable model, and its ``activation maximization'' visualization pipeline produces repetitive patterns associated with the underlying concepts, which remain difficult for users to interpret.
+In \cite{parekh2024restyling}, authors propose a visualizable concept-based interpretable model. They incorporate a Generative Adversarial Network (GAN) within their framework to generate images of the extracted concepts.
+Despite advances in concept-based interpretability, generating human-understandable explanations from latent representations without annotated labels while maintaining an acceptable predictive performance remains challenging.
+
+% Recent variants of concept bottleneck models using language models are not considered in this study for various reasons:
+% For instance, in \cite{rao2024discover}, authors propose to use a Sparse Autoencoder (SAE) to extract interpretable concepts from a frozen CLIP image encoder. These concepts are then named using CLIP's text encoder.
+% For a given classification task, these methods query an LLM for relevant concepts and employ a VLM to construct a concept bottleneck that aligns each neuron with a specified concept. However, it remains uncertain whether the feature extractor can reliably detect all these pre-specified concepts, as many may be non-visual \cite{yang2023language}, and their accuracy has been questioned \cite{margeloiu2021do}.
+% \cite{cui2023ceir}
