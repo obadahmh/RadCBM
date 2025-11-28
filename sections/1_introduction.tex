@@ -1,11 +1,21 @@
 Deep models for chest X-ray interpretation now match radiologist-level accuracy on several benchmarks, yet their predictions remain difficult to trust.
 Clinicians want to know which anatomical regions appear abnormal and which findings support a label, but conventional convolutional neural networks expose only an opaque probability.
+We expand this introduction around four ideas: (1) the clinical need for faithful, region-aware explanations; (2) the promise and limits of modern CBMs; (3) recent chest X-ray explainability pipelines that mine reports or leverage vision--language models; and (4) how a hierarchical, automatically annotated CBM can bridge accuracy and accountability.
+
 Concept bottleneck models (CBMs) offer a direct path to interpretable reasoning by forcing predictions to flow through human-readable concepts \cite{koh2020concept}, but existing CBMs depend on manual concept annotations that do not scale to hundreds of thousands of studies and dozens of findings.
+Recent work revisits CBMs with stronger supervision and probing.
+Visual TCAV \cite{desantis2024visualtcav} tightens concept attribution by grounding concept directions in intermediate features, while Kim et al.\ study how CBMs behave under distribution shift and noisy concept labels \cite{kim2024shiftcbm}.
+Rao et al.\ use sparse autoencoders to carve pretrained representations into disentangled concepts \cite{rao2024discover}, reducing reliance on curated concept sets.
+These advances improve faithfulness, but most still assume either hand-crafted vocabularies or small-scale annotation pipelines.
 
 Radiology reports already describe the concepts CBMs need.
 They indicate which regions are abnormal, which findings are present or absent, and where they are located.
 If those reports can be converted into reliable training targets, interpretability-by-design no longer requires expensive human labeling.
 The challenge is to extract clinically grounded concepts automatically and to structure them so that explanations remain faithful to radiologist workflows.
+
+Chest X-ray explainability is moving toward tighter report-image alignment.
+CheXagent \cite{tu2024chexagent} parses reports and aligns them with image regions to deliver long-form rationales, while report-mining pipelines such as RadGraph \cite{jain2021radgraph} and CheXbert-style labelers \cite{smit2020chexbert} convert free text into structured observations.
+These systems highlight that reports provide abundant supervisory signal, but they typically supervise black-box classifiers or post-hoc rationalizers rather than constraining the core decision path.
 
 We introduce \radcbm, a hierarchical CBM trained end-to-end from paired chest X-rays and reports without manual concept labels.
 RadCBM uses RadGraph \cite{jain2021radgraph} to extract observation and anatomy entities, normalizes them to RadLex/UMLS, filters them to clinically meaningful semantic types, and groups them into an anatomy-first hierarchy.
