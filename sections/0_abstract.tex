@@ -1,9 +1,8 @@
-
 \begin{abstract}
-Understanding the inner workings of deep neural networks (DNNs) has become increasingly critical, particularly for applications demanding transparency and accountability. Concept-based interpretable models have emerged as a promising solution, wherein images are first mapped into a human-understandable concept space and then linearly combined to yield predictions. This ensures the alignment of explanations with the prediction process. However, the widespread adoption of these methods is impeded by their reliance on datasets with predefined concept annotations, a requirement that is both time-consuming and impractical.
-
-Tending to this demand, this article...
-
-% We propose herein
-
+Chest X-ray classifiers remain hard to trust because their reasoning is hidden and concept supervision is prohibitively expensive to obtain at scale.
+We present \radcbm, a hierarchical concept bottleneck model that replaces manual labels with concept targets mined directly from paired radiology reports.
+Concepts are extracted with RadGraph, normalized to RadLex/UMLS terms, filtered to clinically meaningful semantic types, and organized into anatomy-level regions with associated findings.
+A two-level predictor first estimates region abnormality, then predicts region-specific findings gated by those regions; a linear label head maps the gated concepts to diagnostic labels, yielding faithful, controllable explanations.
+On MIMIC-CXR and CheXpert, automated annotations cover the long tail of radiographic findings without human curation, the hierarchical CBM improves concept AUC and reduces implausible activations compared to flat CBMs, and classification performance matches a black-box CNN while exposing per-region rationales and counterfactual concept interventions.
+RadCBM turns routine reports into training signals, aligning model decisions with radiologist workflows without sacrificing accuracy.
 \end{abstract}

@@ -1,128 +1,55 @@
-\documentclass[journal]{IEEEtran}
+\documentclass[10pt,twocolumn,letterpaper]{article}
 
-
-\usepackage{amsmath}
-\usepackage{tabularray}
-\usepackage{amssymb}
-\usepackage{array}
-
-\usepackage{braket}
-\usepackage{bm}
-% \usepackage{subcaption}
-
-\usepackage{amsfonts}
-\usepackage[hidelinks]{hyperref}
-
+\usepackage{times}
+\usepackage{epsfig}
 \usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{multirow}
-\usepackage{ragged2e}
-\usepackage{float}
+\usepackage{array}
 \usepackage{microtype}
 \usepackage{mathtools}
-% \usepackage{adjustbox}
-
-\usepackage{xcolor}
-\usepackage{tikz}
-\usepackage{pgfplots}
+\usepackage{float}
+\usepackage[pagebackref,breaklinks,colorlinks]{hyperref}
 \usepackage{cleveref}
 
-\pgfplotsset{compat=1.17}
-\usepackage{algorithm}
-% \usepackage{algpseudocode}
-% \algnewcommand{\algorithmicinput}[1]{\Statex \textbf{Input:} #1}
-% \algnewcommand{\algorithmicoutput}[1]{\Statex \textbf{Output:} #1}
+\graphicspath{{figures/}}
+\newcommand{\radcbm}{RadCBM}
+\newcommand{\one}{\mathbb{1}}
 
+\title{\radcbm: Hierarchical Concept Bottleneck Models with Automated Annotations for Chest X-ray Interpretation}
 
-\usepackage{algorithm}
-\usepackage{algorithmic}
-
-
-
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{corollary}{Corollary}[theorem]
-\newtheorem{lemma}[theorem]{Lemma}
-
-\newtheorem{definition}{Definition}
-
-
-
-\graphicspath{{images/}}
-\newcommand{\red}[1]{{\color{red}{#1}}}
-% \DeclareMathOperator{\one}{\mathbb{1}}
-\DeclareMathAlphabet{\bbold}{U}{bbold}{m}{n}
-\newcommand{\one}{\ensuremath{\bbold{1}}}
-
-\renewcommand\vec{\mathbf}
-
-\pdfobjcompresslevel=10
-
-
-% correct bad hyphenation here
-\hyphenation{op-tical net-works semi-conduc-tor}
-
+\author{Obadah Habash \and Rabeb Mizouni \and Shakti Singh \and Hadi Otrok\\
+Khalifa University, Abu Dhabi, UAE}
 
 \begin{document}
 
-\title{RadCBM: Automated Concept Bottleneck Models via Radiology Knowledge Graphs
-}
-
-\author{Obadah~Habash,
-        Rabeb~Mizouni,
-        Shakti~Singh,~\IEEEmembership{Member,~IEEE,},
-        and~Hadi~Otrok,~\IEEEmembership{Senior~Member,~IEEE}% <-this % stops a space
-        
-\thanks{
-% This research is supported by ASPIRE, the technology program management pillar of Abu Dhabi's Advanced Technology Research Council (ATRC), via the ASPIRE Awards for Research Excellence (AARE19-255). (Corresponding Author: Shakti Singh.)
-
-Obadah Habash, Shakti Singh, Rabeb Mizouni, and Hadi Otrok are with the Center for Secure Cyber-Physical Systems, CS, Khalifa University, Abu Dhabi, UAE. (email: obadah.habash@ku.ac.ae;  rabeb.mizouni@ku.ac.ae; shakti.singh@ku.ac.ae; hadi.otrok@ku.ac.ae)}% <-this % stops a space
-}
-
-% make the title area
 \maketitle
 
-
 \input{sections/0_abstract.tex}
-
-\begin{IEEEkeywords}
-Interpretability, explainability, sparse autoencoder
-\end{IEEEkeywords}
-
 
 \section{Introduction}
 \label{sec:introduction}
 \input{sections/1_introduction}
 
-% \section{Related work}
-% \label{sec:related_work}
-% \input{sections/2_related_work}
+\section{Related Work}
+\label{sec:related_work}
+\input{sections/2_related_work}
 
 \section{Method}
 \label{sec:method}
 \input{sections/3_method}
 
-% \section{Results}
-% \label{sec:results}
-% \input{sections/4_results}
+\section{Experiments}
+\label{sec:experiments}
+\input{sections/4_results}
 
-% \section{Conclusion and future work}
-% \label{sec:conclusion}
-% \input{sections/5_conclusion}
+\section{Conclusion}
+\label{sec:conclusion}
+\input{sections/5_conclusion}
 
-
-
-% use section* for acknowledgment
-% \section*{Acknowledgment}
-% The authors would like to thank...
-
-
-% \bibliography{bibliography}
-% \bibliographystyle{ieeetr}
-
-% \bibliographystyle{model1-num-names}
-% \bibliography{bibliography}
-
+\bibliographystyle{abbrv}
+\bibliography{bibliography}
 
 \end{document}
-
-

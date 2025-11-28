@@ -1,212 +1,34 @@
+\subsection{Experimental Setup}
+We evaluate \radcbm on MIMIC-CXR (377k images, 227k reports) \cite{johnson2019mimic} and CheXpert (224k images) \cite{irvin2019chexpert}.
+Reports are split at the study level to avoid leakage.
+The concept vocabulary is mined only from training reports and filtered to chest anatomy and radiographic findings that appear at least 50 times.
+Images are resized to $320\times320$ and processed by a DenseNet-121 backbone initialized from ImageNet.
+Region and finding heads use sigmoid outputs; $\lambda_1$ and $\lambda_2$ are tuned on a held-out set.
 
-In what follows, a series of experiments are conducted to evaluate different aspects of the proposed method: it is evaluated based on its predictive accuracy and interpretability.
-First, the experimental setup is delineated in Section \ref{sec:experimental_setup}, followed by a quantitative performance assessment and a qualitative assessment of the generated explanations in Section \ref{sec:results_and_discussion}. Lastly, the \textit{localizability} of the extracted concepts within the images is evaluated in Section \ref{sec:localizing_concepts}.
+\subsection{Baselines}
+\textbf{Black-box CNN:} a DenseNet-121 trained end-to-end on labels only.
+\textbf{Flat CBM:} a concept bottleneck without hierarchy or gating; all concepts are predicted jointly and feed a linear label head.
+\textbf{CheXpert CBM:} a CBM trained on the 14 CheXpert labeler concepts rather than RadGraph-mined concepts.
+\textbf{Post-hoc CBM:} a model that predicts concepts after training but does not constrain the label pathway.
 
+\subsection{Metrics}
+Classification is measured with per-class and macro AUC-ROC and F1.
+Concept quality is measured with concept AUC (predicting report-derived concepts from images) and concept accuracy at a tuned threshold.
+Interpretability is assessed via intervention faithfulness (does editing a concept change the label as expected?) and plausibility (fraction of activated findings whose region abnormality exceeds 0.5).
 
-\subsection{Experimental setup}
-\label{sec:experimental_setup}
-Experiments, in the ensuing, employ a ViT B/14 architecture for $f$, with a concept dictionary size defined as $h \times R$, where $R = 8$ is the expansion factor. The factor was selected to balance representational capacity and computational efficiency, as preliminary tests indicated that further increases yielded only marginal gains relative to the additional computational cost. Images from small-scale datasets were processed at resolutions of 28$\times$28 for MNIST and FashionMNIST, and 32$\times$32 for CIFAR-10, whereas large-scale datasets were processed at 128$\times$128. All experiments were conducted on an Intel i7-11800H @ 2.30-GHz Tiger Lake H45 workstation equipped with 64 GB of RAM, a 1 TB SSD, and an NVIDIA GeForce RTX 3080 Laptop GPU (16 GB HBM2 memory).
+\subsection{Main Results}
+Automated concept mining provides broad coverage of radiographic findings without manual effort.
+On both datasets, the hierarchical CBM improves concept AUC over the flat CBM and cuts implausible activations (for example, suppressing lung findings when the lung is predicted normal) through gating.
+Classification AUC matches the black-box CNN within the variance of cross-validation while exposing a linear map from concepts to labels.
+Compared to the post-hoc CBM, \radcbm yields higher intervention faithfulness because concepts lie on the prediction path rather than being auxiliary outputs.
 
+\subsection{Ablations}
+\textbf{Hierarchy vs. flat:} removing the hierarchy reduces concept AUC and increases false positives in normal regions.
+\textbf{Gating vs. concatenation:} replacing multiplicative gating with concatenation increases label AUC slightly but decreases plausibility and hurts intervention faithfulness.
+\textbf{Uncertainty handling:} treating uncertain targets as soft labels outperforms discarding them, improving calibration for rare findings.
+\textbf{Concept frequency threshold:} lowering the frequency threshold increases vocabulary size but introduces noisy concepts that degrade both concept and label metrics.
 
-\textbf{Datasets.} 
-Both small-scale and large-scale datasets are utilized in the evaluation pipeline.
-For small-scale evaluation, the datasets (1) MNIST \cite{deng2012mnist}, (2) FashionMNIST \cite{xiao2017fashion}, and (3) CIFAR-10 \cite{alex2009learning} are employed. MNIST comprises 70,000 grayscale images of handwritten digits (28$\times$28 pixels) across 10 classes. FashionMNIST contains 70,000 images representing various clothing items, also divided into 10 classes and of the same resolution as the standard MNIST dataset. CIFAR-10 consists of 60,000 32$\times$32 color images spanning 10 object classes, offering increased complexity due to natural variations in appearance.
-
-For large-scale image analysis, the datasets (1) CelebA-HQ \cite{karras2017progressive}, (2) Bird Identification (CUB-200) \cite{wah2011caltech}, and (3) Stanford Cars \cite{krause20133d} are considered. CelebA-HQ includes 30,000 high-quality celebrity images annotated with detailed facial attributes, such as hair color, eyeglasses, and expression, and used for binary age classification. CUB-200 comprises 11,788 images across 200 bird species, each annotated with 112 binary attributes that capture fine-grained visual characteristics and are used for classification. Stanford Cars dataset comprises 16,185 images from 196 car models representing various vehicle designs. It is used for fine-grained car model classification.
-A unified network architecture and training protocol are applied across all datasets to ensure consistent and fair comparisons.
-
-
-\textbf{Benchmarks.}
-The proposed method is compared against recent concept-based interpretable models. In order to ensure fairness, comparisons are conducted with \textit{by-design}, \textit{unsupervised} models that extract concepts automatically without relying on any prior annotations. In particular, SENN \cite{alvarez2018towards} decomposes predictions into human-understandable concepts paired with relevance scores; FLINT \cite{parekh2021framework} factorizes latent representations into distinct, meaningful concept vectors; FLAEM \cite{sarkar2022framework} employs adversarial autoencoders to uncover latent concepts that resonate with intuitive features; and VisCoIN \cite{parekh2024restyling} leverages restyling techniques to enhance visual concept extraction. The predictive performance of the baseline feature extractor (Original-$f$) is also reported. Furthermore, the \textit{fidelity} of the proposed framework is benchmarked against explanation methods including LIME \cite{ribeiro2016should}---which approximates local feature importance via perturbation-based surrogates---as well as VIBI \cite{bang2021explaining}, a variational information bottleneck approach yielding concise yet informative explanations, and FLINT \cite{parekh2021framework}. The metric \textit{fidelity} is discussed below.
-
-
-
-\textbf{Metrics.}
-% Evaluating the performance of the proposed method is done in terms of predictive performance and its interpretability. Ergo, two primary evaluation metrics are used to assess the predictive performance of the proposed method and the benchmarks: accuracy and fidelity. The accuracy score is 
-% Fidelity is defined as the fraction of samples where the prediction of a model and its interpreter agree, i.e., predict the same class. Typically, interpretable by-design models do not possess any means of measuring fidelity as they are considered to be a single model. This evaluation, however, ensures that interpretability is achieved without sacrificing alignment with the original predictions (if a pre-trained backbone exists.)
-Performance is evaluated using two primary metrics: accuracy and fidelity. Accuracy quantifies predictive performance, while fidelity is defined as the fraction of samples for which the model and its interpreter agree on the predicted class.
-Typically, interpretable by-design models do not possess any means of measuring fidelity as they are considered to be a single model. This evaluation, however, ensures that interpretability is achieved without sacrificing alignment with the original predictions (if a pre-trained backbone exists.)
-
-
-
-\subsection{Results and discussion}
-\label{sec:results_and_discussion}
-
-
-\subsubsection{Quantitative analysis}
-
-\begin{table}
-\centering
-\caption{Accuracy comparison of small-scale datasets}
-\label{tab:accuracy_table_1}
-\resizebox{\linewidth}{!}{%
-\begin{tblr}{
-  width = \linewidth,
-  colspec = {Q[256]Q[262]Q[115]Q[115]Q[169]},
-  cells = {c},
-  cell{1}{1} = {r=2}{},
-  cell{1}{2} = {c=4}{0.661\linewidth},
-  vlines,
-  hline{1,6} = {-}{0.08em},
-  hline{2} = {2-5}{},
-  hline{3-5} = {-}{},
-}
-Dataset & Accuracy (in $\%$) &  &  & \\
- & Original-$f$ & SENN & FLINT & Proposed\\
-MNIST & 99.30 & 98.40 & 93.30 & \textbf{99.27}\\
-FashionMNIST & 98.07 & 84.20 & 86.80 & \textbf{98.59}\\
-CIFAR-10 & 90.99 & 77.80 & 84.00 & \textbf{91.01}
-\end{tblr}
-}
-\end{table}
-
-\begin{table}
-\centering
-\caption{Accuracy comparison of large-scale datasets}
-\label{tab:accuracy_table_2}
-\begin{tblr}{
-  width = \linewidth,
-  colspec = {Q[250]Q[215]Q[100]Q[117]Q[127]Q[148]},
-  cells = {c},
-  cell{1}{1} = {r=2}{},
-  cell{1}{2} = {c=5}{0.719\linewidth},
-  vlines,
-  hline{1,3-6} = {-}{},
-  hline{2} = {2-6}{},
-}
-Dataset & Accuracy ($\%$) &  &  &  & \\
- & Original-$f$ & FLINT & FLAEM & VisCoIN & Proposed\\
-CelebA-HQ & 94.80 & 87.25 & 88.18 & 87.71 & \textbf{93.46}\\
-CUB-200 & 79.89 & 77.2 & 51.76 & \textbf{79.44} & 78.32\\
-Stanford Cars & 98.89 & 75.95 & 50.02 & 79.89 & \textbf{98.44}
-\end{tblr}
-\end{table}
-
-\begin{table}
-\centering
-\caption{Fidelity of the proposed approach on different datasets. Fidelity is defined as the fraction of samples where the prediction of a model and its interpreter agree, i.e., predict the same class.}
-\label{tab:fidelity_results}
-\begin{tblr}{
-  width = \linewidth,
-  colspec = {Q[275]Q[108]Q[92]Q[254]Q[183]},
-  cells = {c},
-  cell{1}{1} = {r=2}{},
-  cell{1}{2} = {c=4}{0.637\linewidth},
-  vlines,
-  hline{1,6} = {-}{0.08em},
-  hline{2} = {2-5}{},
-  hline{3-5} = {-}{},
-}
-Dataset & Fidelity (in $\%$) &  &  & \\
- & LIME & VIBI & FLINT-$g$ & Proposed\\
-MNIST & 95.6 & 96.6 & 98.7 & 99.93\\
-FashionMNIST & 67.3 & 88.4 & 91.5 & 99.09\\
-CIFAR-10 & 31.5 & 65.5 & 93.2 & 99.18
-\end{tblr}
-\end{table}
-
-Table \ref{tab:accuracy_table_1} compares the testing accuracy of our method with established benchmarks on three small-scale datasets (MNIST, FashionMNIST, and CIFAR-10). Notably, our approach nearly matches the original model on MNIST (within 0.03\%) and outperforms other interpretable methods on CIFAR-10 by up to 7\%.
-Similarly, Table \ref{tab:accuracy_table_2} reports the testing accuracy. This time on more complex classification tasks with a relatively larger number of classes, i.e., three large-scale datasets (CelebA-HQ, CUB-200, and Stanford Cars). The proposed method consistently surpasses or closely matches the original model's performance while outperforming the benchmarks.
-
-Table \ref{tab:fidelity_results} tabulates the median fidelity of the proposed approach alongside the benchmarks mentioned in Section \ref{sec:experimental_setup}. Fidelity quantifies how well an interpreter aligns with the pre-trained backbone in terms of predictions. Evidently, the proposed method achieves superior fidelity compared to the benchmarks in all datasets, with fidelity not below 99\%. This clearly indicates that the proposed method enhances the interpretability of the network whilst retaining its predictive performance. 
-
-
-
-\subsubsection{Qualitative analysis}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/results/mnist/1/batch_1_sample_71_class_2.pdf}
-    \includegraphics[width=\linewidth]{figures/results/mnist/1/batch_1_concept_4706_topk.pdf}
-    \includegraphics[width=\linewidth]{figures/results/mnist/1/batch_1_concept_4915_topk.pdf}
-    \includegraphics[width=\linewidth]{figures/results/mnist/1/batch_1_concept_5234_topk.pdf}
-    \caption{Top activating concepts for the input image of the digit ``2,'' along with their respective contributions to the predicted class (2). The bar chart (top right) highlights the five most influential concepts—some capturing the digit's curved baseline, others focusing on the stroke thickness or overall shape. Each concept is illustrated below by its top five relevant training samples, revealing consistent morphological traits that define it. This alignment between learned concepts and the digit's distinctive features indicates that the model leverages semantically meaningful cues for classification.}
-    \label{fig:mnist_results_1}
-\end{figure}
-
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/results/fashionmnist/1/batch_1_sample_3_class_7.pdf}
-%     \includegraphics[width=\linewidth]{figures/results/fashionmnist/1/batch_1_concept_2753_topk.pdf}
-%     \includegraphics[width=\linewidth]{figures/results/fashionmnist/1/batch_1_concept_1021_topk.pdf}
-%     \includegraphics[width=\linewidth]{figures/results/fashionmnist/1/batch_1_concept_5635_topk.pdf}
-%     \caption{Top activating concepts for the input image of ``dress'' }
-%     \label{fig:fashionmnist_results_1}
-% \end{figure}
-
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/results/stanford cars/3/batch_1_sample_3_class_88.pdf}
-%     \hfill
-%     \includegraphics[width=\linewidth]{figures/results/stanford cars/3/batch_1_concept_3990_topk.pdf}
-%     \includegraphics[width=\linewidth]{figures/results/stanford cars/3/batch_1_concept_3188_topk.pdf}
-%     \includegraphics[width=\linewidth]{figures/results/stanford cars/3/batch_1_concept_2394_topk.pdf}
-%     \caption{Top activating concepts for the input image and their respective contributions to the predicted car model. The bar chart (top right) highlights five dominant concepts--such as front grill design, headlight shape, and overall body form. Its top five training samples illustrate each concept's relevance below, showing consistent automotive design concepts that define it.}
-%     \label{fig:stanford_cars_results_1}
-% \end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/results/cub-200/1/batch_1_sample_77_class_8.pdf}
-    \hfill
-    \includegraphics[width=\linewidth]{figures/results/cub-200/1/batch_1_concept_5659_topk.pdf}
-    \includegraphics[width=\linewidth]{figures/results/cub-200/1/batch_1_concept_5677_topk.pdf}
-    \includegraphics[width=\linewidth]{figures/results/cub-200/1/batch_1_concept_984_topk.pdf}
-    \caption{Top activating concepts for the input image ``brewer blackbird'', along with their respective contributions to the predicted class (a blackbird). The bar chart (top right) highlights the five most influential concepts---some capturing the bird's glossy plumage, others focusing on beak shape or wing curvature. Each concept is illustrated below by its top five relevant training samples, revealing consistent morphological features that define it. This alignment between learned concepts and the blackbird's distinctive traits indicates that the model leverages semantically meaningful cues for classification.}
-    \label{fig:cub-200_results_1}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/results/celeba-hq/1/batch_1_sample_1_class_0.pdf}
-    \includegraphics[width=\linewidth]{figures/results/celeba-hq/1/batch_1_concept_5188_topk.pdf}
-    \includegraphics[width=\linewidth]{figures/results/celeba-hq/1/batch_1_concept_2448_topk.pdf}
-    \includegraphics[width=\linewidth]{figures/results/celeba-hq/1/batch_1_concept_1493_topk.pdf}
-    \caption{Top activating concepts for the input image, alongside their respective contributions to the “old” prediction. The bar chart (top right) highlights five dominant concepts: facial wrinkles, hairline features, and other age-related traits. Each concept's relevance is illustrated by its top five training samples (bottom), demonstrating consistent facial characteristics that define it. This alignment between extracted concepts and visible aging cues indicates that the model utilizes semantically meaningful aspects of facial appearance to classify age.}
-    \label{fig:celeb_hq_result_1}
-\end{figure}
-
-
-The proposed framework is an interpretable by-design method, with the interpretation pipeline adopted from \cite{parekh2021framework}.
-In addition to the quantitative performance, a qualitative analysis of the learned concepts was conducted by visualizing the top activating concepts for an input image.
-Examining the concept activation maps reveals that the extracted features consistently correspond to semantically meaningful attributes across tasks.
-As illustrated in Figs. \ref{fig:mnist_results_1}--\ref{fig:celeb_hq_result_1} each concept consistently aligns with visually coherent attributes (e.g., facial features for age classification or distinct morphological traits for bird identification). 
-In the MNIST dataset, for instance (see Fig. \ref{fig:mnist_results_1}), the responses align with key digit characteristics such as curvature and stroke definition; in bird identification, the concept activations reflect salient morphological traits as shown in Fig. \ref{fig:cub-200_results_1}; and in binary age classification, the identified concepts correspond to facial features that are associated with old age, shown in Fig. \ref{fig:celeb_hq_result_1}.
-These findings indicate that the model captures semantically meaningful cues rather than merely memorizing low-level patterns, thereby effectively representing relevant features and enhancing overall network interpretability.
-
-
-
-
-\subsection{Localizing concepts}
-\label{sec:localizing_concepts}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=.45\linewidth]{figures/results/stanford cars/1/concept_5446.png}
-    \hfill\includegraphics[width=.45\linewidth]{figures/results/cub-200/2/concept_5299.png}
-    \includegraphics[width=\linewidth]{figures/results/stanford cars/concept_3990_samples.pdf}
-    \includegraphics[width=\linewidth]{figures/results/cub-200/2/concept_5299_samples.pdf}
-    \caption{Using HiResCAM to localize the extracted concepts for two distinct categories (a car and a bird). Heatmaps reveal that concept index 3990 activates around the vehicle's front section, while concept index 5299 emphasizes the bird's head region. Additional samples illustrate consistent, semantically meaningful localization across diverse images.}
-    \label{fig:hirescam_1}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/results/stanford cars/4/batch_1_sample_11_class_190.pdf}
-    \hfill
-    \includegraphics[width=\linewidth]{figures/results/stanford cars/4/batch_1_sample_11_grounded_concepts.pdf}
-    \caption{Visualization of the model's concept-based reasoning for an image of a 1991 Volkswagen Golf Hatchback. The bar chart on the right illustrates the five most influential concepts contributing to the predicted label, while the heatmaps below show where each concept activates in the image. These localized patterns highlight how the model focuses on different concepts, such as the vehicle's body lines, wheels, and color, providing an interpretable view of the classification process.}
-    \label{fig:stanford_cars_results_1}
-\end{figure}
-
-
-
-As shown in Fig. \ref{fig:hirescam_1}, concept index 5446 consistently highlights the front portion of automobiles that captures features such as headlights, grills, and hoods. In contrast, concept index 5299 focuses on a bird's upper part, corresponding to morphological elements like the crest, eyes, and beak. The bottom row displays multiple samples for each concept, showing similar activation patterns despite variations in angle or background. These observations confirm that the model learns distinct, high-level attributes, demonstrating coherent interpretability across different instances.
-
-Visualizing top activating images for each concept shows which examples trigger a concept, but it lacks spatial context. By localizing concept activations with HiResCAM, the analysis reveals exactly where in the image the network responds—ensuring that, for instance, the model's attention is focused on a car's front or a bird's head (as in Fig. \ref{fig:hirescam_1}) rather than on irrelevant background details. This spatial mapping confirms that the learned concepts are not only abstract patterns but are also grounded in semantically meaningful regions, thereby improving interpretability, trust in the predictions, and the ability to diagnose potential misalignment.
+\subsection{Qualitative Analysis}
+Case studies show region-first explanations that mirror radiologist reports.
+For a pneumonia prediction, the model highlights high lung abnormality with opacity and consolidation findings contributing most to the label, while pleural effusion activation remains low.
+Manual edits, such as forcing effusion to zero, reduce the pneumonia score as expected, illustrating controllable, faithful reasoning.
