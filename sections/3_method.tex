@@ -1,7 +1,8 @@
 \subsection{Pipeline Overview}
 Figure~\ref{fig:pipeline} summarizes the training pipeline.
-Paired chest X-rays and reports are processed to extract concept targets.
-Images pass through a convolutional backbone to produce features that feed a two-level CBM: region abnormality heads, region-specific finding heads, multiplicative gating, and a linear label predictor.
+During training, paired chest X-rays and reports are processed jointly: reports are converted into soft concept targets, and images provide pixel-level evidence for those concepts and the final diagnostic labels.
+Images pass through a convolutional backbone to produce features that feed a two-level CBM with region abnormality heads, region-specific finding heads, multiplicative gating, and a linear label predictor.
+Reports are only used to build and supervise the concept layer; at test time, \radcbm\ receives only images and outputs region scores, concept activations, and label predictions.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{method/system_overview_compressed.pdf}
@@ -13,9 +14,10 @@ Images pass through a convolutional backbone to produce features that feed a two
 
 \subsection{Concept Extraction from Reports}
 Each report is parsed with RadGraph to identify observation and anatomy entities plus their relations (for example, \texttt{located\_at}).
-Entities are normalized to canonical RadLex or UMLS terms, and only clinically meaningful semantic types are kept: imaging observations, clinical findings, pathophysiologic processes, and chest anatomy.
-We discard modifiers unrelated to visual evidence (for example, modality or procedure).
-Frequent concepts (occurring at least 50 times in training reports) form the vocabulary; highly correlated terms are merged to avoid redundancy.
+For each observation--anatomy pair, we treat the combination as a candidate visual concept anchored to a specific region in the image.
+Entities are normalized to canonical RadLex or UMLS terms using a lexicon and string-similarity matcher, and only clinically meaningful semantic types are kept: imaging observations, clinical findings, pathophysiologic processes, and chest anatomy.
+We discard modifiers unrelated to visual evidence (for example, modality, procedure, and report-structure tokens) and drop entities that cannot be mapped confidently to chest anatomy.
+Frequent concepts (occurring at least 50 times in training reports) form the vocabulary; highly correlated terms and obvious synonyms are merged to avoid redundancy while preserving distinct clinical meanings.
 
 For a given report, we construct a soft concept target vector $t \in \{0, 0.5, 1\}^N$:
 \[
@@ -26,16 +28,19 @@ t_i =
 0, & \text{if concept $i$ is absent or unmentioned}.
 \end{cases}
 \]
+Here, ``definitely present'' corresponds to positive, non-negated mentions in the report, while ``uncertain'' captures hedged or equivocal language (for example, ``may represent'' or ``cannot exclude''), and all other cases are treated as negative.
 Region-level targets $A_r$ are set to one if any finding linked to region $r$ is present or uncertain.
 
 \subsection{Hierarchical Concept Vocabulary}
 Concepts are organized into two levels that mirror radiologist reasoning.
-Level~1 contains anatomical regions (lungs, heart, pleura, mediastinum, bone).
-Level~2 contains findings specific to each region (for example, opacity, consolidation, effusion, pneumothorax).
-Grouping findings under regions allows the model to express explanations as ``region abnormal'' followed by the most likely findings within that region.
+Level~1 contains coarse anatomical regions: lungs, heart, pleura, mediastinum, and bone, plus optional catch-all regions for devices and other structures when needed.
+Level~2 contains findings specific to each region (for example, opacity, consolidation, nodule, and atelectasis in the lungs; effusion and pneumothorax in the pleura; cardiomegaly in the heart).
+Some concepts that are meaningful in multiple regions (for example, ``mass'') are duplicated with region-specific identifiers to keep explanations localized.
+Grouping findings under regions allows the model to express explanations as ``region abnormal'' followed by the most likely findings within that region, which matches how radiologists structure reports and facilitates downstream presentation of explanations.
 
 \subsection{Model Architecture}
 Let $x$ denote an image and $h = \phi(x)$ the backbone features.
+We instantiate $\phi$ as a DenseNet-121 initialized from ImageNet and truncated before the final classification layer, followed by global average pooling so that $h$ summarizes the image in a fixed-length vector.
 Region abnormality scores are predicted as
 \begin{equation}
 a = \sigma(W_a h + b_a), \quad a \in [0,1]^K,
@@ -55,6 +60,7 @@ A linear label head maps concepts to diagnostic logits,
 \hat{y} = W_y c + b_y,
 \end{equation}
 so each weight directly reflects how a concept contributes to a class.
+Because $c_r$ is explicitly gated by $a_r$, a high finding probability $f_r$ cannot influence the label prediction unless the corresponding region is predicted abnormal, enforcing a simple, clinically motivated dependency structure between regions, findings, and labels.
 
 \subsection{Training Objectives}
 Training optimizes a weighted sum of label, region, and finding losses:
@@ -70,9 +76,11 @@ Losses are applied to $f_r$ (not $c_r$) so gradients flow even when gating is lo
 Backbone weights are fine-tuned from ImageNet-pretrained DenseNet-121.
 Region and finding heads are randomly initialized.
 Temperatures or thresholds per concept can be calibrated on validation data when needed.
+We train all models with the same optimization hyperparameters (Adam optimizer, fixed learning rate, and mini-batch training) so that differences in performance can be attributed to the choice of concept vocabulary and architecture rather than to training instability.
 
 \subsection{Inference and Explanations}
 At test time, only images are required.
 The model outputs region abnormality scores, gated finding probabilities, and label logits.
 Explanations are derived from the linear label head: the contribution of concept $i$ to class $\ell$ is $c_i \cdot W_y[\ell, i]$.
-Summing contributions within a region provides region-level rationales, and manual concept edits enable counterfactual testing (for example, forcing effusion to zero to see its effect on the prediction).
+Summing contributions within a region provides region-level rationales, and sorting concepts by contribution magnitude yields concise lists of the most supportive and most contradicting findings for each label.
+Manual concept edits correspond to overriding $c_i$ before the linear head (for example, forcing effusion to zero or setting cardiomegaly to one) and recomputing $\hat{y}$, enabling counterfactual testing that directly reflects how manipulating specific findings would change the prediction.

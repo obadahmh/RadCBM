@@ -1,13 +1,13 @@
 Post-hoc interpretability methods, such as saliency maps and feature attributions, highlight image regions that influence a model's output.
-They preserve black-box accuracy but often fail faithfulness checks and offer limited insight into the model's internal logic.
-Counterfactual explanations improve causal grounding but still operate after training.
+Gradient-based methods (for example, Grad-CAM and integrated gradients) preserve black-box accuracy but often fail quantitative faithfulness checks, are sensitive to small perturbations, and can highlight broad regions that do not correspond to specific radiographic findings.
+Counterfactual explanations improve causal grounding by asking how predictions change when inputs are perturbed, but they still operate after training, do not constrain the internal representation, and can be difficult to interpret when the perturbations are not phrased in clinically meaningful concepts.
 
 Concept bottleneck models make interpretability part of the architecture: images are mapped to human-understandable concepts that are then used to predict labels.
-Early CBMs relied on manually annotated concepts and often traded accuracy for transparency.
-Recent variants predict concepts post-hoc or with weak supervision, but they either depend on small vocabularies (for example, the CheXpert labeler) or on vision-language models that are not calibrated for clinical use.
-Flat CBMs also ignore the anatomy-first reasoning radiologists employ, leading to implausible concept activations.
+Early CBMs relied on manually annotated concepts and often traded accuracy for transparency because the bottleneck limited capacity and annotation noise propagated directly into predictions.
+Recent variants predict concepts post-hoc or with weak supervision, but they either depend on small vocabularies (for example, the CheXpert labeler with 14 global labels) or on vision--language models that are not calibrated for clinical use and may hallucinate findings.
+Flat CBMs also ignore the anatomy-first reasoning radiologists employ: they treat all concepts as exchangeable, leading to implausible activations such as lung findings firing when the lungs are predicted normal or cardiac findings co-activating in obviously normal hearts.
 
-Radiology report mining offers a scalable alternative.
-Tools like RadGraph extract observation and anatomy entities plus relations from free text.
-Prior work has used report-derived labels to supervise black-box classifiers, but the labels are coarse and do not expose the reasoning process.
-RadCBM combines report-derived concepts with a hierarchical, gated CBM so that explanations remain both faithful to the model and aligned with clinical reading workflows.
+Radiology report mining offers a scalable alternative by turning existing clinical text into structured supervision.
+Tools like RadGraph extract observation and anatomy entities plus relations from free text, while labelers such as CheXpert and CheXbert map reports into global disease labels with uncertainty tags.
+Prior work has used report-derived labels to supervise black-box classifiers or to train report-generation models, but the labels are coarse and do not expose the intermediate reasoning process or enforce region-level consistency.
+\radcbm\ combines report-derived concepts with a hierarchical, gated CBM so that explanations remain both faithful to the model---because concepts lie on the decision path---and aligned with clinical reading workflows that proceed from regions to specific findings.

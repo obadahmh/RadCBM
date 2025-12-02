@@ -1,8 +1,8 @@
 \begin{abstract}
-Chest X-ray classifiers remain hard to trust because their reasoning is hidden and concept supervision is prohibitively expensive to obtain at scale.
-We present \radcbm, a hierarchical concept bottleneck model that replaces manual labels with concept targets mined directly from paired radiology reports.
-Concepts are extracted with RadGraph, normalized to RadLex/UMLS terms, filtered to clinically meaningful semantic types, and organized into anatomy-level regions with associated findings.
-A two-level predictor first estimates region abnormality, then predicts region-specific findings gated by those regions; a linear label head maps the gated concepts to diagnostic labels, yielding faithful, controllable explanations.
-On MIMIC-CXR and CheXpert, automated annotations cover the long tail of radiographic findings without human curation, the hierarchical CBM improves concept AUC and reduces implausible activations compared to flat CBMs, and classification performance matches a black-box CNN while exposing per-region rationales and counterfactual concept interventions.
-RadCBM turns routine reports into training signals, aligning model decisions with radiologist workflows without sacrificing accuracy.
+Chest X-ray classifiers remain hard to trust because their reasoning is hidden and the dense concept supervision they would need for transparent explanations is prohibitively expensive to obtain at scale.
+We present \radcbm, a hierarchical concept bottleneck model that replaces manual per-image concept labels with concept targets mined directly from paired radiology reports.
+Concepts are extracted with RadGraph, normalized to RadLex/UMLS terms, filtered to clinically meaningful semantic types, and organized into anatomy-level regions with associated findings, yielding a clinically grounded vocabulary of visual, image-evident concepts spanning lung, heart, pleura, mediastinum, and bone.
+A two-level predictor first estimates region abnormality, then predicts region-specific findings gated by those regions; a linear label head maps the gated concepts to diagnostic labels, so that each prediction decomposes into contributions from named regions and findings and supports direct counterfactual editing.
+On MIMIC-CXR and CheXpert, automated annotations cover the long tail of radiographic findings without human curation, the hierarchical CBM improves concept AUC and reduces implausible activations compared to flat CBMs and CheXpert-style concept sets, and classification performance matches a black-box CNN while exposing per-region rationales whose intervention effects are faithful to the learned decision boundary.
+\radcbm\ turns routine reports into training signals, aligning model decisions with radiologist workflows and providing region-aware, concept-level explanations without sacrificing accuracy.
 \end{abstract}

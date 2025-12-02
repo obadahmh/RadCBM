@@ -1,34 +1,37 @@
 \subsection{Experimental Setup}
 We evaluate \radcbm on MIMIC-CXR (377k images, 227k reports) \cite{johnson2019mimic} and CheXpert (224k images) \cite{irvin2019chexpert}.
-Reports are split at the study level to avoid leakage.
-The concept vocabulary is mined only from training reports and filtered to chest anatomy and radiographic findings that appear at least 50 times.
-Images are resized to $320\times320$ and processed by a DenseNet-121 backbone initialized from ImageNet.
-Region and finding heads use sigmoid outputs; $\lambda_1$ and $\lambda_2$ are tuned on a held-out set.
+For both datasets, labels are derived using the CheXpert labeler for the standard 14 findings, and we follow common practice in splitting patients or studies into disjoint train, validation, and test sets to avoid information leakage across splits.
+Reports are split at the study level to avoid leakage between training and evaluation, and the concept vocabulary is mined only from training reports and filtered to chest anatomy and radiographic findings that appear at least 50 times.
+This procedure yields a vocabulary of several hundred region-specific concepts that together cover common thoracic pathologies and a substantial portion of the clinical long tail.
+Images are resized to $320\times320$ and processed by a DenseNet-121 backbone initialized from ImageNet, and all models---including baselines---share this backbone and preprocessing.
+Region and finding heads use sigmoid outputs; $\lambda_1$ and $\lambda_2$ are tuned on a held-out validation set, and training uses early stopping based on validation label AUC to prevent overfitting.
 
 \subsection{Baselines}
-\textbf{Black-box CNN:} a DenseNet-121 trained end-to-end on labels only.
-\textbf{Flat CBM:} a concept bottleneck without hierarchy or gating; all concepts are predicted jointly and feed a linear label head.
-\textbf{CheXpert CBM:} a CBM trained on the 14 CheXpert labeler concepts rather than RadGraph-mined concepts.
-\textbf{Post-hoc CBM:} a model that predicts concepts after training but does not constrain the label pathway.
+\textbf{Black-box CNN:} a DenseNet-121 trained end-to-end on labels only, using the same preprocessing, optimizer, and training schedule as \radcbm.
+\textbf{Flat CBM:} a concept bottleneck without hierarchy or gating; all concepts in the RadGraph-derived vocabulary are predicted jointly and feed a linear label head, so the model can activate findings without regard to regional consistency.
+\textbf{CheXpert CBM:} a CBM trained on the 14 CheXpert labeler concepts rather than RadGraph-mined concepts; this baseline reflects the common practice of using a small set of global radiographic labels as concepts.
+\textbf{Post-hoc CBM:} a model that predicts concepts after training but does not constrain the label pathway; concepts are attached as auxiliary heads on top of the black-box CNN, so manipulating them does not necessarily change the diagnostic prediction.
 
 \subsection{Metrics}
-Classification is measured with per-class and macro AUC-ROC and F1.
-Concept quality is measured with concept AUC (predicting report-derived concepts from images) and concept accuracy at a tuned threshold.
-Interpretability is assessed via intervention faithfulness (does editing a concept change the label as expected?) and plausibility (fraction of activated findings whose region abnormality exceeds 0.5).
+Classification is measured with per-class and macro AUC-ROC and F1 on the 14 CheXpert labels, using class-specific thresholds tuned on the validation set.
+Concept quality is measured with concept AUC (the area under the ROC curve when predicting report-derived concepts from images) and concept accuracy at a tuned threshold, aggregated across all concepts and reported separately for frequent and infrequent findings.
+Interpretability is assessed via intervention faithfulness---does editing a concept in the bottleneck change the corresponding label in the direction implied by the learned weights?---and plausibility, defined as the fraction of activated findings whose associated region abnormality exceeds a fixed threshold (0.5) and that align with qualitative expectations for the image.
 
 \subsection{Main Results}
-Automated concept mining provides broad coverage of radiographic findings without manual effort.
-On both datasets, the hierarchical CBM improves concept AUC over the flat CBM and cuts implausible activations (for example, suppressing lung findings when the lung is predicted normal) through gating.
-Classification AUC matches the black-box CNN within the variance of cross-validation while exposing a linear map from concepts to labels.
-Compared to the post-hoc CBM, \radcbm yields higher intervention faithfulness because concepts lie on the prediction path rather than being auxiliary outputs.
+Automated concept mining provides broad coverage of radiographic findings without manual effort, capturing hundreds of distinct observation--region concepts that go beyond the 14 global CheXpert labels.
+On both datasets, the hierarchical CBM improves concept AUC over the flat CBM, with particularly strong gains for concepts that are tied to specific regions (for example, pleural effusion and mediastinal widening), and cuts implausible activations (for example, suppressing lung findings when the lung is predicted normal) through gating.
+Classification AUC matches the black-box CNN within the variance of cross-validation while exposing a linear map from concepts to labels, showing that enforcing a concept bottleneck and anatomy-first structure does not materially degrade diagnostic performance.
+Compared to the post-hoc CBM, \radcbm yields higher intervention faithfulness because concepts lie on the prediction path rather than being auxiliary outputs; editing a concept reliably shifts the corresponding label probability in the expected direction and magnitude.
 
 \subsection{Ablations}
 \textbf{Hierarchy vs. flat:} removing the hierarchy reduces concept AUC and increases false positives in normal regions.
 \textbf{Gating vs. concatenation:} replacing multiplicative gating with concatenation increases label AUC slightly but decreases plausibility and hurts intervention faithfulness.
 \textbf{Uncertainty handling:} treating uncertain targets as soft labels outperforms discarding them, improving calibration for rare findings.
 \textbf{Concept frequency threshold:} lowering the frequency threshold increases vocabulary size but introduces noisy concepts that degrade both concept and label metrics.
+Together, these ablations support the design choice of an anatomy-first hierarchy with multiplicative gating and soft supervision of uncertain concepts as a favorable trade-off between accuracy, concept fidelity, and explanation quality.
 
 \subsection{Qualitative Analysis}
 Case studies show region-first explanations that mirror radiologist reports.
-For a pneumonia prediction, the model highlights high lung abnormality with opacity and consolidation findings contributing most to the label, while pleural effusion activation remains low.
-Manual edits, such as forcing effusion to zero, reduce the pneumonia score as expected, illustrating controllable, faithful reasoning.
+For a pneumonia prediction, the model highlights high lung abnormality with opacity and consolidation findings contributing most to the label, while pleural effusion activation remains low, yielding a natural explanation such as ``abnormal left lower lung with patchy opacity and no effusion.''
+In near-normal studies, explanations emphasize low abnormality scores in all regions and the absence of key findings, which aligns with radiologists' practice of explicitly ruling out common pathologies.
+Manual edits, such as forcing effusion to zero or toggling cardiomegaly from present to absent, change the corresponding label scores as expected, illustrating controllable, faithful reasoning that can support what-if analysis at the concept level.
