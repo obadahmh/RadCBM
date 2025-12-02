@@ -1,7 +1,11 @@
-Deep models for chest X-ray interpretation now match radiologist-level accuracy on large public benchmarks such as CheXpert and MIMIC-CXR, and are increasingly considered for triage, second reading, and quality assurance, yet their decision processes remain opaque \cite{rajpurkar2017chexnet,irvin2019chexpert,annarumma2019triage}.
-Opacity is not merely aesthetic: when a network predicts ``pneumonia,'' clinicians cannot tell whether it responded to a genuine parenchymal opacity or to confounders such as support devices and acquisition artifacts, and failure analysis teams lack actionable signals to understand systematic errors.
+Deep models for chest X-ray interpretation now match radiologist-level accuracy on CheXpert and MIMIC-CXR \cite{rajpurkar2017chexnet,irvin2019chexpert}.
+They are increasingly deployed for triage, second reading, and quality assurance, yet their decision processes remain opaque \cite{annarumma2019triage}.
+This opacity is not merely aesthetic.
+When a network predicts ``pneumonia,'' clinicians cannot tell whether it responded to a genuine parenchymal finding or to confounders like support devices and acquisition artifacts.
+Failure analysis teams lack actionable signals for understanding systematic errors.
 Empirical work shows that chest X-ray models can generalize unpredictably across hospitals \cite{zech2018variable}, while clinician interviews and position papers argue that high-stakes medical decisions require transparent, interpretable models rather than unexplained black boxes \cite{tonekaboni2019clinicians,rudin2019stop}.
-Radiologists, by contrast, describe their findings as localized concepts (for example, ``left lower lobe opacity with no pleural effusion''), often explicitly tying observations to anatomical regions and differential diagnoses, so a trustworthy system should expose the same intermediate reasoning rather than returning only an uninterpretable probability \cite{langlotz2006radlex,jain2021radgraph}.
+Radiologists, by contrast, describe findings as localized concepts—for example, ``left lower lobe opacity with no pleural effusion''—tying observations to anatomy and differential diagnoses.
+A trustworthy system should expose this intermediate reasoning, not just an uninterpretable probability \cite{langlotz2006radlex,jain2021radgraph}.
 
 Concept bottleneck models (CBMs) directly embed this philosophy by routing predictions through a layer of human-interpretable concepts before computing labels \cite{koh2020concept}.
 When concept activations are accurate, CBMs provide faithful, editable explanations because each class logit decomposes into contributions from named findings, and clinicians can intervene by editing concepts rather than raw pixels.

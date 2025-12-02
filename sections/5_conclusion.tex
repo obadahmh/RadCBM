@@ -3,6 +3,6 @@ Automated concept extraction plus a hierarchical, gated CBM yields faithful, reg
 Experiments on MIMIC-CXR and CheXpert show that the hierarchy improves concept fidelity over flat CBMs and matches black-box performance while exposing actionable concept interventions that allow users to probe and edit model behavior at the level of named findings.
 
 Several avenues remain for future work.
-First, the current vocabulary focuses on chest radiography; extending the concept hierarchy and extraction pipeline to other modalities (for example, CT and MRI) and multi-view studies will be important for broader clinical impact.
+First, the current vocabulary focuses on chest radiography; extending the concept hierarchy and extraction pipeline to CT, MRI, and multi-view studies will require modality-specific concept vocabularies and 3D region hierarchies for broader clinical impact.
 Second, while \radcbm\ filters to visual, image-evident concepts, incorporating explicit uncertainty estimation for rare findings and out-of-distribution patterns may further improve safety in deployment.
 Finally, prospective user studies with radiologists and other clinicians are needed to quantify how region-aware concept explanations affect trust, diagnostic decision-making, and workflow efficiency when integrated into real reporting environments.

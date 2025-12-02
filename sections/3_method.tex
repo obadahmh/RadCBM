@@ -15,7 +15,7 @@ Reports are only used to build and supervise the concept layer; at test time, \r
 \subsection{Concept Extraction from Reports}
 Each report is parsed with RadGraph to identify observation and anatomy entities plus their relations (for example, \texttt{located\_at}).
 For each observation--anatomy pair, we treat the combination as a candidate visual concept anchored to a specific region in the image.
-Entities are normalized to canonical RadLex or UMLS terms using a lexicon and string-similarity matcher, and only clinically meaningful semantic types are kept: imaging observations, clinical findings, pathophysiologic processes, and chest anatomy.
+Entities are normalized to canonical RadLex or UMLS terms, and only clinically meaningful semantic types are kept: imaging observations, clinical findings, pathophysiologic processes, and chest anatomy.
 We discard modifiers unrelated to visual evidence (for example, modality, procedure, and report-structure tokens) and drop entities that cannot be mapped confidently to chest anatomy.
 Frequent concepts (occurring at least 50 times in training reports) form the vocabulary; highly correlated terms and obvious synonyms are merged to avoid redundancy while preserving distinct clinical meanings.
 

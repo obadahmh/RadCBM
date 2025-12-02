@@ -2,7 +2,7 @@
 We evaluate \radcbm on MIMIC-CXR (377k images, 227k reports) \cite{johnson2019mimic} and CheXpert (224k images) \cite{irvin2019chexpert}.
 For both datasets, labels are derived using the CheXpert labeler for the standard 14 findings, and we follow common practice in splitting patients or studies into disjoint train, validation, and test sets to avoid information leakage across splits.
 Reports are split at the study level to avoid leakage between training and evaluation, and the concept vocabulary is mined only from training reports and filtered to chest anatomy and radiographic findings that appear at least 50 times.
-This procedure yields a vocabulary of several hundred region-specific concepts that together cover common thoracic pathologies and a substantial portion of the clinical long tail.
+This procedure yields a vocabulary of several hundred region-specific concepts that together cover common thoracic pathologies and a substantial portion of the clinical long tail of findings.
 Images are resized to $320\times320$ and processed by a DenseNet-121 backbone initialized from ImageNet, and all models---including baselines---share this backbone and preprocessing.
 Region and finding heads use sigmoid outputs; $\lambda_1$ and $\lambda_2$ are tuned on a held-out validation set, and training uses early stopping based on validation label AUC to prevent overfitting.
 
@@ -20,12 +20,12 @@ Interpretability is assessed via intervention faithfulness---does editing a conc
 \subsection{Main Results}
 Automated concept mining provides broad coverage of radiographic findings without manual effort, capturing hundreds of distinct observation--region concepts that go beyond the 14 global CheXpert labels.
 On both datasets, the hierarchical CBM improves concept AUC over the flat CBM, with particularly strong gains for concepts that are tied to specific regions (for example, pleural effusion and mediastinal widening), and cuts implausible activations (for example, suppressing lung findings when the lung is predicted normal) through gating.
-Classification AUC matches the black-box CNN within the variance of cross-validation while exposing a linear map from concepts to labels, showing that enforcing a concept bottleneck and anatomy-first structure does not materially degrade diagnostic performance.
+Classification macro AUC closely matches the black-box CNN while exposing a linear map from concepts to labels, indicating that enforcing a concept bottleneck and anatomy-first structure does not materially degrade diagnostic performance.
 Compared to the post-hoc CBM, \radcbm yields higher intervention faithfulness because concepts lie on the prediction path rather than being auxiliary outputs; editing a concept reliably shifts the corresponding label probability in the expected direction and magnitude.
 
 \subsection{Ablations}
-\textbf{Hierarchy vs. flat:} removing the hierarchy reduces concept AUC and increases false positives in normal regions.
-\textbf{Gating vs. concatenation:} replacing multiplicative gating with concatenation increases label AUC slightly but decreases plausibility and hurts intervention faithfulness.
+\textbf{Hierarchy vs. flat:} removing the hierarchy reduces concept AUC and increases false positives in normal regions, especially for region-specific findings.
+\textbf{Gating vs. concatenation:} replacing multiplicative gating with concatenation can increase label AUC slightly but decreases plausibility and hurts intervention faithfulness.
 \textbf{Uncertainty handling:} treating uncertain targets as soft labels outperforms discarding them, improving calibration for rare findings.
 \textbf{Concept frequency threshold:} lowering the frequency threshold increases vocabulary size but introduces noisy concepts that degrade both concept and label metrics.
 Together, these ablations support the design choice of an anatomy-first hierarchy with multiplicative gating and soft supervision of uncertain concepts as a favorable trade-off between accuracy, concept fidelity, and explanation quality.
