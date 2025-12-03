@@ -3,7 +3,7 @@ We evaluate \radcbm on MIMIC-CXR (377k images, 227k reports) \cite{johnson2019mi
 For both datasets, labels are derived using the CheXpert labeler for the standard 14 findings, and we follow common practice in splitting patients or studies into disjoint train, validation, and test sets to avoid information leakage across splits.
 Reports are split at the study level to avoid leakage between training and evaluation, and the concept vocabulary is mined only from training reports and filtered to chest anatomy and radiographic findings that appear at least 50 times.
 This procedure yields a vocabulary of several hundred region-specific concepts that together cover common thoracic pathologies and a substantial portion of the clinical long tail of findings.
-Images are resized to $320\times320$ and processed by a DenseNet-121 backbone initialized from ImageNet, and all models---including baselines---share this backbone and preprocessing.
+Images are resized to $320\times320$ and processed by a DenseNet-121 backbone initialized from ImageNet, and all models, including baselines, share this backbone and preprocessing.
 Region and finding heads use sigmoid outputs; $\lambda_1$ and $\lambda_2$ are tuned on a held-out validation set, and training uses early stopping based on validation label AUC to prevent overfitting.
 
 \subsection{Baselines}
@@ -15,10 +15,10 @@ Region and finding heads use sigmoid outputs; $\lambda_1$ and $\lambda_2$ are tu
 \subsection{Metrics}
 Classification is measured with per-class and macro AUC-ROC and F1 on the 14 CheXpert labels, using class-specific thresholds tuned on the validation set.
 Concept quality is measured with concept AUC (the area under the ROC curve when predicting report-derived concepts from images) and concept accuracy at a tuned threshold, aggregated across all concepts and reported separately for frequent and infrequent findings.
-Interpretability is assessed via intervention faithfulness---does editing a concept in the bottleneck change the corresponding label in the direction implied by the learned weights?---and plausibility, defined as the fraction of activated findings whose associated region abnormality exceeds a fixed threshold (0.5) and that align with qualitative expectations for the image.
+Interpretability is assessed via intervention faithfulness (does editing a concept in the bottleneck change the corresponding label in the direction implied by the learned weights?) and plausibility, defined as the fraction of activated findings whose associated region abnormality exceeds a fixed threshold (0.5) and that align with qualitative expectations for the image.
 
 \subsection{Main Results}
-Automated concept mining provides broad coverage of radiographic findings without manual effort, capturing hundreds of distinct observation--region concepts that go beyond the 14 global CheXpert labels.
+Automated concept mining provides broad coverage of radiographic findings without manual effort, capturing hundreds of distinct observation-region concepts that go beyond the 14 global CheXpert labels.
 On both datasets, the hierarchical CBM improves concept AUC over the flat CBM, with particularly strong gains for concepts that are tied to specific regions (for example, pleural effusion and mediastinal widening), and cuts implausible activations (for example, suppressing lung findings when the lung is predicted normal) through gating.
 Classification macro AUC closely matches the black-box CNN while exposing a linear map from concepts to labels, indicating that enforcing a concept bottleneck and anatomy-first structure does not materially degrade diagnostic performance.
 Compared to the post-hoc CBM, \radcbm yields higher intervention faithfulness because concepts lie on the prediction path rather than being auxiliary outputs; editing a concept reliably shifts the corresponding label probability in the expected direction and magnitude.
