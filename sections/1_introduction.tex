@@ -7,7 +7,12 @@ Empirical work shows that chest X-ray models can generalize unpredictably across
 Radiologists, by contrast, describe findings as localized concepts—for example, ``left lower lobe opacity with no pleural effusion''—tying observations to anatomy and differential diagnoses.
 A trustworthy system should expose this intermediate reasoning, not just an uninterpretable probability \cite{langlotz2006radlex,jain2021radgraph}.
 
-Concept bottleneck models (CBMs) directly embed this philosophy by routing predictions through a layer of human-interpretable concepts before computing labels \cite{koh2020concept}.
+Post-hoc explanation methods attempt to alleviate this opacity by highlighting pixels that most influence a model's output or by fitting local surrogates around each prediction.
+Saliency and gradient-based techniques such as Grad-CAM and integrated gradients visualize where a network is ``looking'' \cite{selvaraju2017gradcam,sundararajan2017axiomatic}, while perturbation-based approaches such as LIME fit simpler models that approximate the decision boundary near a given image \cite{ribeiro2016lime}.
+In chest X-ray applications these tools can help detect obvious failure modes---for example, models that rely on laterality markers or support devices---but they typically operate at the level of diffuse blobs rather than named clinical findings, and their outputs can be unstable across small input or parameter changes.
+
+Concept-based explanations move one step closer to radiologist reasoning by expressing predictions in terms of high-level attributes rather than raw pixels.
+TCAV-style approaches test the sensitivity of a model to user-defined concept vectors \cite{kim2018tcav,desantis2024visualtcav}, and concept bottleneck models (CBMs) directly embed this philosophy by routing predictions through a layer of human-interpretable concepts before computing labels \cite{koh2020concept,kim2024shiftcbm}.
 When concept activations are accurate, CBMs provide faithful, editable explanations because each class logit decomposes into contributions from named findings, and clinicians can intervene by editing concepts rather than raw pixels.
 However, classical CBMs assume that each training image comes with dense concept annotations, and the annotation burden grows with the product of dataset size and number of concepts.
 Typical chest X-ray datasets contain more than $10^5$ studies and $50$--$200$ relevant findings, so naively collecting expert concept labels would require millions of radiologist judgments and careful quality control \cite{johnson2019mimic,irvin2019chexpert}.
