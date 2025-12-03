@@ -11,41 +11,38 @@ Deep models for chest X-ray interpretation match radiologist-level accuracy on C
 When a model predicts pneumonia, clinicians cannot tell whether it detected a genuine parenchymal opacity or latched onto a support device, a laterality marker, or an acquisition artifact.
 This matters: chest X-ray models generalize unpredictably across hospitals~\cite{zech2018variable}, and without interpretable reasoning, failure modes are difficult to diagnose or fix.
 Radiologists describe their findings differently.
-They localize observations to anatomy---``left lower lobe opacity, no pleural effusion''---tying each finding to a region and ruling out alternatives explicitly.
+They localize observations to anatomy: ``left lower lobe opacity, no pleural effusion,'' tying each finding to a region and ruling out alternatives explicitly.
 A trustworthy classifier should do the same.
 
 Concept bottleneck models (CBMs) offer a path forward~\cite{koh2020concept}.
 Instead of mapping images directly to labels, CBMs first predict human-interpretable concepts, then compute labels as functions of those concepts.
 When done well, this architecture is inherently transparent: each label decomposes into contributions from named findings, and clinicians can intervene by editing concepts rather than pixels.
 The problem is annotation.
-Classical CBMs require dense concept labels for every training image, and chest X-ray datasets contain hundreds of thousands of studies with 50--200 relevant findings each.
-Annotating concepts at this scale would require millions of radiologist judgments---a non-starter for most institutions.
+Classical CBMs require dense concept labels for every training image, and chest X-ray datasets contain hundreds of thousands of studies with 50 to 200 relevant findings each.
+Annotating concepts at this scale would require millions of radiologist judgments, which is a non-starter for most institutions.
 
 But radiologists already write down their findings.
 Every chest X-ray comes with a report, and every report describes region-specific observations: opacities, effusions, masses, each tied to anatomy.
 A sentence like ``patchy opacity in the left lower lobe consistent with pneumonia; no effusion; heart size normal'' implicitly labels the presence of lung opacity and the absence of pleural effusion and cardiomegaly.
-These labels are noisy---reports contain non-visual information, hedged language, and inconsistent phrasing---but they exist at scale, for free.
+These labels are noisy, because reports contain non-visual information, hedged language, and inconsistent phrasing, but they exist at scale, for free.
 The question is whether they can supervise a CBM.
 
 We show that they can.
-\radcbm\ extracts observation--anatomy pairs from reports using RadGraph~\cite{jain2021radgraph}, normalizes them to RadLex and UMLS terms, filters to visually testable findings, and organizes the result into a two-level hierarchy: anatomical regions (lung, heart, pleura, mediastinum, bone) and region-specific findings.
-A two-level predictor first estimates whether each region is abnormal, then predicts findings within that region, with multiplicative gating so that findings only activate when their region is flagged.
+\radcbm\ extracts observation-anatomy pairs from reports using RadGraph~\cite{jain2021radgraph}, normalizes them to RadLex and UMLS terms, filters to visually testable findings, and organizes the result into a two-level hierarchy: anatomical regions (lung, heart, pleura, mediastinum, bone) and region-specific findings.
+A two-level predictor first estimates whether each region is abnormal, then predicts findings within that region, with multiplicative gating so that findings activate only when their region is flagged.
 A linear head maps the gated concepts to diagnostic labels.
-This design enforces clinical consistency---lung findings cannot fire if the lungs are predicted normal---and produces explanations that mirror how radiologists structure reports.
-
-The linear label head is critical.
-Because labels are linear functions of concepts, each prediction decomposes exactly into concept contributions, and editing a concept (say, forcing effusion to zero) changes the label in a predictable, auditable way.
+This design enforces clinical consistency (lung findings cannot fire if the lungs are predicted normal), produces explanations that mirror how radiologists structure reports, and ensures that each prediction decomposes exactly into concept contributions: editing a concept (say, forcing effusion to zero) changes the label in a predictable, auditable way.
 Post-hoc explanation methods and black-box classifiers with auxiliary concept heads do not have this property: their explanations can disagree with what actually drives the prediction.
 In \radcbm, concepts are the decision pathway, not a sidecar.
 
 We evaluate on MIMIC-CXR and CheXpert.
-Automated concept extraction yields several hundred region-specific concepts, covering the long tail of findings that fixed label sets like CheXpert's 14 classes miss.
+Automated concept extraction yields several hundred region-specific concepts, covering the long tail of findings that fixed label sets, such as CheXpert's 14 classes, miss.
 The hierarchical CBM improves concept prediction over flat CBMs, reduces implausible activations (e.g., cardiac findings in normal hearts), and matches black-box classification accuracy while exposing faithful, editable explanations.
 Ablations confirm that the hierarchy and gating each contribute: removing either degrades concept fidelity or plausibility.
 
-Our contributions:
+Our contributions are:
 \begin{itemize}
     \item A pipeline that extracts soft, ontology-grounded concept targets from radiology reports, eliminating manual annotation while covering hundreds of region-specific findings.
-    \item A hierarchical CBM with multiplicative gating that enforces region--finding consistency and produces explanations aligned with radiologist workflows.
+    \item A hierarchical CBM with multiplicative gating that enforces region-finding consistency and produces explanations aligned with radiologist workflows.
     \item Experiments showing that automated concepts retain broad coverage, the hierarchy improves concept fidelity, and classification matches black-box accuracy while enabling faithful concept interventions.
 \end{itemize}

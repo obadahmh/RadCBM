@@ -1,22 +1,6 @@
 \backcite {rajpurkar2017chexnet,irvin2019chexpert}{{1}{I}{section.1}}
-\backcite {annarumma2019triage}{{1}{I}{section.1}}
 \backcite {zech2018variable}{{1}{I}{section.1}}
-\backcite {tonekaboni2019clinicians,rudin2019stop}{{1}{I}{section.1}}
-\backcite {langlotz2006radlex,jain2021radgraph}{{1}{I}{section.1}}
-\backcite {rajpurkar2017chexnet,irvin2019chexpert,annarumma2019triage,zech2018variable}{{1}{I}{section.1}}
-\backcite {selvaraju2017gradcam,sundararajan2017axiomatic}{{1}{I}{section.1}}
-\backcite {ribeiro2016lime}{{1}{I}{section.1}}
-\backcite {selvaraju2017gradcam,sundararajan2017axiomatic,ribeiro2016lime,zech2018variable}{{1}{I}{section.1}}
-\backcite {kim2018tcav,koh2020concept,desantis2024visualtcav,kim2024shiftcbm}{{1}{I}{section.1}}
-\backcite {johnson2019mimic,irvin2019chexpert}{{1}{I}{section.1}}
-\backcite {desantis2024visualtcav}{{1}{I}{section.1}}
-\backcite {kim2024shiftcbm}{{1}{I}{section.1}}
-\backcite {rao2024discover}{{2}{I}{section.1}}
-\backcite {jain2021radgraph,smit2020chexbert}{{2}{I}{section.1}}
-\backcite {tu2024chexagent}{{2}{I}{section.1}}
-\backcite {jain2021radgraph}{{2}{I}{section.1}}
-\backcite {smit2020chexbert}{{2}{I}{section.1}}
-\backcite {koh2020concept,kim2018tcav,desantis2024visualtcav,kim2024shiftcbm}{{2}{I}{section.1}}
-\backcite {selvaraju2017gradcam,sundararajan2017axiomatic,ribeiro2016lime,rajpurkar2017chexnet,irvin2019chexpert,annarumma2019triage,zech2018variable,koh2020concept,kim2018tcav,desantis2024visualtcav,kim2024shiftcbm}{{2}{I}{section.1}}
-\backcite {johnson2019mimic}{{4}{\mbox {IV-A}}{subsection.4.1}}
-\backcite {irvin2019chexpert}{{4}{\mbox {IV-A}}{subsection.4.1}}
+\backcite {koh2020concept}{{1}{I}{section.1}}
+\backcite {jain2021radgraph}{{1}{I}{section.1}}
+\backcite {johnson2019mimic}{{3}{\mbox {IV-A}}{subsection.4.1}}
+\backcite {irvin2019chexpert}{{3}{\mbox {IV-A}}{subsection.4.1}}
