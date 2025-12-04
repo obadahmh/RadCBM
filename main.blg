@@ -1,46 +1,60 @@
-This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+This is BibTeX, Version 0.99d
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
-The style file: abbrv.bst
-Database file #1: bibliography.bib
-You've used 19 entries,
-            2118 wiz_defined-function locations,
-            597 strings with 8592 characters,
-and the built_in function-call counts, 9587 in all, are:
-= -- 874
-> -- 660
-< -- 8
-+ -- 261
-- -- 242
-* -- 757
-:= -- 1557
-add.period$ -- 57
-call.type$ -- 19
-change.case$ -- 178
-chr.to.int$ -- 0
-cite$ -- 19
-duplicate$ -- 323
-empty$ -- 616
-format.name$ -- 242
-if$ -- 1975
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: IEEEtran.bst
+Reallocating 'name_of_file' (item size: 1) to 16 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: bibliography_v2.bib
+Warning--I didn't find a database entry for "yuksekgonul2023posthoc"
+-- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+
+Done.
+You've used 44 entries,
+            4087 wiz_defined-function locations,
+            1056 strings with 18130 characters,
+and the built_in function-call counts, 37270 in all, are:
+= -- 2863
+> -- 1248
+< -- 271
++ -- 666
+- -- 260
+* -- 1800
+:= -- 5293
+add.period$ -- 88
+call.type$ -- 44
+change.case$ -- 44
+chr.to.int$ -- 606
+cite$ -- 44
+duplicate$ -- 2690
+empty$ -- 2895
+format.name$ -- 292
+if$ -- 8745
 int.to.chr$ -- 0
-int.to.str$ -- 19
-missing$ -- 19
-newline$ -- 98
-num.names$ -- 38
-pop$ -- 204
+int.to.str$ -- 44
+missing$ -- 527
+newline$ -- 155
+num.names$ -- 44
+pop$ -- 1288
 preamble$ -- 1
-purify$ -- 159
-quote$ -- 0
-skip$ -- 254
+purify$ -- 0
+quote$ -- 2
+skip$ -- 2860
 stack$ -- 0
-substring$ -- 513
-swap$ -- 114
-text.length$ -- 8
+substring$ -- 1546
+swap$ -- 2203
+text.length$ -- 69
 text.prefix$ -- 0
-top$ -- 0
-type$ -- 76
+top$ -- 5
+type$ -- 44
 warning$ -- 0
-while$ -- 70
-width$ -- 21
-write$ -- 205
+while$ -- 144
+width$ -- 46
+write$ -- 443
+(There was 1 warning)

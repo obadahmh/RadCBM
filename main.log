@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.3)  3 DEC 2025 16:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.3)  4 DEC 2025 14:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -499,65 +499,62 @@ Package hyperref Info: Link coloring ON on input line 27.
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
- (sections/0_abstract.tex) (sections/1_introduction.tex (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-cmr.cfg
+ (sections/0_abstract.tex) (sections/1_introduction_v2.tex [1{C:/Users/Obadah/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
+
+
+] (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 45.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 25.
  (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 45.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 25.
  (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-) [1{C:/Users/Obadah/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
+)
+Underfull \vbox (badness 1024) has occurred while \output is active []
 
+) (sections/2_related_work_v2.tex
 
-]) (sections/2_related_work.tex) (sections/3_method.tex
+LaTeX Warning: Citation `yuksekgonul2023posthoc' on page 2 undefined on input line 7.
 
-pdfTeX warning: pdflatex (file ./figures/method/system_overview_v4_compressed.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<figures/method/system_overview_v4_compressed.pdf, id=94, 581.2917pt x 442.53331pt>
-File: figures/method/system_overview_v4_compressed.pdf Graphic file (type pdf)
-<use figures/method/system_overview_v4_compressed.pdf>
-Package pdftex.def Info: figures/method/system_overview_v4_compressed.pdf  used on input line 8.
-(pdftex.def)             Requested size: 252.0pt x 191.84544pt.
-
-Underfull \vbox (badness 1502) has occurred while \output is active []
-
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 16.
- (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1pcr.fd
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-) [2 <./figures/method/system_overview_v4_compressed.pdf>]) (sections/4_results.tex [3]) (sections/5_conclusion.tex) (main.bbl (main.brf)
+[2]) (main.bbl (main.brf)
 \tf@brf=\write4
 \openout4 = `main.brf'.
 
- [4]) [5
+ [3]) [4
 
 ] (main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 4535586CA2C44C219A847E611C84DE9D;2384.
+(rerunfilecheck)             Checksum: 0DD256ED14D55553FB7C75486467643D;1436.
 Package rerunfilecheck Info: File `main.brf' has not changed.
-(rerunfilecheck)             Checksum: 576C148A30B60D73C80AF22F30FDD83E;341.
+(rerunfilecheck)             Checksum: 0345414F6A65D9E0FE05A48729DE3797;3474.
  ) 
 Here is how much of TeX's memory you used:
- 15786 strings out of 474486
- 267244 string characters out of 5743283
- 1948542 words of memory out of 5000000
- 37509 multiletter control sequences out of 15000+600000
- 605621 words of font info for 288 fonts, out of 8000000 for 9000
+ 15769 strings out of 474486
+ 267337 string characters out of 5743283
+ 1954542 words of memory out of 5000000
+ 37523 multiletter control sequences out of 15000+600000
+ 604523 words of font info for 269 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,12n,93p,1029b,614s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (5 pages, 770702 bytes).
+ 90i,6n,93p,1192b,622s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (4 pages, 127043 bytes).
 PDF statistics:
- 267 PDF objects out of 1000 (max. 8388607)
- 49 named destinations out of 1000 (max. 500000)
- 49302 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 264 PDF objects out of 1000 (max. 8388607)
+ 57 named destinations out of 1000 (max. 500000)
+ 46657 words of extra memory for PDF output out of 51595 (max. 10000000)
 

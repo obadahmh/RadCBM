@@ -1,6 +1,55 @@
-\backcite {rajpurkar2017chexnet,irvin2019chexpert}{{1}{I}{section.1}}
-\backcite {zech2018variable}{{1}{I}{section.1}}
+\backcite {raoof2012interpretation}{{1}{I}{section.1}}
+\backcite {bruno2015understanding}{{1}{I}{section.1}}
+\backcite {brady2017error,donald2014common}{{1}{I}{section.1}}
+\backcite {litjens2017survey}{{1}{I}{section.1}}
+\backcite {rajpurkar2017chexnet,irvin2019chexpert,singh2024efficient,shamshad2023transformers}{{1}{I}{section.1}}
+\backcite {kelly2019key,nagendran2020artificial}{{1}{I}{section.1}}
+\backcite {zech2018confounding}{{1}{I}{section.1}}
+\backcite {kelly2019key}{{1}{I}{section.1}}
+\backcite {rudin2019stop}{{1}{I}{section.1}}
+\backcite {reyes2020interpretability}{{1}{I}{section.1}}
 \backcite {koh2020concept}{{1}{I}{section.1}}
-\backcite {jain2021radgraph}{{1}{I}{section.1}}
-\backcite {johnson2019mimic}{{3}{\mbox {IV-A}}{subsection.4.1}}
-\backcite {irvin2019chexpert}{{3}{\mbox {IV-A}}{subsection.4.1}}
+\backcite {selvaraju2017gradcam}{{1}{I}{section.1}}
+\backcite {willemink2020preparing}{{1}{I}{section.1}}
+\backcite {donnelly2006snomed}{{1}{I}{section.1}}
+\backcite {oikarinen2023labelfree}{{1}{I}{section.1}}
+\backcite {johnson2019mimiccxr}{{1}{I}{section.1}}
+\backcite {denny2009extracting}{{2}{I}{section.1}}
+\backcite {chapman2001negex,smit2020chexbert}{{2}{I}{section.1}}
+\backcite {liu2021sapbert,jain2021radgraph}{{2}{I}{section.1}}
+\backcite {bodenreider2004umls}{{2}{I}{section.1}}
+\backcite {peng2018negbio,irvin2019chexpert}{{2}{I}{section.1}}
+\backcite {bodenreider2004umls}{{2}{I}{section.1}}
+\backcite {koh2020concept}{{2}{I}{section.1}}
+\backcite {wang2017chestxray14}{{2}{\mbox {II-A}}{subsection.2.1}}
+\backcite {irvin2019chexpert}{{2}{\mbox {II-A}}{subsection.2.1}}
+\backcite {johnson2019mimiccxr}{{2}{\mbox {II-A}}{subsection.2.1}}
+\backcite {rajpurkar2017chexnet,rajpurkar2018chexnext}{{2}{\mbox {II-A}}{subsection.2.1}}
+\backcite {singh2024efficient,shamshad2023transformers}{{2}{\mbox {II-A}}{subsection.2.1}}
+\backcite {simonyan2014saliency}{{2}{\mbox {II-A}}{subsection.2.1}}
+\backcite {selvaraju2017gradcam}{{2}{\mbox {II-A}}{subsection.2.1}}
+\backcite {rudin2019stop}{{2}{\mbox {II-A}}{subsection.2.1}}
+\backcite {koh2020concept}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {yuksekgonul2023posthoc}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {zarlenga2022cem}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {chauhan2023interactive}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {lucieri2020explaining}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {fauw2018clinically}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {oikarinen2023labelfree}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {oikarinen2023labelfree,yang2023language}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {desantis2024visualtcav}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {marconato2022glancenets}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {kim2024shiftcbm}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {peng2018negbio}{{3}{\mbox {II-C}}{subsection.2.3}}
+\backcite {irvin2019chexpert}{{3}{\mbox {II-C}}{subsection.2.3}}
+\backcite {smit2020chexbert}{{3}{\mbox {II-C}}{subsection.2.3}}
+\backcite {jain2021radgraph}{{3}{\mbox {II-C}}{subsection.2.3}}
+\backcite {chapman2001negex}{{3}{\mbox {II-C}}{subsection.2.3}}
+\backcite {khandelwal2020negbert}{{3}{\mbox {II-C}}{subsection.2.3}}
+\backcite {bodenreider2004umls}{{3}{\mbox {II-D}}{subsection.2.4}}
+\backcite {liu2021sapbert}{{3}{\mbox {II-D}}{subsection.2.4}}
+\backcite {radford2021clip}{{3}{\mbox {II-E}}{subsection.2.5}}
+\backcite {zhang2022convirt}{{3}{\mbox {II-E}}{subsection.2.5}}
+\backcite {wang2022medclip}{{3}{\mbox {II-E}}{subsection.2.5}}
+\backcite {zhang2023biomedclip}{{3}{\mbox {II-E}}{subsection.2.5}}
+\backcite {yang2023language}{{3}{\mbox {II-E}}{subsection.2.5}}
