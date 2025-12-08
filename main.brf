@@ -13,7 +13,9 @@
 \backcite {willemink2020preparing}{{1}{I}{section.1}}
 \backcite {donnelly2006snomed}{{1}{I}{section.1}}
 \backcite {oikarinen2023labelfree}{{1}{I}{section.1}}
-\backcite {johnson2019mimiccxr}{{1}{I}{section.1}}
+\backcite {yan2023robust}{{1}{I}{section.1}}
+\backcite {jain2021radgraph}{{1}{I}{section.1}}
+\backcite {johnson2019mimiccxr}{{2}{I}{section.1}}
 \backcite {denny2009extracting}{{2}{I}{section.1}}
 \backcite {chapman2001negex,smit2020chexbert}{{2}{I}{section.1}}
 \backcite {liu2021sapbert,jain2021radgraph}{{2}{I}{section.1}}
@@ -36,10 +38,11 @@
 \backcite {lucieri2020explaining}{{2}{\mbox {II-B}}{subsection.2.2}}
 \backcite {fauw2018clinically}{{2}{\mbox {II-B}}{subsection.2.2}}
 \backcite {oikarinen2023labelfree}{{2}{\mbox {II-B}}{subsection.2.2}}
-\backcite {oikarinen2023labelfree,yang2023language}{{2}{\mbox {II-B}}{subsection.2.2}}
-\backcite {desantis2024visualtcav}{{2}{\mbox {II-B}}{subsection.2.2}}
-\backcite {marconato2022glancenets}{{2}{\mbox {II-B}}{subsection.2.2}}
-\backcite {kim2024shiftcbm}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {oikarinen2023labelfree,yang2023language}{{3}{\mbox {II-B}}{subsection.2.2}}
+\backcite {desantis2024visualtcav}{{3}{\mbox {II-B}}{subsection.2.2}}
+\backcite {marconato2022glancenets}{{3}{\mbox {II-B}}{subsection.2.2}}
+\backcite {kim2024shiftcbm}{{3}{\mbox {II-B}}{subsection.2.2}}
+\backcite {jain2021radgraph,jain2021radgraph}{{3}{\mbox {II-B}}{subsection.2.2}}
 \backcite {peng2018negbio}{{3}{\mbox {II-C}}{subsection.2.3}}
 \backcite {irvin2019chexpert}{{3}{\mbox {II-C}}{subsection.2.3}}
 \backcite {smit2020chexbert}{{3}{\mbox {II-C}}{subsection.2.3}}

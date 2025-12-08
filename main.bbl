@@ -114,10 +114,6 @@ M.~J. Willemink, W.~A. Koszek, C.~Tan, T.~C. Defined, R.~L. Defined, M.~P.
   Defined, and B.~N. Defined, ``Preparing medical imaging data for machine
   learning,'' \emph{Radiology}, vol. 295, no.~1, pp. 4--15, 2020.
 
-\bibitem{langlotz2006radlex}
-C.~P. Langlotz, ``Radlex: a new method for indexing online educational
-  materials,'' \emph{Radiographics}, vol.~26, no.~6, pp. 1595--1597, 2006.
-
 \bibitem{donnelly2006snomed}
 K.~Donnelly, ``Snomed-ct: The advanced terminology and coding system for
   ehealth,'' \emph{Studies in Health Technology and Informatics}, vol. 121, pp.
@@ -127,6 +123,19 @@ K.~Donnelly, ``Snomed-ct: The advanced terminology and coding system for
 T.~Oikarinen, S.~Das, L.~M. Nguyen, and T.-W. Weng, ``Label-free concept
   bottleneck models,'' in \emph{International Conference on Learning
   Representations}, 2023.
+
+\bibitem{yan2023robust}
+A.~Yan, Y.~Wang, Y.~Zhong, Z.~He, P.~Karypis, Z.~Wang, C.~Dong, A.~Gentili,
+  C.-N. Hsu, J.~Shang, and J.~McAuley, ``Robust and interpretable medical image
+  classifiers via concept bottleneck models,'' \emph{arXiv preprint
+  arXiv:2310.03182}, 2023.
+
+\bibitem{jain2021radgraph}
+S.~Jain, A.~Agrawal, A.~Saporta, S.~Q. Truong, D.~N. Duong, T.~Bui, P.~Chambon,
+  Y.~Zhang, M.~P. Lungren, A.~Y. Ng \emph{et~al.}, ``Radgraph: Extracting
+  clinical entities and relations from radiology reports,'' in \emph{Advances
+  in Neural Information Processing Systems: Datasets and Benchmarks Track},
+  2021.
 
 \bibitem{johnson2019mimiccxr}
 A.~E. Johnson, T.~J. Pollard, S.~J. Berkowitz, N.~R. Greenbaum, M.~P. Lungren,
@@ -158,13 +167,6 @@ F.~Liu, E.~Shareghi, Z.~Meng, M.~Basaldella, and N.~Collier, ``Self-alignment
   the 2021 Conference of the North American Chapter of the Association for
   Computational Linguistics}, 2021, pp. 4228--4238.
 
-\bibitem{jain2021radgraph}
-S.~Jain, A.~Agrawal, A.~Saporta, S.~Q. Truong, D.~N. Duong, T.~Bui, P.~Chambon,
-  Y.~Zhang, M.~P. Lungren, A.~Y. Ng \emph{et~al.}, ``Radgraph: Extracting
-  clinical entities and relations from radiology reports,'' in \emph{Advances
-  in Neural Information Processing Systems: Datasets and Benchmarks Track},
-  2021.
-
 \bibitem{bodenreider2004umls}
 O.~Bodenreider, ``The unified medical language system (umls): integrating
   biomedical terminology,'' \emph{Nucleic Acids Research}, vol.~32, no.
@@ -194,6 +196,10 @@ P.~Rajpurkar, J.~Irvin, R.~L. Ball, K.~Zhu, B.~Yang, H.~Mehta, T.~Duan,
 K.~Simonyan, A.~Vedaldi, and A.~Zisserman, ``Deep inside convolutional
   networks: Visualising image classification models and saliency maps,''
   \emph{arXiv preprint arXiv:1312.6034}, 2014.
+
+\bibitem{yuksekgonul2023posthoc}
+M.~Yuksekgonul, M.~Wang, and J.~Zou, ``Post-hoc concept bottleneck models,'' in
+  \emph{International Conference on Learning Representations}, 2023.
 
 \bibitem{zarlenga2022cem}
 M.~E. Zarlenga, P.~Barbiero, G.~Ciravegna \emph{et~al.}, ``Concept embedding
