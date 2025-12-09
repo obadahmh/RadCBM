@@ -272,4 +272,45 @@ S.~Zhang, Y.~Xu, N.~Usuyama, J.~Bagher, R.~Tinn, S.~Preston, R.~Rao, M.~Wei,
   foundation model pretrained from fifteen million scientific image-text
   pairs,'' \emph{arXiv preprint arXiv:2303.00915}, 2023.
 
+\bibitem{huang2017densenet}
+G.~Huang, Z.~Liu, L.~Van Der~Maaten, and K.~Q. Weinberger, ``Densely connected
+  convolutional networks,'' in \emph{Proceedings of the IEEE Conference on
+  Computer Vision and Pattern Recognition}, 2017, pp. 2261--2269.
+
+\bibitem{kingma2015adam}
+D.~P. Kingma and J.~Ba, ``Adam: A method for stochastic optimization,''
+  \emph{arXiv preprint arXiv:1412.6980}, 2015.
+
+\bibitem{he2016resnet}
+K.~He, X.~Zhang, S.~Ren, and J.~Sun, ``Deep residual learning for image
+  recognition,'' in \emph{Proceedings of the IEEE Conference on Computer Vision
+  and Pattern Recognition}, 2016, pp. 770--778.
+
+\bibitem{you2023cxrclip}
+K.~You, J.~Gu, J.~Ham, B.~Park, J.~Kim, E.~K. Hong, W.~Baek, and B.~Roh,
+  ``Cxr-clip: Toward large scale chest x-ray language-image pre-training,'' in
+  \emph{Medical Image Computing and Computer Assisted Intervention -- MICCAI
+  2023}.\hskip 1em plus 0.5em minus 0.4em\relax Springer, 2023, pp. 101--111.
+
+\bibitem{xpertxai2023}
+A.~Rafferty, R.~Ramaesh, and A.~Rajan, ``Xpertxai: An expert-driven concept
+  bottleneck model,'' \emph{arXiv preprint arXiv:2505.09755}, 2025.
+
+\bibitem{xcb2023}
+D.~Alukaev, S.~Kiselev, I.~Pershin, B.~Ibragimov, V.~Ivanov, A.~Kornaev, and
+  I.~Titov, ``Cross-modal conceptualization in bottleneck models,'' \emph{arXiv
+  preprint arXiv:2310.14805}, 2023.
+
+\bibitem{cocox2023}
+V.~Sadashivaiah, P.~Yan, and J.~A. Hendler, ``Explaining chest x-ray pathology
+  models using textual concepts,'' \emph{arXiv preprint arXiv:2407.00557},
+  2024.
+
+\bibitem{xu2024adacbm}
+T.~F. Chowdhury, V.~M.~H. Phan, K.~Liao, M.-S. To, Y.~Xie, A.~van~den Hengel,
+  J.~W. Verjans, and Z.~Liao, ``Adacbm: An adaptive concept bottleneck model
+  for explainable and accurate diagnosis,'' in \emph{Medical Image Computing
+  and Computer Assisted Intervention -- MICCAI 2024}.\hskip 1em plus 0.5em
+  minus 0.4em\relax Springer, 2024, pp. 35--45.
+
 \end{thebibliography}
