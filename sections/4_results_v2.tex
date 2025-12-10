@@ -23,7 +23,7 @@ We compare against two categories of methods:
 
 \textbf{Black-box classifiers:} (1)~\textbf{ResNet-50}~\cite{he2016resnet}, a standard convolutional baseline; (2)~\textbf{DenseNet-121}~\cite{huang2017densenet}, the backbone architecture used in CheXNet~\cite{rajpurkar2017chexnet}; (3)~\textbf{MedCLIP}~\cite{wang2022medclip}, a vision-language model evaluated via zero-shot text prompting; (4)~\textbf{CXR-CLIP}~\cite{you2023cxrclip}, a chest X-ray-specific CLIP variant with prompt-based classification.
 
-\textbf{Concept-based methods:} (1)~\textbf{XpertXAI}~\cite{xpertxai2023}, which uses expert-defined concept attributes for chest radiograph interpretation; (2)~\textbf{XCB}~\cite{xcb2023}, an explainable concept bottleneck approach using CheXpert-derived concepts; (3)~\textbf{CoCoX}~\cite{cocox2023}, which extracts concepts through attention-based mechanisms; (4)~\textbf{Yan et al.}~\cite{yan2023robust}, which uses GPT-4-generated concept vocabularies with CLIP embeddings; (5)~\textbf{AdaCBM}~\cite{xu2024adacbm}, an energy-based concept bottleneck model with adaptive concept selection. For fair comparison, all concept-based methods use the same DenseNet-121 backbone when architecturally compatible.
+\textbf{Concept-based methods:} (1)~\textbf{Label-free CBM}~\cite{oikarinen2023labelfree}, which learns concepts without manual labels using CLIP-guided supervision; (2)~\textbf{Post-hoc CBM}~\cite{yuksekgonul2023posthoc}, which retrofits concept bottlenecks onto pretrained models; (3)~\textbf{XCB}~\cite{xcb2023}, an explainable concept bottleneck approach using CheXpert-derived concepts; (4)~\textbf{CoCoX}~\cite{cocox2023}, which extracts concepts through attention-based mechanisms; (5)~\textbf{Yan et al.}~\cite{yan2023robust}, which uses GPT-4-generated concept vocabularies with CLIP embeddings; (6)~\textbf{AdaCBM}~\cite{xu2024adacbm}, an energy-based concept bottleneck model with adaptive concept selection. For fair comparison, all concept-based methods use the same DenseNet-121 backbone when architecturally compatible.
 
 \subsubsection{Evaluation Metrics}
 \textbf{Classification performance} is measured by per-class and macro-averaged AUC-ROC and F1 scores on the 14 CheXpert labels, with class-specific thresholds tuned on validation data. \textbf{Concept quality} is assessed via concept AUC (predicting report-derived concept presence from images) and concept accuracy at optimized thresholds. \textbf{Interpretability} is evaluated through: (1)~\emph{Intervention faithfulness}, the Pearson correlation between predicted concept contribution ($w_i \cdot c_i$) and observed label change upon concept intervention; (2)~\emph{Plausibility}, the fraction of activated findings ($c_i > 0.5$) whose parent region abnormality exceeds 0.5; (3)~\emph{Implausible activation rate}, the fraction of finding activations occurring when the parent region score is below 0.3.
@@ -36,7 +36,7 @@ We compare against two categories of methods:
 
 Table~\ref{tab:classification} presents classification performance on MIMIC-CXR and CheXpert. \radcbm\ achieves competitive performance with black-box baselines while providing interpretable concept-mediated predictions. On MIMIC-CXR, \radcbm\ attains a macro AUC of \placeholder{0.XXX}, matching DenseNet-121 (\placeholder{0.XXX}) and outperforming all concept-based baselines. The hierarchical architecture improves over the flat variant by \placeholder{X.X} percentage points in macro AUC, with notable gains on region-specific pathologies such as Pleural Effusion (\placeholder{+X.X\%}) and Pneumothorax (\placeholder{+X.X\%}).
 
-Vision-language models (MedCLIP, CXR-CLIP) achieve reasonable zero-shot performance but fall short of supervised methods, particularly for rare findings. Among concept-based approaches, methods relying on limited concept vocabularies (XpertXAI, XCB) or LLM-generated concepts (Yan et al.) exhibit lower classification performance, suggesting that ontology-grounded concept banks with broader coverage provide stronger supervisory signal.
+Vision-language models (MedCLIP, CXR-CLIP) achieve reasonable zero-shot performance but fall short of supervised methods, particularly for rare findings. Among concept-based approaches, methods relying on small manually curated vocabularies (XCB) or LLM-generated concepts (Yan et al.) exhibit lower classification performance, suggesting that ontology-grounded concept banks with broader coverage provide stronger supervisory signal.
 
 \begin{table*}[t]
 \centering
@@ -54,7 +54,8 @@ DenseNet-121 & BB & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & 
 MedCLIP & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 CXR-CLIP & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 \midrule
-XpertXAI & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+Label-free CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 XCB & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 CoCoX & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 Yan et al. & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
@@ -70,7 +71,8 @@ DenseNet-121 & BB & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & 
 MedCLIP & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 CXR-CLIP & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 \midrule
-XpertXAI & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+Label-free CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 XCB & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 CoCoX & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 Yan et al. & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
@@ -89,7 +91,7 @@ AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \plac
 
 \subsection{Concept Quality}
 
-Table~\ref{tab:concept_quality} compares concept prediction quality across methods. \radcbm\ achieves the highest concept AUC (\placeholder{0.XXX}), substantially outperforming methods with smaller vocabularies (XpertXAI: \placeholder{0.XXX}, XCB: \placeholder{0.XXX}) and those using LLM-generated concepts (Yan et al.: \placeholder{0.XXX}). The improvement is particularly pronounced for rare concepts (occurring 50--200 times in training): \radcbm\ attains \placeholder{0.XXX} concept AUC on this subset compared to \placeholder{0.XXX} for the flat baseline, indicating that hierarchical gating reduces false positives for infrequent findings by suppressing activations when regions are predicted normal.
+Table~\ref{tab:concept_quality} compares concept prediction quality across methods. \radcbm\ achieves the highest concept AUC (\placeholder{0.XXX}), substantially outperforming methods with smaller or automatically derived concept vocabularies (Label-free CBM: \placeholder{0.XXX}, Post-hoc CBM: \placeholder{0.XXX}, XCB: \placeholder{0.XXX}) and those using LLM-generated concepts (Yan et al.: \placeholder{0.XXX}). The improvement is particularly pronounced for rare concepts (occurring 50--200 times in training): \radcbm\ attains \placeholder{0.XXX} concept AUC on this subset compared to \placeholder{0.XXX} for the flat baseline, indicating that hierarchical gating reduces false positives for infrequent findings by suppressing activations when regions are predicted normal.
 
 The ontology-grounded vocabulary provides \placeholder{22$\times$} more concepts than CheXpert's 14-class vocabulary while maintaining high prediction accuracy. SNOMED CT normalization ensures that synonymous mentions (``cardiac enlargement,'' ``enlarged heart,'' ``cardiomegaly'') map to canonical concepts, reducing vocabulary redundancy and improving concept-level supervision quality.
 
@@ -101,7 +103,8 @@ The ontology-grounded vocabulary provides \placeholder{22$\times$} more concepts
 \toprule
 \textbf{Method} & \textbf{Concept Source} & \textbf{\#Concepts} & \textbf{Concept AUC} & \textbf{Concept Acc.} & \textbf{Ontology} \\
 \midrule
-XpertXAI & Manual curation & \placeholder{14} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{55} \\
+Label-free CBM & CLIP-guided discovery & \placeholder{$\sim$50} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{55} \\
+Post-hoc CBM & Projection of pretrained features & \placeholder{$\sim$50} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{55} \\
 XCB & CheXpert labeler & 14 & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{55} \\
 CoCoX & Attention-derived & \placeholder{$\sim$50} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{55} \\
 Yan et al. & GPT-4 generated & \placeholder{52} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{55} \\
@@ -146,32 +149,33 @@ Bone & \placeholder{34} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placehold
 % TABLE 4: Interpretability Metrics
 % =============================================================================
 
-\subsection{Interpretability and Faithfulness}
+% \subsection{Interpretability and Faithfulness}
 
-Table~\ref{tab:interpretability} evaluates the faithfulness and clinical plausibility of concept-based explanations. \radcbm\ achieves the highest intervention faithfulness (\placeholder{0.XX}), indicating that editing concepts in the bottleneck produces label changes consistent with the learned weights. This property is critical for clinical utility: when a radiologist overrides a concept prediction (e.g., setting ``pleural effusion'' to absent after reviewing the image), the downstream diagnosis should update predictably.
+% Table~\ref{tab:interpretability} evaluates the faithfulness and clinical plausibility of concept-based explanations. \radcbm\ achieves the highest intervention faithfulness (\placeholder{0.XX}), indicating that editing concepts in the bottleneck produces label changes consistent with the learned weights. This property is critical for clinical utility: when a radiologist overrides a concept prediction (e.g., setting ``pleural effusion'' to absent after reviewing the image), the downstream diagnosis should update predictably.
 
-The hierarchical architecture dramatically reduces implausible activations. In the flat CBM, \placeholder{XX.X\%} of finding activations occur when the parent region is predicted normal (e.g., lung opacity activating when lung abnormality $< 0.3$). \radcbm's multiplicative gating reduces this to \placeholder{X.X\%}, enforcing clinical consistency by construction. Plausibility, the fraction of activated findings with abnormal parent regions, improves from \placeholder{XX.X\%} (flat) to \placeholder{XX.X\%} (hierarchical).
+% The hierarchical architecture dramatically reduces implausible activations. In the flat CBM, \placeholder{XX.X\%} of finding activations occur when the parent region is predicted normal (e.g., lung opacity activating when lung abnormality $< 0.3$). \radcbm's multiplicative gating reduces this to \placeholder{X.X\%}, enforcing clinical consistency by construction. Plausibility, the fraction of activated findings with abnormal parent regions, improves from \placeholder{XX.X\%} (flat) to \placeholder{XX.X\%} (hierarchical).
 
-\begin{table*}[t]
-\centering
-\caption{Interpretability metrics on MIMIC-CXR test set. Intervention faithfulness measures correlation between predicted and observed label changes upon concept editing. Plausibility and implausible activation rate quantify alignment between finding activations and region-level predictions. Results averaged over 3 seeds; $\pm$ indicates standard deviation.}
-\label{tab:interpretability}
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Method} & \textbf{Intervention} & \textbf{Plausibility} & \textbf{Implausible} & \textbf{Region} \\
- & \textbf{Faithfulness} $\uparrow$ & $\uparrow$ & \textbf{Act. Rate} $\downarrow$ & \textbf{Consistency} $\uparrow$ \\
-\midrule
-XpertXAI & \placeholder{.XX}$\pm$\placeholder{.XX} & --- & --- & --- \\
-XCB & \placeholder{.XX}$\pm$\placeholder{.XX} & --- & --- & --- \\
-CoCoX & \placeholder{.XX}$\pm$\placeholder{.XX} & --- & --- & --- \\
-Yan et al. & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
-AdaCBM & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
-\midrule
-\radcbm\ (flat) & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
-\radcbm\ (hier.) & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
-\bottomrule
-\end{tabular}
-\end{table*}
+% \begin{table*}[t]
+% \centering
+% \caption{Interpretability metrics on MIMIC-CXR test set. Intervention faithfulness measures correlation between predicted and observed label changes upon concept editing. Plausibility and implausible activation rate quantify alignment between finding activations and region-level predictions. Results averaged over 3 seeds; $\pm$ indicates standard deviation.}
+% \label{tab:interpretability}
+% \begin{tabular}{lcccc}
+% \toprule
+% \textbf{Method} & \textbf{Intervention} & \textbf{Plausibility} & \textbf{Implausible} & \textbf{Region} \\
+%  & \textbf{Faithfulness} $\uparrow$ & $\uparrow$ & \textbf{Act. Rate} $\downarrow$ & \textbf{Consistency} $\uparrow$ \\
+% \midrule
+% Label-free CBM & \placeholder{.XX}$\pm$\placeholder{.XX} & --- & --- & --- \\
+% Post-hoc CBM & \placeholder{.XX}$\pm$\placeholder{.XX} & --- & --- & --- \\
+% XCB & \placeholder{.XX}$\pm$\placeholder{.XX} & --- & --- & --- \\
+% CoCoX & \placeholder{.XX}$\pm$\placeholder{.XX} & --- & --- & --- \\
+% Yan et al. & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
+% AdaCBM & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
+% \midrule
+% \radcbm\ (flat) & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
+% \radcbm\ (hier.) & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+% \bottomrule
+% \end{tabular}
+% \end{table*}
 
 % =============================================================================
 % FIGURE 2: Concept-Label Weight Heatmap (NEW)
