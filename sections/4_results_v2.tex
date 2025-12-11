@@ -122,13 +122,13 @@ AdaCBM & Learned embeddings & \placeholder{128} & \placeholder{.XXX}$\pm$\placeh
 
 \subsection{Region-Level Performance}
 
-Table~\ref{tab:region_performance} presents performance decomposed by anatomical region, validating the hierarchical architecture. Region abnormality detection achieves high AUC across all regions, with lung (\placeholder{0.XXX}) and heart (\placeholder{0.XXX}) showing the strongest performance, reflecting the prevalence and visual distinctiveness of pathology in these regions. Pleura (\placeholder{0.XXX}) and mediastinum (\placeholder{0.XXX}) exhibit slightly lower region AUC, consistent with the subtlety of findings in these areas.
+Table~\ref{tab:region_performance} presents performance decomposed by anatomical region, validating the hierarchical architecture. Region abnormality AUC (computed from pooled concept locations, not standalone region labels) is high across all regions. Region AUCs are computed using surrogate region targets obtained by max-pooling present concepts per region from RadGraph outputs; no manual region labels are used. Lung (\placeholder{0.XXX}) and heart (\placeholder{0.XXX}) show the strongest performance, reflecting the prevalence and visual distinctiveness of pathology in these regions, while pleura (\placeholder{0.XXX}) and mediastinum (\placeholder{0.XXX}) exhibit slightly lower region AUC, consistent with the subtlety of findings in these areas.
 
-Finding-level AUC, measured on concepts within each region, correlates with region abnormality performance: regions with accurate abnormality detection support more reliable finding predictions. The lung region, containing the largest concept vocabulary (\placeholder{142} concepts), achieves finding AUC of \placeholder{0.XXX}, while the smaller bone vocabulary (\placeholder{34} concepts) attains \placeholder{0.XXX}. These results confirm that the hierarchical decomposition captures clinically meaningful region-finding relationships.
+Finding-level AUC, measured on concepts within each region, correlates with region abnormality performance: regions with accurate abnormality detection support more reliable finding predictions. The lung region, containing the largest concept vocabulary (\placeholder{142} concepts), achieves finding AUC of \placeholder{0.XXX}, while the smaller bone vocabulary (\placeholder{34} concepts) attains \placeholder{0.XXX}. Per-region finding AUCs use the same report-derived, pooled-from-concept supervision rather than independent manual region annotations. These results confirm that the hierarchical decomposition captures clinically meaningful region-finding relationships.
 
 \begin{table}[t]
 \centering
-\caption{Region-level performance on MIMIC-CXR test set. Region AUC measures binary abnormality detection; Finding AUC measures concept prediction within each region. Results averaged over 3 seeds.}
+\caption{Region-level performance on MIMIC-CXR test set. Region AUC (region abnormality AUC; computed from pooled concept locations, not standalone region labels) measures binary abnormality detection; Finding AUC measures concept prediction within each region. Results averaged over 3 seeds.}
 \label{tab:region_performance}
 \begin{tabular}{lcccc}
 \toprule

@@ -14,6 +14,7 @@
 \backcite {donnelly2006snomed}{{1}{I}{section.1}}
 \backcite {oikarinen2023labelfree}{{1}{I}{section.1}}
 \backcite {yan2023robust}{{1}{I}{section.1}}
+\backcite {pang2024integrating}{{1}{I}{section.1}}
 \backcite {jain2021radgraph}{{1}{I}{section.1}}
 \backcite {johnson2019mimiccxr}{{2}{I}{section.1}}
 \backcite {denny2009extracting}{{2}{I}{section.1}}
@@ -23,6 +24,7 @@
 \backcite {peng2018negbio,irvin2019chexpert}{{2}{I}{section.1}}
 \backcite {bodenreider2004umls}{{2}{I}{section.1}}
 \backcite {koh2020concept}{{2}{I}{section.1}}
+\backcite {pang2024integrating}{{2}{I}{section.1}}
 \backcite {wang2017chestxray14}{{2}{\mbox {II-A}}{subsection.2.1}}
 \backcite {irvin2019chexpert}{{2}{\mbox {II-A}}{subsection.2.1}}
 \backcite {johnson2019mimiccxr}{{2}{\mbox {II-A}}{subsection.2.1}}
@@ -35,9 +37,9 @@
 \backcite {yuksekgonul2023posthoc}{{2}{\mbox {II-B}}{subsection.2.2}}
 \backcite {zarlenga2022cem}{{2}{\mbox {II-B}}{subsection.2.2}}
 \backcite {chauhan2023interactive}{{2}{\mbox {II-B}}{subsection.2.2}}
-\backcite {lucieri2020explaining}{{2}{\mbox {II-B}}{subsection.2.2}}
-\backcite {fauw2018clinically}{{2}{\mbox {II-B}}{subsection.2.2}}
-\backcite {oikarinen2023labelfree}{{2}{\mbox {II-B}}{subsection.2.2}}
+\backcite {lucieri2020explaining}{{3}{\mbox {II-B}}{subsection.2.2}}
+\backcite {fauw2018clinically}{{3}{\mbox {II-B}}{subsection.2.2}}
+\backcite {oikarinen2023labelfree}{{3}{\mbox {II-B}}{subsection.2.2}}
 \backcite {oikarinen2023labelfree,yang2023language}{{3}{\mbox {II-B}}{subsection.2.2}}
 \backcite {desantis2024visualtcav}{{3}{\mbox {II-B}}{subsection.2.2}}
 \backcite {marconato2022glancenets}{{3}{\mbox {II-B}}{subsection.2.2}}
@@ -63,12 +65,12 @@
 \backcite {kingma2015adam}{{3}{\mbox {III-A}3}{subsubsection.3.1.3}}
 \backcite {he2016resnet}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
 \backcite {huang2017densenet}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {rajpurkar2017chexnet}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {wang2022medclip}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {you2023cxrclip}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {oikarinen2023labelfree}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {yuksekgonul2023posthoc}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {xcb2023}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {cocox2023}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {yan2023robust}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
-\backcite {xu2024adacbm}{{3}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {rajpurkar2017chexnet}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {wang2022medclip}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {you2023cxrclip}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {oikarinen2023labelfree}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {yuksekgonul2023posthoc}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {xcb2023}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {cocox2023}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {yan2023robust}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}
+\backcite {xu2024adacbm}{{4}{\mbox {III-A}4}{subsubsection.3.1.4}}

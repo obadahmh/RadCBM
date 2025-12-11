@@ -30,6 +30,8 @@ t_i =
 \]
 Here, ``definitely present'' corresponds to positive, non-negated mentions in the report, while ``uncertain'' captures hedged or equivocal language (for example, ``may represent'' or ``cannot exclude''), and all other cases are treated as negative.
 Region-level targets $A_r$ are set to one if any finding linked to region $r$ is present or uncertain.
+Region supervision is therefore derived automatically: for each study, we mark a region as abnormal if any present or uncertain concept is linked to that region in the RadGraph/UMLS extraction.
+We do not curate separate region abnormality labels.
 
 \subsection{Hierarchical Concept Vocabulary}
 Concepts are organized into two levels that mirror radiologist reasoning.

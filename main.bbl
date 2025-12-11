@@ -130,6 +130,12 @@ A.~Yan, Y.~Wang, Y.~Zhong, Z.~He, P.~Karypis, Z.~Wang, C.~Dong, A.~Gentili,
   classifiers via concept bottleneck models,'' \emph{arXiv preprint
   arXiv:2310.03182}, 2023.
 
+\bibitem{pang2024integrating}
+W.~Pang, X.~Ke, S.~Tsutsui, and B.~Wen, ``Integrating clinical knowledge into
+  concept bottleneck models,'' in \emph{International Conference on Medical
+  Image Computing and Computer-Assisted Intervention}.\hskip 1em plus 0.5em
+  minus 0.4em\relax Springer, 2024, pp. 243--253.
+
 \bibitem{jain2021radgraph}
 S.~Jain, A.~Agrawal, A.~Saporta, S.~Q. Truong, D.~N. Duong, T.~Bui, P.~Chambon,
   Y.~Zhang, M.~P. Lungren, A.~Y. Ng \emph{et~al.}, ``Radgraph: Extracting
