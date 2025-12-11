@@ -3,14 +3,14 @@ Figure~\ref{fig:pipeline} summarizes the training pipeline.
 During training, paired chest X-rays and reports are processed jointly: reports are converted into soft concept targets, and images provide pixel-level evidence for those concepts and the final diagnostic labels.
 Images pass through a convolutional backbone to produce features that feed a two-level CBM with region abnormality heads, region-specific finding heads, multiplicative gating, and a linear label predictor.
 Reports are only used to build and supervise the concept layer; at test time, \radcbm\ receives only images and outputs region scores, concept activations, and label predictions.
-\begin{figure}[t]
+\begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=\linewidth]{method/figure.pdf}
+    \includegraphics[width=\linewidth]{method/system_overview_v1_compressed.png}
     \caption{RadCBM training pipeline.
     Reports are converted into normalized concept targets and grouped into an anatomy-first hierarchy.
     Images are mapped to region abnormality and finding predictions; multiplicative gating yields gated concepts that feed a linear label head.}
     \label{fig:pipeline}
-\end{figure}
+\end{figure*}
 
 \subsection{Concept Extraction from Reports}
 Each report is parsed with RadGraph to identify observation and anatomy entities plus their relations (for example, \texttt{located\_at}).

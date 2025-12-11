@@ -13,7 +13,7 @@
 We evaluate on two large-scale chest radiograph benchmarks. \textbf{MIMIC-CXR}~\cite{johnson2019mimiccxr} contains \placeholder{377,110} chest radiographs from \placeholder{65,379} patients with associated radiology reports; we use the official train/validation/test splits stratified by patient to prevent information leakage. \textbf{CheXpert}~\cite{irvin2019chexpert} provides \placeholder{224,316} chest radiographs from \placeholder{65,240} patients; we use the validation set with expert consensus labels for evaluation, following standard protocol. Both datasets are labeled for 14 thoracic observations using the CheXpert labeler: Atelectasis, Cardiomegaly, Consolidation, Edema, Enlarged Cardiomediastinum, Fracture, Lung Lesion, Lung Opacity, No Finding, Pleural Effusion, Pleural Other, Pneumonia, Pneumothorax, and Support Devices.
 
 \subsubsection{Concept Bank Construction}
-We extract concepts exclusively from MIMIC-CXR training reports using RadGraph~\cite{jain2021radgraph}, yielding \placeholder{127,834} unique observation-anatomy pairs. After UMLS normalization, semantic type filtering, and frequency thresholding (minimum 50 occurrences), the final vocabulary contains \placeholder{312} region-specific concepts organized into five anatomical regions: lung (\placeholder{142} concepts), heart (\placeholder{38} concepts), pleura (\placeholder{47} concepts), mediastinum (\placeholder{51} concepts), and bone (\placeholder{34} concepts). Assertion status (present, absent, uncertain) is preserved for each concept mention.
+We extract concepts exclusively from MIMIC-CXR training reports using RadGraph~\cite{jain2021radgraph}, yielding \placeholder{127,834} unique observation-anatomy pairs. After UMLS normalization, semantic type filtering, and frequency thresholding (minimum 50 occurrences), the final vocabulary contains 1,312 region-specific concepts organized into five anatomical regions: lung (\placeholder{142} concepts), heart (\placeholder{38} concepts), pleura (\placeholder{47} concepts), mediastinum (\placeholder{51} concepts), and bone (\placeholder{34} concepts). Assertion status (present, absent, uncertain) is preserved for each concept mention.
 
 \subsubsection{Implementation Details}
 All models use a DenseNet-121 backbone~\cite{huang2017densenet} pretrained on ImageNet, with images resized to $320 \times 320$ pixels and normalized to ImageNet statistics. We apply standard augmentations during training: random horizontal flipping, rotation ($\pm 10°$), and color jittering. Models are trained using Adam~\cite{kingma2015adam} with learning rate $10^{-4}$, batch size 32, and early stopping based on validation macro AUC with patience of 10 epochs. Loss weights are set to $\lambda_1 = \placeholder{0.5}$ and $\lambda_2 = \placeholder{1.0}$ based on validation performance. All experiments were conducted on an Intel i7-11800H @ 2.30GHz workstation equipped with 64GB RAM and an NVIDIA GeForce RTX 3080 GPU (16GB VRAM) using PyTorch 2.0. To ensure statistical reliability, we report results averaged over 3 random seeds with different weight initializations.
@@ -110,8 +110,8 @@ CoCoX & Attention-derived & \placeholder{$\sim$50} & \placeholder{.XXX}$\pm$\pla
 Yan et al. & GPT-4 generated & \placeholder{52} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{55} \\
 AdaCBM & Learned embeddings & \placeholder{128} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{55} \\
 \midrule
-\radcbm\ (flat) & RadGraph + UMLS & \placeholder{312} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{51} \\
-\radcbm\ (hier.) & RadGraph + UMLS & \placeholder{312} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{51} \\
+\radcbm\ (flat) & RadGraph + UMLS & 1,312 & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{51} \\
+\radcbm\ (hier.) & RadGraph + UMLS & 1,312 & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \ding{51} \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -140,7 +140,7 @@ Pleura & \placeholder{47} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeho
 Mediastinum & \placeholder{51} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
 Bone & \placeholder{34} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
 \midrule
-\textbf{Overall} & \placeholder{312} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
+\textbf{Overall} & 1,312 & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -298,7 +298,7 @@ Rarely negated ($<$10\%) & \placeholder{XX} & \placeholder{.XXX} & \placeholder{
 Often negated (10--50\%) & \placeholder{XX} & \placeholder{.XXX} & \placeholder{.XXX} \\
 Frequently negated ($>$50\%) & \placeholder{XX} & \placeholder{.XXX} & \placeholder{.XXX} \\
 \midrule
-\textbf{All concepts} & \placeholder{312} & \placeholder{.XXX} & \placeholder{.XXX} \\
+\textbf{All concepts} & 1,312 & \placeholder{.XXX} & \placeholder{.XXX} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -431,4 +431,4 @@ Figure~\ref{fig:error_analysis}b quantifies the false-negative cascade: when a r
 
 \subsection{Summary}
 
-The experimental results support three main findings. First, \radcbm\ matches black-box classification performance while providing interpretable, concept-mediated predictions, demonstrating that the bottleneck constraint does not materially sacrifice diagnostic accuracy. Second, hierarchical organization with multiplicative gating substantially improves concept quality (concept AUC: \placeholder{+X.X} points) and clinical plausibility (implausible activation rate: \placeholder{XX.X\%} $\rightarrow$ \placeholder{X.X\%}) compared to flat architectures. Third, ontology-grounded concept banks derived from RadGraph and UMLS provide broader coverage (\placeholder{312} vs. 14 concepts) and better intervention faithfulness than LLM-generated or manually curated alternatives, enabling reliable what-if analysis at the concept level.
+The experimental results support three main findings. First, \radcbm\ matches black-box classification performance while providing interpretable, concept-mediated predictions, demonstrating that the bottleneck constraint does not materially sacrifice diagnostic accuracy. Second, hierarchical organization with multiplicative gating substantially improves concept quality (concept AUC: \placeholder{+X.X} points) and clinical plausibility (implausible activation rate: \placeholder{XX.X\%} $\rightarrow$ \placeholder{X.X\%}) compared to flat architectures. Third, ontology-grounded concept banks derived from RadGraph and UMLS provide broader coverage (1,312 vs. 14 concepts) and better intervention faithfulness than LLM-generated or manually curated alternatives, enabling reliable what-if analysis at the concept level.
