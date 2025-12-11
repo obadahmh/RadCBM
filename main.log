@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.3)  11 DEC 2025 15:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.3)  11 DEC 2025 16:45
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -536,168 +536,164 @@ LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 16
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 ) [3] [4 <./figures/method/system_overview_v1_compressed.png>]) (sections/4_results_v2.tex
 
-LaTeX Warning: Command \textdegree invalid in math mode on input line 19.
+LaTeX Warning: Command \textdegree invalid in math mode on input line 20.
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 19.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 20.
 (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 
-LaTeX Warning: Command \textdegree invalid in math mode on input line 19.
+LaTeX Warning: Command \textdegree invalid in math mode on input line 20.
 
 Missing character: There is no ° in font cmr10!
 [5]
-Overfull \hbox (30.95355pt too wide) in paragraph at lines 133--146
+Overfull \hbox (30.95355pt too wide) in paragraph at lines 134--147
  [][] 
  []
 
 
-LaTeX Warning: File `figures/concept_label_weights.pdf' not found on input line 192.
+LaTeX Warning: File `figures/concept_label_weights.pdf' not found on input line 193.
 
 
-sections/4_results_v2.tex:192: Package pdftex.def Error: File `figures/concept_label_weights.pdf' not found: using draft setting.
+sections/4_results_v2.tex:193: Package pdftex.def Error: File `figures/concept_label_weights.pdf' not found: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.192 ...width]{figures/concept_label_weights.pdf}
+l.193 ...width]{figures/concept_label_weights.pdf}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 [6]
 
-LaTeX Warning: File `figures/concept_bank_stats.pdf' not found on input line 209.
+LaTeX Warning: File `figures/concept_bank_stats.pdf' not found on input line 210.
 
 
-sections/4_results_v2.tex:209: Package pdftex.def Error: File `figures/concept_bank_stats.pdf' not found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.209 ...inewidth]{figures/concept_bank_stats.pdf}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `figures/gating_effect.pdf' not found on input line 226.
-
-
-sections/4_results_v2.tex:226: Package pdftex.def Error: File `figures/gating_effect.pdf' not found: using draft setting.
+sections/4_results_v2.tex:210: Package pdftex.def Error: File `figures/concept_bank_stats.pdf' not found: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.226 ...th=\linewidth]{figures/gating_effect.pdf}
+l.210 ...inewidth]{figures/concept_bank_stats.pdf}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-LaTeX Warning: File `figures/intervention_faithfulness.pdf' not found on input line 243.
+LaTeX Warning: File `figures/gating_effect.pdf' not found on input line 227.
 
 
-sections/4_results_v2.tex:243: Package pdftex.def Error: File `figures/intervention_faithfulness.pdf' not found: using draft setting.
+sections/4_results_v2.tex:227: Package pdftex.def Error: File `figures/gating_effect.pdf' not found: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.243 ...h]{figures/intervention_faithfulness.pdf}
+l.227 ...th=\linewidth]{figures/gating_effect.pdf}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[7]
-Overfull \hbox (62.07318pt too wide) in paragraph at lines 262--277
- [][] 
- []
+
+LaTeX Warning: File `figures/intervention_faithfulness.pdf' not found on input line 244.
 
 
-Overfull \hbox (3.74892pt too wide) in paragraph at lines 293--304
- [][] 
- []
+sections/4_results_v2.tex:244: Package pdftex.def Error: File `figures/intervention_faithfulness.pdf' not found: using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.244 ...h]{figures/intervention_faithfulness.pdf}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [8]
+ [7]
+Overfull \hbox (62.07318pt too wide) in paragraph at lines 263--278
+ [][] 
+ []
 
-LaTeX Warning: File `figures/hyperparameter_sensitivity.pdf' not found on input line 318.
+
+Overfull \hbox (3.74892pt too wide) in paragraph at lines 294--305
+ [][] 
+ []
+
+[8]
+
+LaTeX Warning: File `figures/hyperparameter_sensitivity.pdf' not found on input line 319.
 
 
-sections/4_results_v2.tex:318: Package pdftex.def Error: File `figures/hyperparameter_sensitivity.pdf' not found: using draft setting.
+sections/4_results_v2.tex:319: Package pdftex.def Error: File `figures/hyperparameter_sensitivity.pdf' not found: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.318 ...]{figures/hyperparameter_sensitivity.pdf}
+l.319 ...]{figures/hyperparameter_sensitivity.pdf}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Underfull \vbox (badness 3547) has occurred while \output is active []
+LaTeX Warning: File `figures/concept_auc_by_frequency.pdf' not found on input line 336.
 
 
-
-LaTeX Warning: File `figures/concept_auc_by_frequency.pdf' not found on input line 335.
-
-
-sections/4_results_v2.tex:335: Package pdftex.def Error: File `figures/concept_auc_by_frequency.pdf' not found: using draft setting.
+sections/4_results_v2.tex:336: Package pdftex.def Error: File `figures/concept_auc_by_frequency.pdf' not found: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.335 ...th]{figures/concept_auc_by_frequency.pdf}
+l.336 ...th]{figures/concept_auc_by_frequency.pdf}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 [9]
 
-LaTeX Warning: File `figures/qualitative_cases.pdf' not found on input line 354.
+LaTeX Warning: File `figures/qualitative_cases.pdf' not found on input line 355.
 
 
-sections/4_results_v2.tex:354: Package pdftex.def Error: File `figures/qualitative_cases.pdf' not found: using draft setting.
+sections/4_results_v2.tex:355: Package pdftex.def Error: File `figures/qualitative_cases.pdf' not found: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.354 ...textwidth]{figures/qualitative_cases.pdf}
+l.355 ...textwidth]{figures/qualitative_cases.pdf}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Overfull \hbox (28.48618pt too wide) in paragraph at lines 371--384
+Overfull \hbox (28.48618pt too wide) in paragraph at lines 372--385
  [][] 
  []
 
 
-Overfull \hbox (9.83813pt too wide) in paragraph at lines 398--409
+Overfull \hbox (9.83813pt too wide) in paragraph at lines 399--410
  [][] 
  []
 
 [10]
 
-LaTeX Warning: File `figures/error_analysis.pdf' not found on input line 423.
+LaTeX Warning: File `figures/error_analysis.pdf' not found on input line 424.
 
 
-sections/4_results_v2.tex:423: Package pdftex.def Error: File `figures/error_analysis.pdf' not found: using draft setting.
+sections/4_results_v2.tex:424: Package pdftex.def Error: File `figures/error_analysis.pdf' not found: using draft setting.
 
 See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.423 ...h=\linewidth]{figures/error_analysis.pdf}
+l.424 ...h=\linewidth]{figures/error_analysis.pdf}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -706,7 +702,9 @@ If that doesn't work, type  X <return>  to quit.
 \tf@brf=\write4
 \openout4 = `main.brf'.
 
- [11]) [12] [13] [14
+ [11]) [12
+
+] [13] [14
 
 
 ] (main.aux)
@@ -717,20 +715,20 @@ L3 programming layer <2024-01-04>
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 85BFE66FC38A85BC2D9B04F975C10BD6;6464.
 Package rerunfilecheck Info: File `main.brf' has not changed.
-(rerunfilecheck)             Checksum: B71C478B178A0A4DDBD3DDCC841F255E;4860.
+(rerunfilecheck)             Checksum: 7B534B2A824600E7C505177E52FF4A01;4458.
  ) 
 Here is how much of TeX's memory you used:
- 16589 strings out of 474486
- 286309 string characters out of 5743283
- 1986542 words of memory out of 5000000
+ 16575 strings out of 474486
+ 286201 string characters out of 5743283
+ 1987542 words of memory out of 5000000
  38051 multiletter control sequences out of 15000+600000
- 622059 words of font info for 412 fonts, out of 8000000 for 9000
+ 621298 words of font info for 402 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  90i,12n,93p,1502b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on main.pdf (14 pages, 1791060 bytes).
+Output written on main.pdf (14 pages, 1789348 bytes).
 PDF statistics:
- 610 PDF objects out of 1000 (max. 8388607)
+ 599 PDF objects out of 1000 (max. 8388607)
  127 named destinations out of 1000 (max. 500000)
  68918 words of extra memory for PDF output out of 74296 (max. 10000000)
 
