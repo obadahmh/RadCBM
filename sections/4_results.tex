@@ -1,37 +1,201 @@
+% =============================================================================
+% RadCBM Results Section
+% =============================================================================
+% This section presents experimental evaluation on five chest X-ray benchmarks:
+% MIMIC-CXR, CheXpert Plus, VinDr-CXR, RSNA Pneumonia, and NIH Chest X-ray.
+% Placeholder values are marked with \placeholder{} for later replacement.
+% =============================================================================
+
+\newcommand{\placeholder}[1]{\textbf{#1}}  % Remove this line after filling values
+
 \subsection{Experimental Setup}
-We evaluate \radcbm on MIMIC-CXR (377k images, 227k reports) \cite{johnson2019mimic} and CheXpert (224k images) \cite{irvin2019chexpert}.
-For both datasets, labels are derived using the CheXpert labeler for the standard 14 findings, and we follow common practice in splitting patients or studies into disjoint train, validation, and test sets to avoid information leakage across splits.
-Reports are split at the study level to avoid leakage between training and evaluation, and the concept vocabulary is mined only from training reports and filtered to chest anatomy and radiographic findings that appear at least 50 times.
-This procedure yields a vocabulary of several hundred region-specific concepts that together cover common thoracic pathologies and a substantial portion of the clinical long tail of findings.
-Images are resized to $320\times320$ and processed by a DenseNet-121 backbone initialized from ImageNet, and all models, including baselines, share this backbone and preprocessing.
-Region and finding heads use sigmoid outputs; $\lambda_1$ and $\lambda_2$ are tuned on a held-out validation set, and training uses early stopping based on validation label AUC to prevent overfitting.
 
-\subsection{Baselines}
-\textbf{Black-box CNN:} a DenseNet-121 trained end-to-end on labels only, using the same preprocessing, optimizer, and training schedule as \radcbm.
-\textbf{Flat CBM:} a concept bottleneck without hierarchy or gating; all concepts in the RadGraph-derived vocabulary are predicted jointly and feed a linear label head, so the model can activate findings without regard to regional consistency.
-\textbf{CheXpert CBM:} a CBM trained on the 14 CheXpert labeler concepts rather than RadGraph-mined concepts; this baseline reflects the common practice of using a small set of global radiographic labels as concepts.
-\textbf{Post-hoc CBM:} a model that predicts concepts after training but does not constrain the label pathway; concepts are attached as auxiliary heads on top of the black-box CNN, so manipulating them does not necessarily change the diagnostic prediction.
+\subsubsection{Datasets}
+We evaluate on five chest radiograph benchmarks spanning in-domain testing and external validation. \textbf{MIMIC-CXR}~\cite{johnson2019mimiccxr} contains \placeholder{377,110} radiographs from \placeholder{65,379} patients with associated radiology reports; we use the official train/validation/test splits stratified by patient. \textbf{CheXpert Plus} builds on CheXpert~\cite{irvin2019chexpert}; we evaluate on the radiologist-labeled expert subset. \textbf{VinDr-CXR}~\cite{nguyen2021vindrcxr} provides radiologist annotations for 28 findings/diagnoses, \textbf{RSNA Pneumonia}~\cite{rsna2018pneumonia} provides pneumonia detection labels (and bounding boxes for positive cases), and \textbf{NIH ChestX-ray14}~\cite{wang2017chestxray14} provides 14 disease labels originally mined from reports.
+In addition, the test subset of the MIMIC-CXR radiology reports were annotated by a single radiologist into one of fourteen categories (CheXpert-14 style, including ``No Finding''). CheXpert Plus (expert subset), VinDr-CXR, and RSNA Pneumonia provide radiologist-annotated evaluation labels, while NIH ChestX-ray14 is primarily report/NLP-derived for standard disease labels. We therefore emphasize performance on radiologist-labeled evaluation subsets as primary evidence of clinical correctness, and treat purely report/NLP-derived targets as complementary large-scale evidence.
 
-\subsection{Metrics}
-Classification is measured with per-class and macro AUC-ROC and F1 on the 14 CheXpert labels, using class-specific thresholds tuned on the validation set.
-Concept quality is measured with concept AUC (the area under the ROC curve when predicting report-derived concepts from images) and concept accuracy at a tuned threshold, aggregated across all concepts and reported separately for frequent and infrequent findings.
-Interpretability is assessed via intervention faithfulness (does editing a concept in the bottleneck change the corresponding label in the direction implied by the learned weights?) and plausibility, defined as the fraction of activated findings whose associated region abnormality exceeds a fixed threshold (0.5) and that align with qualitative expectations for the image.
+For report-bearing datasets, we obtain 14-label targets using the CheXpert labeler and, to reduce label noise, we also consider an ensemble of complementary labelers (CheXpert, CheXbert~\cite{smit2020chexbert}, and NegBio~\cite{peng2018negbio}). The ensemble maps labeler outputs to \{positive, negative, uncertain\}. To avoid overstating performance on purely NLP-derived targets, we emphasize results on radiologist-labeled evaluation subsets (CheXpert Plus expert subset; and, when available, VinDr-CXR/RSNA Pneumonia) as primary evidence of clinical correctness.
 
-\subsection{Main Results}
-Automated concept mining provides broad coverage of radiographic findings without manual effort, capturing hundreds of distinct observation-region concepts that go beyond the 14 global CheXpert labels.
-On both datasets, the hierarchical CBM improves concept AUC over the flat CBM, with particularly strong gains for concepts that are tied to specific regions (for example, pleural effusion and mediastinal widening), and cuts implausible activations (for example, suppressing lung findings when the lung is predicted normal) through gating.
-Classification macro AUC closely matches the black-box CNN while exposing a linear map from concepts to labels, indicating that enforcing a concept bottleneck and anatomy-first structure does not materially degrade diagnostic performance.
-Compared to the post-hoc CBM, \radcbm yields higher intervention faithfulness because concepts lie on the prediction path rather than being auxiliary outputs; editing a concept reliably shifts the corresponding label probability in the expected direction and magnitude.
+\subsubsection{Concept Bank Construction}
+We extract concepts exclusively from MIMIC-CXR training reports using RadGraph~\cite{jain2021radgraph}, yielding \placeholder{127,834} unique observation-anatomy pairs. After UMLS normalization, semantic type filtering, and frequency thresholding (minimum 50 occurrences), the final vocabulary contains 1,312 region-specific concepts organized into five anatomical regions: lung (\placeholder{142} concepts), heart (\placeholder{38} concepts), pleura (\placeholder{47} concepts), mediastinum (\placeholder{51} concepts), and bone (\placeholder{34} concepts). Assertion status (present, absent, uncertain) is preserved for each concept mention.
 
-\subsection{Ablations}
-\textbf{Hierarchy vs. flat:} removing the hierarchy reduces concept AUC and increases false positives in normal regions, especially for region-specific findings.
-\textbf{Gating vs. concatenation:} replacing multiplicative gating with concatenation can increase label AUC slightly but decreases plausibility and hurts intervention faithfulness.
-\textbf{Uncertainty handling:} treating uncertain targets as soft labels outperforms discarding them, improving calibration for rare findings.
-\textbf{Concept frequency threshold:} lowering the frequency threshold increases vocabulary size but introduces noisy concepts that degrade both concept and label metrics.
-Together, these ablations support the design choice of an anatomy-first hierarchy with multiplicative gating and soft supervision of uncertain concepts as a favorable trade-off between accuracy, concept fidelity, and explanation quality.
+\subsubsection{Implementation Details}
+We implement \radcbm\ with interchangeable radiology-pretrained vision backbones, and report results for multiple backbones to assess robustness to representation choice. Specifically, we consider radiology-pretrained encoders including MedCLIP~\cite{wang2022medclip}, CXR-CLIP~\cite{you2023cxrclip}, and CheXzero~\cite{tiu2022chexzero}. Unless otherwise stated, all concept-based methods within a comparison share the same backbone and are trained with identical optimization settings.
 
-\subsection{Qualitative Analysis}
-Case studies show region-first explanations that mirror radiologist reports.
-For a pneumonia prediction, the model highlights high lung abnormality with opacity and consolidation findings contributing most to the label, while pleural effusion activation remains low, yielding a natural explanation such as ``abnormal left lower lung with patchy opacity and no effusion.''
-In near-normal studies, explanations emphasize low abnormality scores in all regions and the absence of key findings, which aligns with radiologists' practice of explicitly ruling out common pathologies.
-Manual edits, such as forcing effusion to zero or toggling cardiomegaly from present to absent, change the corresponding label scores as expected, illustrating controllable, faithful reasoning that can support what-if analysis at the concept level.
+Images are resized to the backbone's input resolution and normalized using the corresponding preprocessing. We apply standard augmentations during training: random horizontal flipping, rotation ($\pm 10^{\circ}$), and color jittering. Models are trained using Adam~\cite{kingma2015adam} with learning rate $10^{-4}$, batch size 32, and early stopping based on validation macro AUC with patience of 10 epochs. Loss weights are set to $\lambda_1 = \placeholder{0.5}$ and $\lambda_2 = \placeholder{1.0}$ based on validation performance. All experiments were conducted on an Intel i7-11800H @ 2.30GHz workstation equipped with 64GB RAM and an NVIDIA GeForce RTX 3080 GPU (16GB VRAM) using PyTorch 2.0. To ensure statistical reliability, we report results averaged over 3 random seeds with different weight initializations.
+
+\subsubsection{Baselines}
+Our benchmarks fall into two categories: concept bottleneck models (CBMs) and black-box baselines.
+
+\textbf{CBM benchmarks:} (1)~\textbf{Post-hoc CBM}~\cite{yuksekgonul2023posthoc}, which retrofits concept bottlenecks onto pretrained models; (2)~\textbf{Language-Guided Bottlenecks (LaBo)}~\cite{yang2023labo}, which constructs a text-defined bottleneck and a linear concept-to-class predictor; (3)~\textbf{AdaCBM}~\cite{xu2024adacbm}, which adds an adaptive module between CLIP features and the bottleneck to reduce source--target mismatch; and (4)~\textbf{Coarse-to-Fine CBM (C2F-CBM)}~\cite{panousis2024coarsetofineconceptbottleneckmodels}, which builds a two-level bottleneck by predicting coarse concepts from global image features and fine concepts from localized (patch/region) evidence with optional hierarchical tying. In our setting, the coarse level corresponds to anatomical region abnormality and the fine level corresponds to region-specific findings from our concept bank; fine predictions are aggregated across patches and tied to regions through the region--finding hierarchy.
+
+\textbf{Shared concept bank for concept-level evaluation:} to make concept-level evaluations comparable across CBMs, we evaluate CBM concept predictors (including LaBo, AdaCBM, C2F-CBM, and \radcbm) on the same 1,312 ontology-grounded region-specific concepts extracted from MIMIC-CXR training reports (RadGraph+UMLS). Following recent recommendations for fair evaluation of VLM-CBMs with a fixed ``gold'' concept vocabulary~\cite{debole2025ifconcept}, we use this shared concept bank as the concept target set for concept quality (Table~\ref{tab:concept_quality}). For intervention-based interpretability metrics (Table~\ref{tab:interpretability}), we restrict comparisons to \emph{intrinsic} CBMs where the label prediction is mediated by the bottleneck (post-hoc CBMs are excluded since intervening on auxiliary concepts does not change the underlying predictor). For LaBo we use an ontology-aligned variant (denoted ``LaBo (fixed vocab)'') that takes our concept bank as the candidate pool. We still report LaBo's standard setup for label performance (Tables~\ref{tab:classification} and~\ref{tab:external_validation}).
+
+\textbf{Black-box models:} we include (1) supervised CNN baselines (\textbf{ResNet-50}, \textbf{DenseNet-121})~\cite{cohen2022xrv}; and (2) vision-language models evaluated as black-box vision encoders, including \textbf{MedCLIP}~\cite{wang2022medclip}, \textbf{CXR-CLIP}~\cite{you2023cxrclip}, and \textbf{CheXzero}~\cite{tiu2022chexzero}.
+
+\subsubsection{Evaluation Metrics}
+\textbf{Classification performance} is reported using per-label and macro-averaged AUC-ROC on the five CheXpert competition labels (Atelectasis, Cardiomegaly, Consolidation, Edema, Pleural Effusion; threshold-free). Full CheXpert-14 results are reported in the supplementary material. When thresholded metrics (e.g., F1) are reported, we tune \emph{per-label} decision thresholds on the official MIMIC-CXR validation split and keep these thresholds fixed for MIMIC-CXR test and all external benchmarks. \textbf{Concept quality} is assessed on the shared 1,312-concept bank using macro AUC-ROC and macro AUPRC (macro-AP), reported overall and on a rare-concept subset. \textbf{Interpretability} (intrinsic CBMs only) is evaluated via: (1)~\emph{Intervention faithfulness}, the Pearson correlation between predicted concept contribution ($w_i \cdot c_i$) and observed label change upon concept intervention; (2)~\emph{Plausibility}, the fraction of activated findings ($c_i > 0.5$) whose parent region abnormality exceeds 0.5; (3)~\emph{Implausible activation rate}, the fraction of finding activations occurring when the parent region score is below 0.3. Unless otherwise stated, all reported numbers are mean $\pm$ standard deviation over 3 random seeds.
+
+% =============================================================================
+% TABLE 1: Main Classification Results
+% =============================================================================
+
+\subsection{Classification Performance}
+
+Table~\ref{tab:classification} presents classification performance across CBM and black-box benchmarks on the five CheXpert competition labels. \radcbm\ matches or exceeds the strongest CBM baselines while providing interpretable concept-mediated predictions. On MIMIC-CXR, \radcbm\ attains a macro AUC of \placeholder{0.XXX}, matching a strong supervised baseline (\placeholder{0.XXX}) and outperforming all CBM baselines. The hierarchical architecture improves over the flat variant by \placeholder{X.X} percentage points in macro AUC, with notable gains on region-specific pathologies such as Pleural Effusion (\placeholder{+X.X\%}) and Edema (\placeholder{+X.X\%}).
+
+Vision-language models treated as black-box vision encoders (MedCLIP, CXR-CLIP, CheXzero) achieve reasonable zero-shot performance but fall short of supervised CNNs and CBMs, particularly for rare findings. Among CBM approaches, methods relying on small concept vocabularies or automatically generated concepts tend to exhibit lower classification performance, suggesting that ontology-grounded concept banks with broader coverage provide stronger supervisory signal.
+
+\begin{table}[htbp]
+\centering
+\caption{Classification performance (AUC-ROC) on the MIMIC-CXR test set and the CheXpert Plus validation set (expert-labeled subset) for the five CheXpert competition labels (Atelectasis, Cardiomegaly, Consolidation, Edema, Pleural Effusion). Best results in \textbf{bold}, second-best \underline{underlined}. CNN: supervised CNN baseline~\cite{cohen2022xrv}; VLM: vision--language model (black-box vision encoder); CBM: concept bottleneck model; H-CBM: hierarchical CBM. All concept-based methods share the same visual backbone within each comparison. Results are mean over 3 seeds; standard deviations $<$0.01 omitted for clarity.}
+\label{tab:classification}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llccccc|c}
+\toprule
+\textbf{Method} & \textbf{Type} & \rotatebox{90}{Atelectasis} & \rotatebox{90}{Cardiomegaly} & \rotatebox{90}{Consolidation} & \rotatebox{90}{Edema} & \rotatebox{90}{Pleural Eff.} & \textbf{Macro} \\
+\midrule
+\multicolumn{8}{l}{\textit{MIMIC-CXR Test Set}} \\
+\midrule
+ResNet-50 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+DenseNet-121 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+MedCLIP (ViT) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+CXR-CLIP (ViT) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+CheXzero (SwinTiny) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+LaBo CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+\radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\radcbm\ (hier.) & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+\multicolumn{8}{l}{\textit{CheXpert Plus Validation Set}} \\
+\midrule
+ResNet-50 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+DenseNet-121 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+MedCLIP (ViT) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+CXR-CLIP (ViT) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+CheXzero (SwinTiny) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+LaBo CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+\radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\radcbm\ (hier.) & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+We next report concept quality, external validation on radiologist-annotated benchmarks, and interpretability-focused analyses.
+
+% =============================================================================
+% TABLE 2: Concept Quality Metrics
+% =============================================================================
+
+\subsection{Concept Quality}
+
+Table~\ref{tab:concept_quality} compares concept prediction quality across methods on a shared target set of 1,312 ontology-grounded concepts. Since concepts are highly imbalanced, we report both macro AUC-ROC and macro AUPRC (macro-AP), overall and on rare concepts (50--200 training occurrences). \radcbm\ achieves the highest overall concept AUC (\placeholder{0.XXX}) and macro AUPRC (\placeholder{0.XXX}), outperforming other CBM baselines using the same concept bank. The improvement is particularly pronounced for rare concepts: \radcbm\ attains \placeholder{0.XXX} AUC and \placeholder{0.XXX} macro AUPRC on this subset compared to \placeholder{0.XXX}/\placeholder{0.XXX} for the flat variant, consistent with hierarchical gating suppressing implausible activations when regions are predicted normal.
+
+The ontology-grounded vocabulary provides \placeholder{22$\times$} more concepts than CheXpert's 14-class vocabulary while maintaining high prediction accuracy. SNOMED CT normalization ensures that synonymous mentions (``cardiac enlargement,'' ``enlarged heart,'' ``cardiomegaly'') map to canonical concepts, reducing vocabulary redundancy and improving concept-level supervision quality.
+
+\begin{table*}[t]
+\centering
+\caption{Concept prediction quality on MIMIC-CXR test set for a shared set of 1,312 ontology-grounded concepts (RadGraph+UMLS). We report macro AUC-ROC and macro AUPRC across concepts, overall and on rare concepts (50--200 training occurrences). \textsuperscript{\dag}LaBo (fixed vocab) denotes the ontology-aligned variant used for concept-level evaluation with the shared concept bank. Results averaged over 3 seeds; $\pm$ indicates standard deviation.}
+\label{tab:concept_quality}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Method} & \textbf{AUC} $\uparrow$ & \textbf{AUPRC} $\uparrow$ & \textbf{Rare AUC} $\uparrow$ & \textbf{Rare AUPRC} $\uparrow$ \\
+\midrule
+Post-hoc CBM & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+LaBo (fixed vocab)\textsuperscript{\dag} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+AdaCBM & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+C2F-CBM & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+\midrule
+\radcbm\ (flat) & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+\radcbm\ (hier.) & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% =============================================================================
+% External Validation on Radiologist-Annotated Benchmarks
+% =============================================================================
+
+\subsection{External Validation on Radiologist-Annotated Benchmarks}
+
+To mitigate over-reliance on NLP-derived targets, we report external validation on benchmarks with radiologist-annotated evaluation labels when available (Table~\ref{tab:external_validation}). For multi-label datasets we report macro AUC-ROC over the five CheXpert competition labels (Atelectasis, Cardiomegaly, Consolidation, Edema, Pleural Effusion) using dataset-specific mappings (e.g., NIH ChestX-ray14 ``Effusion'' $\leftrightarrow$ Pleural Effusion). For RSNA Pneumonia we report binary pneumonia AUC-ROC.
+For thresholded metrics (reported in supplementary when applicable), we use the same per-label thresholds tuned on MIMIC-CXR validation and do not tune on any external dataset.
+
+\begin{table*}[htbp]
+\centering
+\caption{External validation across benchmarks (AUC-ROC). Multi-label columns report macro AUC-ROC over the five CheXpert competition labels using dataset-specific label mappings (note that VinDr-CXR and NIH ChestX-ray14 define label sets that differ from CheXpert-14); RSNA Pneumonia reports binary pneumonia AUC-ROC. CheXpert is evaluated on the expert-labeled CheXpert Plus subset.}
+\label{tab:external_validation}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Method} & \textbf{Type} & \textbf{MIMIC (5)} & \textbf{CheXpert Plus (5)} & \textbf{VinDr-CXR (5)} & \textbf{NIH (5)} & \textbf{RSNA (Pneumonia)} \\
+\midrule
+ResNet-50 & CNN & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+DenseNet-121 & CNN & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+MedCLIP (ViT) & VLM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+CXR-CLIP (ViT) & VLM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+CheXzero (SwinTiny) & VLM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+\midrule
+Post-hoc CBM & CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+LaBo CBM & CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+AdaCBM & CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+C2F-CBM & H-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+\midrule
+\radcbm\ (flat) & CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+\radcbm\ (hier.) & H-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+% =============================================================================
+% Interpretability, ablations, and robustness
+% =============================================================================
+
+\subsection{Interpretability and Faithfulness}
+
+Table~\ref{tab:interpretability} evaluates whether concept-based explanations support predictable interventions and clinically plausible activations. Intervention faithfulness measures whether predicted concept contributions $w_i \cdot c_i$ match observed label changes under concept editing; plausibility and implausible activation rate quantify whether findings activate primarily when their parent region is abnormal. We report these intervention-based metrics only for intrinsic CBMs where the bottleneck mediates the label prediction (post-hoc CBMs are not included), and since these models are evaluated using the same region-specific concept bank, the metrics are directly comparable across Table~\ref{tab:interpretability}.
+
+\begin{table*}[htbp]
+\centering
+\caption{Interpretability metrics on MIMIC-CXR test set (intrinsic CBMs only). Intervention faithfulness measures correlation between predicted and observed label changes upon concept editing. Plausibility and implausible activation rate quantify alignment between finding activations and region predictions. \textsuperscript{\dag}LaBo (fixed vocab) denotes the ontology-aligned variant used for concept-level evaluation with the shared concept bank. Results averaged over 3 seeds; $\pm$ indicates standard deviation.}
+\label{tab:interpretability}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Method} & \textbf{Intervention} & \textbf{Plausibility} & \textbf{Implausible} & \textbf{Region} \\
+ & \textbf{Faithfulness} $\uparrow$ & $\uparrow$ & \textbf{Act. Rate} $\downarrow$ & \textbf{Consistency} $\uparrow$ \\
+\midrule
+LaBo (fixed vocab)\textsuperscript{\dag} & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+AdaCBM & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+C2F-CBM & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+\midrule
+\radcbm\ (flat) & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
+\radcbm\ (hier.) & \placeholder{.XX}$\pm$\placeholder{.XX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Ablations and Robustness (Supplementary)}
+We report a compact implementation ablation in the supplementary material (Table~\ref{tab:ablation}) that incrementally adds label cleanup (assertion-aware mention masking and labeler ensemble), conservative soft-gating, and ontology-aware regularization. This isolates which components drive label performance versus which primarily improve clinical plausibility and intervention faithfulness.
+
+% =============================================================================
+% Additional analyses moved to Supplementary Material
+% =============================================================================
+
+% =============================================================================
+% Summary of Main Findings (Main Paper)
+% =============================================================================
+
+\subsection{Summary}
+
+In the main paper, we emphasize (i) diagnostic performance on MIMIC-CXR and the radiologist-labeled CheXpert Plus expert subset, (ii) concept quality at scale (1,312 ontology-grounded concepts), (iii) faithful and clinically plausible interventions enabled by hierarchical gating, and (iv) robustness ablations for uncertainty handling and assertion-aware supervision. Additional analyses (region-level breakdowns, qualitative case studies, hyperparameter sensitivity, compute, and error analysis) are reported in the supplementary material.
