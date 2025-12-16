@@ -59,10 +59,11 @@
 \backcite {wang2022medclip}{{3}{\mbox {II-E}}{subsection.2.5}}
 \backcite {zhang2023biomedclip}{{3}{\mbox {II-E}}{subsection.2.5}}
 \backcite {yang2023language}{{3}{\mbox {II-E}}{subsection.2.5}}
-\backcite {jain2021radgraph}{{3}{\mbox {III-A}0a}{paragraph.3.1.0.1}}
-\backcite {liu2021sapbert}{{3}{\mbox {III-A}0b}{paragraph.3.1.0.2}}
-\backcite {bodenreider2004umls,donnelly2006snomed}{{3}{\mbox {III-A}0b}{paragraph.3.1.0.2}}
-\backcite {wang2022medclip}{{4}{\mbox {III-B}0c}{paragraph.3.2.0.3}}
+\backcite {jain2021radgraph}{{3}{\mbox {III-A}}{subsection.3.1}}
+\backcite {bodenreider2004umls}{{4}{\mbox {III-A}}{subsection.3.1}}
+\backcite {liu2021sapbert}{{4}{\mbox {III-A}}{subsection.3.1}}
+\backcite {donnelly2006snomed}{{4}{\mbox {III-A}}{subsection.3.1}}
+\backcite {wang2022medclip}{{4}{\mbox {III-B}1}{subsubsection.3.2.1}}
 \backcite {johnson2019mimiccxr}{{5}{\mbox {IV-A}1}{subsubsection.4.1.1}}
 \backcite {irvin2019chexpert}{{5}{\mbox {IV-A}1}{subsubsection.4.1.1}}
 \backcite {nguyen2021vindrcxr}{{5}{\mbox {IV-A}1}{subsubsection.4.1.1}}
@@ -71,18 +72,18 @@
 \backcite {smit2020chexbert}{{5}{\mbox {IV-A}1}{subsubsection.4.1.1}}
 \backcite {peng2018negbio}{{5}{\mbox {IV-A}1}{subsubsection.4.1.1}}
 \backcite {jain2021radgraph}{{5}{\mbox {IV-A}2}{subsubsection.4.1.2}}
-\backcite {wang2022medclip}{{6}{\mbox {IV-A}3}{subsubsection.4.1.3}}
-\backcite {you2023cxrclip}{{6}{\mbox {IV-A}3}{subsubsection.4.1.3}}
-\backcite {tiu2022chexzero}{{6}{\mbox {IV-A}3}{subsubsection.4.1.3}}
-\backcite {kingma2015adam}{{6}{\mbox {IV-A}3}{subsubsection.4.1.3}}
-\backcite {yuksekgonul2023posthoc}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
-\backcite {yang2023labo}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
-\backcite {xu2024adacbm}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
-\backcite {panousis2024coarsetofineconceptbottleneckmodels}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
+\backcite {wang2022medclip}{{5}{\mbox {IV-A}3}{subsubsection.4.1.3}}
+\backcite {you2023cxrclip}{{5}{\mbox {IV-A}3}{subsubsection.4.1.3}}
+\backcite {tiu2022chexzero}{{5}{\mbox {IV-A}3}{subsubsection.4.1.3}}
+\backcite {kingma2015adam}{{5}{\mbox {IV-A}3}{subsubsection.4.1.3}}
+\backcite {yuksekgonul2023posthoc}{{5}{\mbox {IV-A}4}{subsubsection.4.1.4}}
+\backcite {yang2023labo}{{5}{\mbox {IV-A}4}{subsubsection.4.1.4}}
+\backcite {xu2024adacbm}{{5}{\mbox {IV-A}4}{subsubsection.4.1.4}}
+\backcite {panousis2024coarsetofineconceptbottleneckmodels}{{5}{\mbox {IV-A}4}{subsubsection.4.1.4}}
 \backcite {debole2025ifconcept}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
 \backcite {cohen2022xrv}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
 \backcite {wang2022medclip}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
 \backcite {you2023cxrclip}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
 \backcite {tiu2022chexzero}{{6}{\mbox {IV-A}4}{subsubsection.4.1.4}}
-\backcite {cohen2022xrv}{{7}{I}{table.1}}
-\backcite {cohen2022xrv}{{11}{XII}{table.12}}
+\backcite {cohen2022xrv}{{6}{I}{table.1}}
+\backcite {cohen2022xrv}{{12}{XII}{table.12}}
