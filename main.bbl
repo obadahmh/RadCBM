@@ -130,11 +130,21 @@ A.~Yan, Y.~Wang, Y.~Zhong, Z.~He, P.~Karypis, Z.~Wang, C.~Dong, A.~Gentili,
   classifiers via concept bottleneck models,'' \emph{arXiv preprint
   arXiv:2310.03182}, 2023.
 
+\bibitem{kim2023visualconceptfiltering}
+I.~Kim, J.~Kim, J.~Choi, and H.~J. Kim, ``Concept bottleneck with visual
+  concept filtering for explainable medical image classification,'' \emph{arXiv
+  preprint arXiv:2308.11920}, 2023.
+
 \bibitem{pang2024integrating}
 W.~Pang, X.~Ke, S.~Tsutsui, and B.~Wen, ``Integrating clinical knowledge into
   concept bottleneck models,'' in \emph{International Conference on Medical
   Image Computing and Computer-Assisted Intervention}.\hskip 1em plus 0.5em
   minus 0.4em\relax Springer, 2024, pp. 243--253.
+
+\bibitem{yang2024textbook}
+Y.~Yang, M.~Gandhi, Y.~Wang, Y.~Wu, M.~S. Yao, C.~Callison-Burch, J.~C. Gee,
+  and M.~Yatskar, ``A textbook remedy for domain shifts: Knowledge priors for
+  medical image analysis,'' \emph{arXiv preprint arXiv:2405.14839}, 2024.
 
 \bibitem{jain2021radgraph}
 S.~Jain, A.~Agrawal, A.~Saporta, S.~Q. Truong, D.~N. Duong, T.~Bui, P.~Chambon,
@@ -235,6 +245,12 @@ Y.~Yang, A.~Panagopoulou, S.~Sreekumar, I.~Chalkidis, M.~Yatskar, and
   the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, pp.
   19\,187--19\,197, 2023.
 
+\bibitem{panousis2024coarsetofineconceptbottleneckmodels}
+\BIBentryALTinterwordspacing
+K.~P. Panousis, D.~Ienco, and D.~Marcos, ``Coarse-to-fine concept bottleneck
+  models,'' 2024. [Online]. Available: \url{https://arxiv.org/abs/2310.02116}
+\BIBentrySTDinterwordspacing
+
 \bibitem{desantis2024visualtcav}
 D.~De~Santis, V.~Sushko, K.~Patel, B.~Narayanaswamy, A.~Smola, P.~Bailis, and
   T.~Kraska, ``Visual {TCAV}: Accurate concept explanations for vision
@@ -278,19 +294,20 @@ S.~Zhang, Y.~Xu, N.~Usuyama, J.~Bagher, R.~Tinn, S.~Preston, R.~Rao, M.~Wei,
   foundation model pretrained from fifteen million scientific image-text
   pairs,'' \emph{arXiv preprint arXiv:2303.00915}, 2023.
 
-\bibitem{huang2017densenet}
-G.~Huang, Z.~Liu, L.~Van Der~Maaten, and K.~Q. Weinberger, ``Densely connected
-  convolutional networks,'' in \emph{Proceedings of the IEEE Conference on
-  Computer Vision and Pattern Recognition}, 2017, pp. 2261--2269.
+\bibitem{nguyen2021vindrcxr}
+\BIBentryALTinterwordspacing
+H.~Q. Nguyen, H.~H. Pham, T.~L. Le, M.~Dao, K.~Lam \emph{et~al.}, ``Vindr-cxr:
+  An open dataset of chest x-rays with radiologist annotations,'' PhysioNet,
+  2021, version 1.0.0. [Online]. Available:
+  \url{https://physionet.org/content/vindr-cxr/1.0.0/}
+\BIBentrySTDinterwordspacing
 
-\bibitem{kingma2015adam}
-D.~P. Kingma and J.~Ba, ``Adam: A method for stochastic optimization,''
-  \emph{arXiv preprint arXiv:1412.6980}, 2015.
-
-\bibitem{he2016resnet}
-K.~He, X.~Zhang, S.~Ren, and J.~Sun, ``Deep residual learning for image
-  recognition,'' in \emph{Proceedings of the IEEE Conference on Computer Vision
-  and Pattern Recognition}, 2016, pp. 770--778.
+\bibitem{rsna2018pneumonia}
+\BIBentryALTinterwordspacing
+{Radiological Society of North America}, ``Rsna pneumonia detection
+  challenge,'' Kaggle, 2018. [Online]. Available:
+  \url{https://www.kaggle.com/c/rsna-pneumonia-detection-challenge}
+\BIBentrySTDinterwordspacing
 
 \bibitem{you2023cxrclip}
 K.~You, J.~Gu, J.~Ham, B.~Park, J.~Kim, E.~K. Hong, W.~Baek, and B.~Roh,
@@ -298,15 +315,23 @@ K.~You, J.~Gu, J.~Ham, B.~Park, J.~Kim, E.~K. Hong, W.~Baek, and B.~Roh,
   \emph{Medical Image Computing and Computer Assisted Intervention -- MICCAI
   2023}.\hskip 1em plus 0.5em minus 0.4em\relax Springer, 2023, pp. 101--111.
 
-\bibitem{xcb2023}
-D.~Alukaev, S.~Kiselev, I.~Pershin, B.~Ibragimov, V.~Ivanov, A.~Kornaev, and
-  I.~Titov, ``Cross-modal conceptualization in bottleneck models,'' \emph{arXiv
-  preprint arXiv:2310.14805}, 2023.
+\bibitem{tiu2022chexzero}
+E.~Tiu, E.~Talius, P.~Patel, C.~P. Langlotz, A.~Y. Ng, and P.~Rajpurkar,
+  ``Expert-level detection of pathologies from unannotated chest x-ray images
+  via self-supervised learning,'' \emph{Nature Biomedical Engineering}, vol.~6,
+  no.~12, pp. 1399--1406, 2022.
 
-\bibitem{cocox2023}
-V.~Sadashivaiah, P.~Yan, and J.~A. Hendler, ``Explaining chest x-ray pathology
-  models using textual concepts,'' \emph{arXiv preprint arXiv:2407.00557},
-  2024.
+\bibitem{kingma2015adam}
+D.~P. Kingma and J.~Ba, ``Adam: A method for stochastic optimization,''
+  \emph{arXiv preprint arXiv:1412.6980}, 2015.
+
+\bibitem{yang2023labo}
+\BIBentryALTinterwordspacing
+Y.~Yang, A.~Panagopoulou, S.~Zhou, D.~Jin, C.~Callison-Burch, and M.~Yatskar,
+  ``Language in a bottle: Language model guided concept bottlenecks for
+  interpretable image classification,'' \emph{arXiv preprint arXiv:2211.11158},
+  2023. [Online]. Available: \url{https://arxiv.org/abs/2211.11158}
+\BIBentrySTDinterwordspacing
 
 \bibitem{xu2024adacbm}
 T.~F. Chowdhury, V.~M.~H. Phan, K.~Liao, M.-S. To, Y.~Xie, A.~van~den Hengel,
@@ -314,5 +339,22 @@ T.~F. Chowdhury, V.~M.~H. Phan, K.~Liao, M.-S. To, Y.~Xie, A.~van~den Hengel,
   for explainable and accurate diagnosis,'' in \emph{Medical Image Computing
   and Computer Assisted Intervention -- MICCAI 2024}.\hskip 1em plus 0.5em
   minus 0.4em\relax Springer, 2024, pp. 35--45.
+
+\bibitem{debole2025ifconcept}
+\BIBentryALTinterwordspacing
+N.~Debole, P.~Barbiero, F.~Giannini, A.~Passerini, S.~Teso, and E.~Marconato,
+  ``If concept bottlenecks are the question, are foundation models the
+  answer?'' \emph{arXiv preprint arXiv:2504.19774}, 2025. [Online]. Available:
+  \url{https://arxiv.org/abs/2504.19774}
+\BIBentrySTDinterwordspacing
+
+\bibitem{cohen2022xrv}
+\BIBentryALTinterwordspacing
+J.~P. Cohen, J.~D. Viviano, P.~Bertin, P.~Morrison, P.~Torabian, M.~Guarrera,
+  M.~P. Lungren, A.~Chaudhari, R.~Brooks, M.~Hashir, and H.~Bertrand,
+  ``{TorchXRayVision: A library of chest X-ray datasets and models},'' in
+  \emph{Medical Imaging with Deep Learning}, 2022. [Online]. Available:
+  \url{https://github.com/mlmed/torchxrayvision}
+\BIBentrySTDinterwordspacing
 
 \end{thebibliography}

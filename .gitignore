@@ -1,2 +1,5 @@
 *.md
 
+# local scratch / downloads
+tmp/
+tmp_arxiv_pdfs/

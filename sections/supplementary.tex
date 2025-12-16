@@ -1,0 +1,294 @@
+\providecommand{\placeholder}[1]{\textbf{#1}}
+\providecommand{\radcbm}{RadCBM}
+\providecommand{\maybeincludegraphics}[2]{%
+  \IfFileExists{#1}{%
+    \includegraphics[#2]{#1}%
+  }{%
+    \fbox{\parbox[c][0.22\textheight][c]{0.95\linewidth}{\centering Missing figure: \texttt{\detokenize{#1}}}}%
+  }%
+}
+
+\subsection{Evaluation Label Provenance}
+
+Table~\ref{tab:label_provenance} summarizes which benchmarks provide radiologist-annotated evaluation labels versus report/NLP-derived labels for standard disease targets.
+
+\begin{table}[H]
+\centering
+\caption{Evaluation label source (at test time). We report whether evaluation labels are radiologist-annotated or report-derived, along with their granularity and the label set used in our evaluation protocol.}
+\label{tab:label_provenance}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+\textbf{Benchmark} & \textbf{Eval Label Source} & \textbf{Label Level} & \textbf{Eval Label Set} \\
+\midrule
+MIMIC-CXR (test reports) & radiologist-annotated & report-level & CheXpert-14 \\
+CheXpert Plus (expert subset) & radiologist-annotated & study-level & CheXpert-14 \\
+VinDr-CXR & radiologist-annotated & image-level & CheXpert-5 \\
+RSNA Pneumonia & radiologist-annotated & bbox+image-level & Pneumonia \\
+NIH ChestX-ray14 & report-derived & image-level & NIH14 (5 overlap) \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+For MIMIC-CXR, the test subset of the radiology reports were annotated by a single radiologist into one of fourteen categories (CheXpert-14 style); these are radiologist-annotated \emph{report} labels rather than independent image readouts. NIH ChestX-ray14 evaluation labels are report/NLP-derived; we therefore treat them as complementary large-scale evidence and emphasize radiologist-labeled evaluation subsets (CheXpert Plus expert subset, VinDr-CXR, RSNA Pneumonia) as primary evidence of clinical correctness.
+
+\subsection{Ablation Study}
+
+\begin{table}[H]
+\centering
+\caption{Compact implementation ablation on MIMIC-CXR test set. We incrementally add components while keeping the evaluation protocol fixed (thresholds tuned on MIMIC validation and then frozen). Results averaged over 3 seeds.}
+\label{tab:ablation}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Configuration} & \textbf{Macro AUC} & \textbf{Concept AUC} & \textbf{Plausibility} & \textbf{Interv. Faith.} \\
+\midrule
+\radcbm\ (base) & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XX} \\
+$+$ Label cleanup (mask+assertion + labeler ensemble) & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XX} \\
+$+$ Conservative soft-gating & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XX} \\
+$+$ Ontology-aware regularization & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XX} \\
+\midrule
+\radcbm\ (full) & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XX} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Impact of Assertion Modeling}
+
+Assertion-aware mention masking is included in the label-cleanup row of Table~\ref{tab:ablation}. This change is most impactful for frequently negated findings (e.g., ``no effusion''), since treating negated or unmentioned concepts as negative can corrupt supervision and inflate spurious activations.
+
+\subsection{Region-Level Performance}
+
+Table~\ref{tab:region_performance} reports performance decomposed by anatomical region on MIMIC-CXR. Region abnormality AUC is computed from pooled concept locations (not standalone region labels) using surrogate region targets obtained by max-pooling present concepts per region from RadGraph outputs.
+
+\begin{table}[htbp]
+\centering
+\caption{Region-level performance on MIMIC-CXR test set. Region AUC (region abnormality AUC; computed from pooled concept locations, not standalone region labels) measures binary abnormality detection; Finding AUC measures concept prediction within each region. Results averaged over 3 seeds.}
+\label{tab:region_performance}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Region} & \textbf{\#Concepts} & \textbf{Region AUC} & \textbf{Finding AUC} & \textbf{Prevalence (\%)} \\
+\midrule
+Lung & \placeholder{142} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
+Heart & \placeholder{38} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
+Pleura & \placeholder{47} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
+Mediastinum & \placeholder{51} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
+Bone & \placeholder{34} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
+\midrule
+\textbf{Overall} & 1,312 & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\subsection{Learned Concept--Label Relationships}
+
+\begin{figure}[htbp]
+\centering
+\maybeincludegraphics{figures/concept_label_weights.pdf}{width=\linewidth}
+\caption{Learned concept-to-label weights from the linear head. Each row shows the top-5 positive and top-5 negative concept contributions for one CheXpert label.}
+\label{fig:concept_weights}
+\end{figure}
+
+\subsection{Concept Bank Analysis}
+
+\begin{figure}[htbp]
+\centering
+\maybeincludegraphics{figures/concept_bank_stats.pdf}{width=\linewidth}
+\caption{Concept bank statistics. (a)~Concept frequency distribution on log scale; vertical lines indicate CheXpert-14 concept positions. (b)~Hierarchical organization by anatomical region; segment size proportional to concept count. (c)~Vocabulary coverage comparison.}
+\label{fig:concept_bank}
+\end{figure}
+
+\subsection{Effect of Hierarchical Gating}
+
+\begin{figure}[htbp]
+\centering
+\maybeincludegraphics{figures/gating_effect.pdf}{width=\linewidth}
+\caption{Effect of hierarchical gating on concept activations. (a)~Region abnormality score versus mean finding activation for flat vs hierarchical CBM. (b)~Distribution of finding activations stratified by region status.}
+\label{fig:gating_effect}
+\end{figure}
+
+\subsection{Intervention Faithfulness Curves}
+
+\begin{figure}[htbp]
+\centering
+\maybeincludegraphics{figures/intervention_faithfulness.pdf}{width=\linewidth}
+\caption{Intervention faithfulness analysis. (a)~Label probability as a function of concept activation. (b)~Predicted concept contribution versus observed label change upon intervention.}
+\label{fig:intervention}
+\end{figure}
+
+\subsection{Hyperparameter Sensitivity}
+
+\begin{figure}[htbp]
+\centering
+\maybeincludegraphics{figures/hyperparameter_sensitivity.pdf}{width=0.9\linewidth}
+\caption{Hyperparameter sensitivity analysis. Heatmap shows validation macro AUC across loss weight combinations $(\lambda_1, \lambda_2)$.}
+\label{fig:hyperparameter}
+\end{figure}
+
+\subsection{Concept AUC by Frequency}
+
+\begin{figure}[htbp]
+\centering
+\maybeincludegraphics{figures/concept_auc_by_frequency.pdf}{width=0.9\linewidth}
+\caption{Concept AUC stratified by training set frequency.}
+\label{fig:concept_frequency}
+\end{figure}
+
+\subsection{Qualitative Case Studies}
+
+\begin{figure*}[htbp]
+\centering
+\maybeincludegraphics{figures/qualitative_cases.pdf}{width=\textwidth}
+\caption{Qualitative case studies illustrating region-aware explanations.}
+\label{fig:qualitative}
+\end{figure*}
+
+\subsection{Cross-Dataset Generalization}
+
+\begin{table}[htbp]
+\centering
+\caption{Cross-dataset generalization. Models trained on one dataset and evaluated on the other. $\Delta$ indicates performance change relative to in-domain evaluation.}
+\label{tab:generalization}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llcc}
+\toprule
+\textbf{Method} & \textbf{Train $\rightarrow$ Test} & \textbf{Macro AUC} & \textbf{$\Delta$ from In-Domain} \\
+\midrule
+DenseNet-121 & MIMIC $\rightarrow$ CheXpert & \placeholder{.XXX} & \placeholder{$-$X.X\%} \\
+\radcbm\ (hier.) & MIMIC $\rightarrow$ CheXpert & \placeholder{.XXX} & \placeholder{$-$X.X\%} \\
+\midrule
+DenseNet-121 & CheXpert $\rightarrow$ MIMIC & \placeholder{.XXX} & \placeholder{$-$X.X\%} \\
+\radcbm\ (hier.) & CheXpert $\rightarrow$ MIMIC & \placeholder{.XXX} & \placeholder{$-$X.X\%} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\subsection{Computational Efficiency}
+
+\begin{table}[htbp]
+\centering
+\caption{Computational requirements on MIMIC-CXR. Inference measured on NVIDIA GeForce RTX 3080 GPU with batch size 1.}
+\label{tab:computational}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Method} & \textbf{Params (M)} & \textbf{Inference (ms)} & \textbf{Training (GPU-hrs)} \\
+\midrule
+DenseNet-121 & \placeholder{7.0} & \placeholder{XX.X} & \placeholder{XX} \\
+AdaCBM & \placeholder{X.X} & \placeholder{XX.X} & \placeholder{XX} \\
+\radcbm\ (flat) & \placeholder{X.X} & \placeholder{XX.X} & \placeholder{XX} \\
+\radcbm\ (hier.) & \placeholder{X.X} & \placeholder{XX.X} & \placeholder{XX} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Error Analysis}
+
+\begin{figure}[htbp]
+\centering
+\maybeincludegraphics{figures/error_analysis.pdf}{width=\linewidth}
+\caption{Error analysis. (a)~Region-level confusion matrix showing prediction errors. (b)~False-negative cascade: missed findings due to incorrect region normality prediction.}
+\label{fig:error_analysis}
+\end{figure}
+
+\subsection{Calibration}
+
+We report calibration on radiologist-annotated evaluation splits (e.g., CheXpert Plus expert subset, VinDr-CXR, and/or RSNA Pneumonia) using expected calibration error (ECE), Brier score, and reliability diagrams.
+
+\begin{table}[htbp]
+\centering
+\caption{Calibration metrics. ECE and Brier score computed on CheXpert Plus expert subset; lower is better.}
+\label{tab:calibration}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & \textbf{ECE} $\downarrow$ & \textbf{Brier} $\downarrow$ \\
+\midrule
+DenseNet-121 & \placeholder{.XXX} & \placeholder{.XXX} \\
+MedCLIP & \placeholder{.XXX} & \placeholder{.XXX} \\
+\radcbm\ (hier.) & \placeholder{.XXX} & \placeholder{.XXX} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\maybeincludegraphics{figures/reliability_diagram.pdf}{width=\linewidth}
+\caption{Reliability diagram on CheXpert Plus expert subset.}
+\label{fig:reliability}
+\end{figure}
+
+\subsection{Rare-Label Performance (PR-AUC)}
+
+To complement ROC-AUC on imbalanced labels, we report PR-AUC (average precision) per label, emphasizing rare findings.
+
+\begin{table}[htbp]
+\centering
+\caption{Per-label PR-AUC on CheXpert Plus expert subset.}
+\label{tab:prauc}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Method} & \rotatebox{90}{Fracture} & \rotatebox{90}{Pneumothorax} & \rotatebox{90}{Pneumonia} & \rotatebox{90}{Lung Lesion} & \rotatebox{90}{Pleural Other} & \textbf{Macro} \\
+\midrule
+DenseNet-121 & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+MedCLIP & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\radcbm\ (hier.) & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{Protocol Notes: Uncertain Labels and Labeler Ensemble}
+
+Unless otherwise stated, we map labeler outputs to \{positive, negative, uncertain\}. When using an ensemble of report labelers (CheXpert, CheXbert, NegBio), disagreements are marked uncertain to reduce noise. We tune decision thresholds on the MIMIC-CXR validation split and report mean performance over 3 seeds.
+
+\subsection{Full CheXpert-14 Classification Results}
+
+Table~\ref{tab:classification_chexpert14} reports full per-label AUC-ROC results on all 14 CheXpert observations for MIMIC-CXR and CheXpert Plus. These results complement the main-text evaluation, which focuses on the five CheXpert competition labels commonly used by MedCLIP and CheXzero.
+
+\begin{table*}[htbp]
+\centering
+\caption{Full CheXpert-14 classification performance (AUC-ROC) on the MIMIC-CXR test set and the CheXpert Plus validation set. Best results in \textbf{bold}, second-best \underline{underlined}. CNN: supervised CNN baseline~\cite{cohen2022xrv}; VLM: vision--language model (black-box vision encoder); CBM: concept bottleneck model; H-CBM: hierarchical CBM. All concept-based methods share the same visual backbone within each comparison. Results averaged over 3 seeds; standard deviations $<$0.01 omitted for clarity.}
+\label{tab:classification_chexpert14}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccccccccccccc|c}
+\toprule
+\textbf{Method} & \textbf{Type} & \rotatebox{90}{Atelectasis} & \rotatebox{90}{Cardiomegaly} & \rotatebox{90}{Consolidation} & \rotatebox{90}{Edema} & \rotatebox{90}{Enl. Cardiomed.} & \rotatebox{90}{Fracture} & \rotatebox{90}{Lung Lesion} & \rotatebox{90}{Lung Opacity} & \rotatebox{90}{No Finding} & \rotatebox{90}{Pleural Eff.} & \rotatebox{90}{Pleural Other} & \rotatebox{90}{Pneumonia} & \rotatebox{90}{Pneumothorax} & \rotatebox{90}{Support Dev.} & \textbf{Macro} \\
+\midrule
+\multicolumn{17}{l}{\textit{MIMIC-CXR Test Set}} \\
+\midrule
+ResNet-50 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+DenseNet-121 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+MedCLIP (ViT) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+CXR-CLIP (ViT) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+CheXzero (SwinTiny) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+LaBo CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+\radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\radcbm\ (hier.) & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+\multicolumn{17}{l}{\textit{CheXpert Plus Validation Set}} \\
+\midrule
+ResNet-50 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+DenseNet-121 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+MedCLIP (ViT) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+CXR-CLIP (ViT) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+CheXzero (SwinTiny) & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+LaBo CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\midrule
+\radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\radcbm\ (hier.) & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}

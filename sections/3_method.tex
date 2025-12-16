@@ -19,19 +19,23 @@ Entities are normalized to canonical SNOMED CT concepts in the UMLS, and only cl
 We discard modifiers unrelated to visual evidence (for example, modality, procedure, and report-structure tokens) and drop entities that cannot be mapped confidently to chest anatomy.
 Frequent concepts (occurring at least 50 times in training reports) form the vocabulary; highly correlated terms and obvious synonyms are merged to avoid redundancy while preserving distinct clinical meanings.
 
-For a given report, we construct a soft concept target vector $t \in \{0, 0.5, 1\}^N$:
+For a given report, we construct (1)~a soft concept target vector $t \in \{0, 0.5, 1\}^N$ and (2)~a supervision mask $m \in \{0,1\}^N$ that distinguishes explicit negation from missing mentions:
 \[
-t_i =
+(t_i, m_i) =
 \begin{cases}
-1, & \text{if concept $i$ is definitely present},\\
-0.5, & \text{if concept $i$ is uncertain},\\
-0, & \text{if concept $i$ is absent or unmentioned}.
+(1, 1), & \text{if concept $i$ is definitely present},\\
+(0.5, 1), & \text{if concept $i$ is uncertain},\\
+(0, 1), & \text{if concept $i$ is explicitly absent (negated)},\\
+(0, 0), & \text{if concept $i$ is unmentioned in the report}.
 \end{cases}
 \]
-Here, ``definitely present'' corresponds to positive, non-negated mentions in the report, while ``uncertain'' captures hedged or equivocal language (for example, ``may represent'' or ``cannot exclude''), and all other cases are treated as negative.
+Here, ``definitely present'' corresponds to positive, non-negated mentions in the report, while ``uncertain'' captures hedged or equivocal language (for example, ``may represent'' or ``cannot exclude'').
+Crucially, we do not treat unmentioned concepts as negatives: $m_i = 0$ excludes them from the finding loss, whereas explicitly negated mentions provide reliable negative supervision ($t_i = 0, m_i = 1$).
 Region-level targets $A_r$ are set to one if any finding linked to region $r$ is present or uncertain.
 Region supervision is therefore derived automatically: for each study, we mark a region as abnormal if any present or uncertain concept is linked to that region in the RadGraph/UMLS extraction.
 We do not curate separate region abnormality labels.
+
+For downstream classification (for example, CheXpert-14 and the 5 CheXpert competition labels), label supervision is likewise derived from reports rather than manual image annotation and should be treated as pseudo-labels. We use the CheXpert labeler to produce per-study labels and optionally ensemble multiple report labelers (CheXpert, CheXbert, and NegBio), treating disagreements as uncertain and handling them as either soft targets or masked labels during training.
 
 \subsection{Hierarchical Concept Vocabulary}
 Concepts are organized into two levels that mirror radiologist reasoning.
@@ -42,7 +46,7 @@ Grouping findings under regions allows the model to express explanations as ``re
 
 \subsection{Model Architecture}
 Let $x$ denote an image and $h = \phi(x)$ the backbone features.
-We instantiate $\phi$ as a DenseNet-121 initialized from ImageNet and truncated before the final classification layer, followed by global average pooling so that $h$ summarizes the image in a fixed-length vector.
+We instantiate $\phi$ as a radiology-pretrained vision encoder (for example, a CLIP-style ViT trained on chest X-ray image--report pairs), and use its pooled image representation as $h$ so that it summarizes the image in a fixed-length vector.
 Region abnormality scores are predicted as
 \begin{equation}
 a = \sigma(W_a h + b_a), \quad a \in [0,1]^K,
@@ -71,11 +75,11 @@ Training optimizes a weighted sum of label, region, and finding losses:
 \end{equation}
 Label prediction uses cross-entropy on $\hat{y}$.
 Region supervision uses binary cross-entropy between $a_r$ and $A_r$.
-Finding supervision uses binary cross-entropy between $f_r$ and $t_i$ for concepts in region $r$; uncertain targets ($t_i = 0.5$) are down-weighted.
+Finding supervision uses masked binary cross-entropy between $f_r$ and $t_i$ for concepts in region $r$, applying loss only when $m_i=1$ so unmentioned concepts are not treated as negatives; uncertain targets ($t_i = 0.5$) are down-weighted.
 Positive class weights address the natural class imbalance where most findings are absent.
 Losses are applied to $f_r$ (not $c_r$) so gradients flow even when gating is low.
 
-Backbone weights are fine-tuned from ImageNet-pretrained DenseNet-121.
+Backbone weights are fine-tuned from the chosen radiology-pretrained checkpoint.
 Region and finding heads are randomly initialized.
 Temperatures or thresholds per concept can be calibrated on validation data when needed.
 We train all models with the same optimization hyperparameters (Adam optimizer, fixed learning rate, and mini-batch training) so that differences in performance can be attributed to the choice of concept vocabulary and architecture rather than to training instability.
