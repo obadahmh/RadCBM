@@ -1,114 +1,110 @@
 % =============================================================================
-% RadCBM Methods Section
+% RadCBM Methods Section (v8 - final)
 % =============================================================================
 
-\radcbm\ converts free-text radiology reports into weak, ontology-grounded concept supervision and trains a concept bottleneck classifier in two stages. Stage~1 learns an image$\to$concept predictor that outputs concept probabilities $\hat{c}\in[0,1]^K$ and, when using coarse anatomical regions $\mathcal{R}$, region gates $\hat{z}\in[0,1]^{|\mathcal{R}|}$.
-Stage~2 maps predicted concepts to CheXpert-style labels with the concept predictor frozen, keeping label predictions attributable to explicit concept evidence.
+\radcbm\ predicts diagnoses through a two-stage concept bottleneck with anatomical gating (Fig.~\ref{fig:architecture}). Stage~1 trains an image encoder to predict both fine-grained concepts and coarse region abnormality scores from report-derived supervision. Stage~2 trains a linear diagnosis head on region-gated concepts, with the concept predictor frozen. We first describe concept bank construction, then detail the model architecture and training procedure.
 
-\subsection{Concept Bank Construction from Reports}
-Let $\mathcal{D}=\{(x_i,r_i,y_i)\}_{i=1}^N$ denote a dataset of chest radiographs $x_i$ and associated free-text reports $r_i$ (when available). Each study has multi-label targets $y_i\in\{0,1,-1\}^L$ for $L$ clinical labels (CheXpert-style), where $-1$ denotes uncertainty or missingness.
-From reports we construct an ontology-grounded concept bank $\mathcal{C}=\{c_1,\dots,c_K\}$ and a study-by-concept assertion matrix that provides mention-masked supervision for concept prediction.
+% -----------------------------------------------------------------------------
+\subsection{Concept Bank Construction}
+\label{sec:concept-bank}
+% -----------------------------------------------------------------------------
 
-\paragraph{(1) Entity extraction and assertion}
-RadGraph-XL~\cite{jain2021radgraph} is applied to report findings and impression sections to extract entity mentions and assertion status (\emph{present}, \emph{absent}, \emph{uncertain}). Modifier spans linked by RadGraph relations are retained, as they often encode laterality or coarse location.
-These modifiers are normalized into a free-text location string that is carried forward as weak spatial context.
+We convert free-text radiology reports into structured concept supervision through entity extraction, ontology linking, and vocabulary construction.
 
-\paragraph{(2) Ontology linking}
-Each extracted mention is linked to a UMLS Concept Unique Identifier (CUI) using SapBERT~\cite{liu2021sapbert} embeddings and nearest-neighbor retrieval over a UMLS synonym index. To reduce off-domain matches, we restrict candidate synonyms to a small UMLS semantic-type allowlist and constrain sources to SNOMED CT terms (UMLS source \texttt{SNOMEDCT\_US})~\cite{bodenreider2004umls,donnelly2006snomed}:
-\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\topsep}{0pt}
-    \item \textbf{Observation}: T047 (Disease or Syndrome), T046 (Pathologic Function), T033 (Finding), T019 (Congenital Abnormality), T037 (Injury or Poisoning).
-    \item \textbf{Anatomy/location}: T017 (Anatomical Structure), T023 (Body Part, Organ, or Organ Component), T029 (Body Location or Region), T030 (Body Space or Junction), T082 (Spatial Concept).
-\end{itemize}
-We embed (i) the mention surface form and (ii) the mention concatenated with its modifier tokens, then keep the highest-scoring candidate above a similarity threshold (default 0.8); low-confidence links are discarded.
+\textbf{Entity extraction.}
+RadGraph-XL~\cite{jain2021radgraph} parses report findings and impression sections into entity mentions, each labeled with an assertion status: \emph{present}, \emph{absent}, or \emph{uncertain}. Modifier spans linked by RadGraph relations are retained, as they often encode laterality or coarse location (e.g., ``left lower lobe,'' ``bilateral'').
 
-\paragraph{(3) Study-level aggregation and inventory}
-For each study, linked mentions are aggregated into concept records containing the canonical concept name, linked CUI, assertion status, and derived location string. If multiple mentions map to the same concept, we keep the highest-precedence assertion (present $>$ uncertain $>$ absent) to avoid contradictory supervision.
-Aggregating across studies yields an inventory with per-concept frequencies, supported assertions, and observed locations.
+\textbf{Ontology linking.}
+Extracted mentions vary in surface form: ``opacity,'' ``opacification,'' and ``opacities'' may refer to the same finding. We standardize terminology by linking each mention to a UMLS Concept Unique Identifier (CUI). Specifically, we embed mentions using SapBERT~\cite{liu2021sapbert} and retrieve the nearest neighbor from an index of SNOMED-CT synonyms~\cite{donnelly2006snomed}. To reduce off-domain matches, we restrict candidates to clinically relevant semantic types: observations (T047: Disease/Syndrome, T046: Pathologic Function, T033: Finding) and anatomy (T017: Anatomical Structure, T023: Body Part, T029: Body Location). Matches with cosine similarity below 0.8 are discarded.
 
-\paragraph{(4) Pruning and label tensors}
-To obtain a CBM-friendly vocabulary, we prune the inventory by concept category (findings by default) and frequency (e.g., at least 10 total occurrences with at least one positive mention), with optional name-based filters to remove non-informative normality concepts. We then create an ordered concept index and a dense study-by-concept label matrix using a multi-assertion encoding $a_{ik}\in\{0,1,2,3\}$ for (unmentioned, absent, uncertain, present).
-This encoding supports \emph{mention-masked} supervision: unmentioned concepts are treated as unknown rather than negative. Although the pipeline can retain anatomy scaffold and device concepts, we use finding concepts by default to form the bottleneck; the current pruned bank yields $K=1{,}312$ ontology-grounded findings.
+\textbf{Vocabulary construction.}
+Linked concepts are aggregated across all studies. We retain concepts exceeding a frequency threshold with at least one positive assertion, and filter uninformative normality phrases (e.g., ``unremarkable,'' ``no acute findings'') by name matching. The resulting concept bank $\mathcal{C}$ contains 1,312 ontology-grounded findings, two orders of magnitude larger than the 14-class vocabularies in standard benchmarks.
 
-\paragraph{Optional MI-based filtering}
-When a more compact, task-specific concept set is desired, we optionally apply label-aware filtering using mutual information (MI) between concept presence and downstream labels. We binarize concept presence using only \emph{present} assertions and compute $I(c_k;y_j)$ on the training set, then retain concepts that exceed a threshold or fall within the top-$M$ concepts by $\max_j I(c_k;y_j)$.
+\textbf{Mention masking and uncertainty.}
+Unmentioned findings are not necessarily absent; radiologists document only what they deem relevant. We therefore construct a mention mask $m_{ik} \in \{0,1\}$ indicating whether concept $k$ was explicitly asserted in study $i$. Unmentioned concepts ($m_{ik}{=}0$) are excluded from the loss. For mentioned concepts, we derive targets $t_{ik} \in \{0, 0.5, 1\}$: absent assertions map to 0, present to 1, and uncertain to 0.5 with downweighted loss contribution.
 
-\paragraph{(5) Coarse anatomical regions}
-We define a coarse anatomical partition $\mathcal{R}$ consisting of lung, pleura, heart, mediastinum, bone, and an additional other bucket. Each concept $k$ is assigned to a parent region $g(k)\in\mathcal{R}$ using deterministic rules based on supported location strings, simple name cues (for example, pleur, pulmon, mediastin), and semantic type.
-This fixed concept-to-region map is shared across all hierarchical components.
-
-Given any concept-valued vector $v\in[0,1]^K$, we define pooled region scores by max-pooling over concepts in each region:
+\textbf{Anatomical grouping.}
+Each concept is assigned to one of six anatomical regions $\mathcal{R}$: lung, pleura, heart, mediastinum, bone, or other. Assignment uses location strings extracted from report modifiers and name heuristics (e.g., ``pleur-'' $\to$ pleura, ``pulmon-'' $\to$ lung). This defines a fixed parent mapping $g: \mathcal{C} \to \mathcal{R}$. Region-level targets are obtained by max-pooling over constituent concepts:
 \begin{equation}
-\label{eq:region_pool}
-P_r(v)=\max_{k:\,g(k)=r} v_k \quad \forall r\in\mathcal{R}.
+\label{eq:region_targets}
+\tilde{z}_{ir} = \max_{k:\, g(k)=r} t_{ik}.
 \end{equation}
-When report-derived concept supervision is available, we derive pooled region targets $\tilde{z}_{ir}=P_r(t_i)$ with a corresponding mask indicating whether any concept in region $r$ is explicitly mentioned; unmentioned regions are excluded from region losses. This pipeline outputs the concept bank $\mathcal{C}$ (with an ordered index), the multi-assertion tensor $a_{ik}$ and derived targets $(t_{ik}, m_{ik})$, and when enabled the concept-to-region map $g$ and pooled region targets $\tilde{z}_{ir}$.
+Regions containing no mentioned concepts are masked from region supervision.
 
-\subsection{RadCBM Model and Training}
-\radcbm\ is trained in two stages at the study level: (i) an image$\to$concept predictor trained from report-derived concept supervision, and (ii) a concept$\to$label head trained on predicted concepts with the concept predictor frozen. Both stages can include region prediction and multiplicative gating through the shared concept-to-region map.
+% -----------------------------------------------------------------------------
+\subsection{Model Architecture}
+\label{sec:architecture}
+% -----------------------------------------------------------------------------
 
-\paragraph{Data alignment and splits.}
-All training and evaluation are performed at the study level. We use predefined train, validation, and test splits and align (i) images, (ii) report-derived concept supervision, and (iii) disease-label CSV targets by study identifier to avoid leakage.
-This ensures that the diagnosis head is trained on the same population for which concept predictions are produced.
+\textbf{Stage 1: Image to concepts and regions.}
+A frozen pretrained vision encoder $f_\theta$ extracts image features. A two-layer MLP produces concept logits $s_i \in \mathbb{R}^K$ with probabilities $\hat{c}_i = \sigma(s_i)$.
 
-\paragraph{Concept supervision and uncertainty handling}
-From the multi-assertion matrix $a_{ik}$ we derive targets $t_{ik}\in\{0,0.5,1\}$ and a mention mask $m_{ik}\in\{0,1\}$. Unmentioned concepts are masked ($m_{ik}=0$), while absent and present are supervised as negative and positive.
-By default we ignore uncertain mentions (mask them); in sensitivity analyses we treat uncertain mentions as soft targets ($t_{ik}=0.5$) and downweight their loss. For disease labels, we treat uncertain labels as missing by default and ignore them in the label loss and per-class metrics; we also report sensitivity analyses that map uncertainty to positive or negative.
-
-\paragraph{Stage 1: image to concepts (and regions)}
-A radiology-pretrained vision backbone maps the image to a feature vector $h=f_\theta(x)$, implemented with MedCLIP~\cite{wang2022medclip} (ViT or ResNet variants) or standard ResNet backbones. A lightweight two-layer MLP produces concept logits $s=g_\phi(h)$ and probabilities $\hat{c}=\sigma(s)$.
-We optimize a mention-masked binary cross-entropy that supervises only concepts that are explicitly asserted:
+Region gates are derived from concept probabilities rather than image features, so that gating reflects the model's own concept-level evidence. Region logits $u_i = W_r \hat{c}_i$ are converted to gate probabilities:
 \begin{equation}
-\label{eq:concept_loss}
-\mathcal{L}_{\text{concept}}=
-\frac{1}{\sum_{i,k} m_{ik}}\sum_{i,k} m_{ik}\;\mathrm{BCE}(s_{ik},t_{ik}).
+\label{eq:region_gates}
+\hat{z}_i = \epsilon + (1 - \epsilon) \, \sigma(u_i / \tau),
 \end{equation}
-
-When a region map is available, we additionally predict region gates from the concept probabilities. We compute region logits $u=W_r\hat{c}$ and region probabilities
+where $\tau$ is a temperature parameter and $\epsilon$ is a floor preventing full gate closure. Each concept is then gated by its parent region:
 \begin{equation}
-\label{eq:region_probs}
-\hat{z}=\epsilon+(1-\epsilon)\,\sigma\!\left(\frac{u}{\tau}\right).
+\label{eq:gated_concepts}
+\hat{c}^{\,\text{gated}}_{ik} = \hat{z}_{i,g(k)} \cdot \hat{c}_{ik}.
 \end{equation}
-Here $\tau$ is a temperature and $\epsilon$ is an optional gate floor for conservative soft-gating. Region probabilities gate concept probabilities, $\hat{c}^{\,\text{gated}}_k=\hat{z}_{g(k)}\,\hat{c}_k$, which discourages anatomically implausible predictions while preserving a soft failure mode.
-When report-derived region targets are available, we supervise $u$ using pooled targets from Eq.~(\ref{eq:region_pool}); unless stated otherwise, we clamp gates using these targets (treating unmentioned regions as neutral) and report unclamped gates in ablations. The concept predictor can further be regularized with an ontology-aware graph Laplacian penalty over concept head weights:
+This enforces anatomical consistency: a pleural finding cannot contribute to predictions when the pleura gate is low.
+
+The Stage~1 objective combines mention-masked concept and region losses:
 \begin{equation}
-\label{eq:graph_reg}
-\mathcal{L}_{\text{graph}}=\sum_{(p,q)\in E}\|w_p-w_q\|_2^2,
+\label{eq:stage1_loss}
+\mathcal{L}_{\text{stage1}} = \underbrace{\frac{1}{\sum_{i,k} m_{ik}} \sum_{i,k} m_{ik} \cdot \mathrm{BCE}(s_{ik}, t_{ik})}_{\mathcal{L}_{\text{concept}}} + \; \lambda_r \, \mathcal{L}_{\text{region}},
 \end{equation}
-where $w_k$ denotes the weight vector for concept $k$ in the final linear layer that produces the concept logits $s$, and $E$ is a user-specified set of concept edges (e.g., a within-region chain graph). When region supervision is enabled, the Stage~1 objective becomes $\mathcal{L}_{\text{concept}}+\lambda_r\mathcal{L}_{\text{region}}+\lambda_g\mathcal{L}_{\text{graph}}$, where $\mathcal{L}_{\text{region}}$ is a mention-masked BCE between region logits and pooled region targets.
+where $\mathcal{L}_{\text{region}}$ is BCE between region logits and pooled targets $\tilde{z}_i$, masked for regions without mentioned concepts.
 
-\paragraph{Concept and region quality}
-We evaluate concept prediction quality using micro-averaged classification metrics and AUROC/AUPRC computed over the subset of concepts with non-masked targets. When region prediction is enabled, we analogously compute region metrics using pooled region targets derived from report supervision and report per-region concept quality by grouping concepts under $g(k)$.
-
-\paragraph{Stage 2: concepts to labels}
-After training the concept predictor, we export per-study concept probabilities and train a diagnosis head on these predicted concepts. We consider a flat CBM head (a small MLP) and a hierarchical region-gated head described next.
-The diagnosis head is trained with the concept predictor frozen, so performance reflects the quality of the learned concept bottleneck rather than end-to-end fine-tuning.
-
-\paragraph{Hierarchical region-gated linear label head}
-The hierarchical head predicts region logits $u=W_r\hat{c}$, converts them to region probabilities via Eq.~(\ref{eq:region_probs}), gates concepts by their parent region ($\hat{c}^{\,\text{gated}}_k=\hat{z}_{g(k)}\,\hat{c}_k$), and then predicts labels with a bias-free linear layer:
+\textbf{Stage 2: Gated concepts to diagnoses.}
+With the vision encoder and concept head frozen, we train a diagnosis head on the predicted (gated) concept probabilities. To preserve interpretability, we use a bias-free linear layer:
 \begin{equation}
-\label{eq:linear_label_head}
-\ell=W_y\hat{c}^{\,\text{gated}}.
+\label{eq:label_head}
+\ell_{ij} = \sum_k W_{jk} \cdot \hat{c}^{\,\text{gated}}_{ik}.
 \end{equation}
-This constraint makes explanations intrinsic: the signed contribution of concept $k$ to label $\ell_j$ is $W_y[j,k]\;\hat{c}^{\,\text{gated}}_k$. Removing the bias term prevents the head from predicting a diagnosis in the absence of supporting concept evidence.
+The contribution of concept $k$ to diagnosis $j$ is directly readable as $W_{jk} \cdot \hat{c}^{\,\text{gated}}_{ik}$: positive weights indicate supportive findings, negative weights indicate contradictory ones. Omitting the bias ensures the model cannot predict disease without activated concepts.
 
-\paragraph{Gate clamping and region consistency}
-During diagnosis-head training, we derive soft region targets by pooling the input concept vector, $P_r(\hat{c})$. By default we clamp region gates by multiplying $\hat{z}$ with these pooled targets; we disable clamping in ablations.
-We also optionally include an auxiliary region loss that encourages region logits to match pooled targets. The full objective is
-\begin{equation}
-\label{eq:cbm_loss}
-\mathcal{L}_{\text{CBM}}=\mathcal{L}_{\text{label}}+\lambda_r\mathcal{L}_{\text{region}},
-\end{equation}
-where $\mathcal{L}_{\text{label}}$ is a masked BCE on CheXpert-style labels and $\mathcal{L}_{\text{region}}$ is a BCE between $u$ and pooled region targets. We train both stages with Adam, use early stopping based on validation performance, and export per-study concept probabilities (and region probabilities when enabled) for downstream training and inspection.
+We train with binary cross-entropy on CheXpert-style multi-labels $y_i \in \{0, 1, -1\}^L$, where $-1$ denotes uncertainty. By default, uncertain labels are treated as missing and excluded from the loss; we report sensitivity analyses with alternative uncertainty mappings in the supplement.
 
-\subsection{Interpretability and Concept Interventions}
-\radcbm\ produces structured intermediate outputs that support direct inspection. The predicted concept vector $\hat{c}$ is an ontology-grounded explanation; when enabled, region probabilities $\hat{z}$ summarize abnormality by coarse anatomy and control which findings can contribute to predictions.
-For the hierarchical head, Eq.~(\ref{eq:linear_label_head}) yields intrinsic attributions via the per-concept contributions $W_y[j,k]\hat{c}^{\,\text{gated}}_k$.
+% -----------------------------------------------------------------------------
+\subsection{Training and Inference}
+\label{sec:training}
+% -----------------------------------------------------------------------------
 
-\paragraph{Anatomical plausibility}
-We quantify anatomical plausibility by measuring the rate of \emph{implausible activations}, defined as cases where a concept is predicted present while its parent region gate is low. Operationally, for a threshold $\delta$, an activation is implausible if $\hat{c}_k>\delta$ but $\hat{z}_{g(k)}<\delta$.
+\textbf{Training.}
+Both stages are trained with Adam using learning rate search and early stopping on validation performance. All experiments use predefined train/validation/test splits; images, concept labels, and disease labels are aligned by study identifier to prevent leakage. Hyperparameters ($\tau$, $\epsilon$, $\lambda_r$) are selected via validation; details and sensitivity analyses are provided in the supplement.
 
-\paragraph{Concept interventions}
-To assess intervention behavior, we edit selected concept entries in $\hat{c}$ (setting $\hat{c}_k$ to 0 or 1) and measure the induced change in predicted label probabilities. In intrinsic CBMs, the signed contributions in Eq.~(\ref{eq:linear_label_head}) provide a testable prediction for the direction and relative magnitude of these counterfactual effects.
+\textbf{Inference.}
+Given a test image $x$, we compute concept probabilities $\hat{c}$ and region gates $\hat{z}$, apply gating via Eq.~\eqref{eq:gated_concepts}, and obtain diagnosis probabilities $\hat{y} = \sigma(\ell)$ from Eq.~\eqref{eq:label_head}. For interpretability, we report the top-$k$ concept contributions $W_{jk} \cdot \hat{c}^{\,\text{gated}}_{k}$ per diagnosis and threshold activations at $\delta{=}0.5$ when summarizing.
 
-\paragraph{Gate plausibility and intervention summaries}
-In addition to standard label metrics, we summarize gate plausibility by aggregating implausible activation rates across concepts and across regions. For trained hierarchical heads, we also report compact intervention summaries by ranking concepts by the magnitude of their learned contributions and estimating the expected change in label logits under concept edits.
+Algorithm~\ref{alg:radcbm} summarizes the full procedure.
+
+\begin{algorithm}[t]
+\caption{\radcbm\ Training and Inference}
+\label{alg:radcbm}
+\begin{algorithmic}[1]
+\Require Image $x$, concept targets $t \in [0,1]^K$, mention mask $m \in \{0,1\}^K$, region map $g$, disease labels $y$
+\Ensure Diagnosis probabilities $\hat{y}$, concept contributions
+
+\Statex \textbf{Stage 1: Learn concept predictor}
+\State $h \gets f_\theta(x)$ \Comment{Frozen vision encoder}
+\State $\hat{c} \gets \sigma(\text{MLP}_\phi(h))$ \Comment{Concept probabilities}
+\State $\hat{z} \gets \epsilon + (1-\epsilon)\,\sigma(W_r \hat{c}\,/\,\tau)$ \Comment{Region gates}
+\State $\hat{c}^{\text{gated}}_k \gets \hat{z}_{g(k)} \cdot \hat{c}_k \quad \forall k$ \Comment{Gated concepts}
+\State Minimize $\mathcal{L}_{\text{concept}} + \lambda_r \mathcal{L}_{\text{region}}$ over $\phi, W_r$ \Comment{Mention-masked}
+
+\Statex
+\Statex \textbf{Stage 2: Learn diagnosis head}
+\State Freeze $\phi, W_r$
+\State $\ell_j \gets \sum_k W_{jk} \cdot \hat{c}^{\text{gated}}_k \quad \forall j$ \Comment{Linear, no bias}
+\State Minimize $\mathcal{L}_{\text{label}}$ over $W$ \Comment{Masked BCE on $y$}
+
+\Statex
+\Statex \textbf{Inference}
+\State Compute $\hat{c}, \hat{z}, \hat{c}^{\text{gated}}$ as above
+\State $\hat{y} \gets \sigma(\ell)$
+\State \Return $\hat{y}$, contributions $\{W_{jk} \cdot \hat{c}^{\text{gated}}_k\}_{j,k}$
+\end{algorithmic}
+\end{algorithm}

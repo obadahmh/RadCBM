@@ -340,14 +340,6 @@ T.~F. Chowdhury, V.~M.~H. Phan, K.~Liao, M.-S. To, Y.~Xie, A.~van~den Hengel,
   and Computer Assisted Intervention -- MICCAI 2024}.\hskip 1em plus 0.5em
   minus 0.4em\relax Springer, 2024, pp. 35--45.
 
-\bibitem{debole2025ifconcept}
-\BIBentryALTinterwordspacing
-N.~Debole, P.~Barbiero, F.~Giannini, A.~Passerini, S.~Teso, and E.~Marconato,
-  ``If concept bottlenecks are the question, are foundation models the
-  answer?'' \emph{arXiv preprint arXiv:2504.19774}, 2025. [Online]. Available:
-  \url{https://arxiv.org/abs/2504.19774}
-\BIBentrySTDinterwordspacing
-
 \bibitem{cohen2022xrv}
 \BIBentryALTinterwordspacing
 J.~P. Cohen, J.~D. Viviano, P.~Bertin, P.~Morrison, P.~Torabian, M.~Guarrera,
@@ -355,6 +347,14 @@ J.~P. Cohen, J.~D. Viviano, P.~Bertin, P.~Morrison, P.~Torabian, M.~Guarrera,
   ``{TorchXRayVision: A library of chest X-ray datasets and models},'' in
   \emph{Medical Imaging with Deep Learning}, 2022. [Online]. Available:
   \url{https://github.com/mlmed/torchxrayvision}
+\BIBentrySTDinterwordspacing
+
+\bibitem{debole2025ifconcept}
+\BIBentryALTinterwordspacing
+N.~Debole, P.~Barbiero, F.~Giannini, A.~Passerini, S.~Teso, and E.~Marconato,
+  ``If concept bottlenecks are the question, are foundation models the
+  answer?'' \emph{arXiv preprint arXiv:2504.19774}, 2025. [Online]. Available:
+  \url{https://arxiv.org/abs/2504.19774}
 \BIBentrySTDinterwordspacing
 
 \end{thebibliography}
