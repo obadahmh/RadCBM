@@ -2,6 +2,13 @@
 % RadCBM Methods Section (v8 - final)
 % =============================================================================
 
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/method/system_overview_v1_compressed.png}
+    \caption{RadCBM architecture overview. Stage~1 trains a concept predictor with anatomical region gating. Stage~2 trains a linear diagnosis head on gated concepts.}
+    \label{fig:architecture}
+\end{figure*}
+
 \radcbm\ predicts diagnoses through a two-stage concept bottleneck with anatomical gating (Fig.~\ref{fig:architecture}). Stage~1 trains an image encoder to predict both fine-grained concepts and coarse region abnormality scores from report-derived supervision. Stage~2 trains a linear diagnosis head on region-gated concepts, with the concept predictor frozen. We first describe concept bank construction, then detail the model architecture and training procedure.
 
 % -----------------------------------------------------------------------------
@@ -21,7 +28,7 @@ Extracted mentions vary in surface form: ``opacity,'' ``opacification,'' and ``o
 Linked concepts are aggregated across all studies. We retain concepts exceeding a frequency threshold with at least one positive assertion, and filter uninformative normality phrases (e.g., ``unremarkable,'' ``no acute findings'') by name matching. The resulting concept bank $\mathcal{C}$ contains 1,312 ontology-grounded findings, two orders of magnitude larger than the 14-class vocabularies in standard benchmarks.
 
 \textbf{Mention masking and uncertainty.}
-Unmentioned findings are not necessarily absent; radiologists document only what they deem relevant. We therefore construct a mention mask $m_{ik} \in \{0,1\}$ indicating whether concept $k$ was explicitly asserted in study $i$. Unmentioned concepts ($m_{ik}{=}0$) are excluded from the loss. For mentioned concepts, we derive targets $t_{ik} \in \{0, 0.5, 1\}$: absent assertions map to 0, present to 1, and uncertain to 0.5 with downweighted loss contribution.
+Because radiologists document selectively, missing mentions cannot be treated as negative labels. We therefore construct a mention mask $m_{ik} \in \{0,1\}$ indicating whether concept $k$ was explicitly asserted in study $i$. Unmentioned concepts ($m_{ik}{=}0$) are excluded from the loss. For mentioned concepts, we derive targets $t_{ik} \in \{0, 0.5, 1\}$: absent assertions map to 0, present to 1, and uncertain to 0.5 with downweighted loss contribution.
 
 \textbf{Anatomical grouping.}
 Each concept is assigned to one of six anatomical regions $\mathcal{R}$: lung, pleura, heart, mediastinum, bone, or other. Assignment uses location strings extracted from report modifiers and name heuristics (e.g., ``pleur-'' $\to$ pleura, ``pulmon-'' $\to$ lung). This defines a fixed parent mapping $g: \mathcal{C} \to \mathcal{R}$. Region-level targets are obtained by max-pooling over constituent concepts:

@@ -114,11 +114,6 @@ M.~J. Willemink, W.~A. Koszek, C.~Tan, T.~C. Defined, R.~L. Defined, M.~P.
   Defined, and B.~N. Defined, ``Preparing medical imaging data for machine
   learning,'' \emph{Radiology}, vol. 295, no.~1, pp. 4--15, 2020.
 
-\bibitem{donnelly2006snomed}
-K.~Donnelly, ``Snomed-ct: The advanced terminology and coding system for
-  ehealth,'' \emph{Studies in Health Technology and Informatics}, vol. 121, pp.
-  279--290, 2006.
-
 \bibitem{oikarinen2023labelfree}
 T.~Oikarinen, S.~Das, L.~M. Nguyen, and T.-W. Weng, ``Label-free concept
   bottleneck models,'' in \emph{International Conference on Learning
@@ -201,82 +196,10 @@ X.~Wang, Y.~Peng, L.~Lu, Z.~Lu, M.~Bagheri, and R.~M. Summers, ``Chestx-ray8:
   \emph{Proceedings of the IEEE Conference on Computer Vision and Pattern
   Recognition}, pp. 2097--2106, 2017.
 
-\bibitem{rajpurkar2018chexnext}
-P.~Rajpurkar, J.~Irvin, R.~L. Ball, K.~Zhu, B.~Yang, H.~Mehta, T.~Duan,
-  D.~Ding, A.~Bagul, C.~P. Langlotz \emph{et~al.}, ``Deep learning for chest
-  radiograph diagnosis: A retrospective comparison of the chexnext algorithm to
-  practicing radiologists,'' \emph{PLoS Medicine}, vol.~15, no.~11, p.
-  e1002686, 2018.
-
-\bibitem{simonyan2014saliency}
-K.~Simonyan, A.~Vedaldi, and A.~Zisserman, ``Deep inside convolutional
-  networks: Visualising image classification models and saliency maps,''
-  \emph{arXiv preprint arXiv:1312.6034}, 2014.
-
-\bibitem{yuksekgonul2023posthoc}
-M.~Yuksekgonul, M.~Wang, and J.~Zou, ``Post-hoc concept bottleneck models,'' in
-  \emph{International Conference on Learning Representations}, 2023.
-
-\bibitem{zarlenga2022cem}
-M.~E. Zarlenga, P.~Barbiero, G.~Ciravegna \emph{et~al.}, ``Concept embedding
-  models: Beyond the accuracy-explainability trade-off,'' in \emph{Advances in
-  Neural Information Processing Systems}, 2022.
-
-\bibitem{chauhan2023interactive}
-K.~Chauhan, R.~Tiwari, J.~Freyberg, P.~Shenoy, and K.~Dvijotham, ``Interactive
-  concept bottleneck models,'' in \emph{Proceedings of the AAAI Conference on
-  Artificial Intelligence}, vol.~37, 2023, pp. 5948--5955.
-
-\bibitem{lucieri2020explaining}
-A.~Lucieri, M.~N. Bajwa, S.~A. Braun, M.~I. Malik, A.~Dengel, and S.~Ahmed,
-  ``On explainability of deep neural networks for medical image analysis,''
-  \emph{arXiv preprint arXiv:2004.08780}, 2020.
-
-\bibitem{fauw2018clinically}
-J.~De~Fauw, J.~R. Ledsam, B.~Romera-Paredes, S.~Nikolov, N.~Tomasev,
-  S.~Blackwell, H.~Askham, X.~Glorot, B.~O'Donoghue, D.~Visber \emph{et~al.},
-  ``Clinically applicable deep learning for diagnosis and referral in retinal
-  disease,'' \emph{Nature Medicine}, vol.~24, no.~9, pp. 1342--1350, 2018.
-
-\bibitem{yang2023language}
-Y.~Yang, A.~Panagopoulou, S.~Sreekumar, I.~Chalkidis, M.~Yatskar, and
-  C.~Callison-Burch, ``Language in a bottle: Language model guided concept
-  bottlenecks for interpretable image classification,'' \emph{Proceedings of
-  the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, pp.
-  19\,187--19\,197, 2023.
-
-\bibitem{panousis2024coarsetofineconceptbottleneckmodels}
-\BIBentryALTinterwordspacing
-K.~P. Panousis, D.~Ienco, and D.~Marcos, ``Coarse-to-fine concept bottleneck
-  models,'' 2024. [Online]. Available: \url{https://arxiv.org/abs/2310.02116}
-\BIBentrySTDinterwordspacing
-
-\bibitem{desantis2024visualtcav}
-D.~De~Santis, V.~Sushko, K.~Patel, B.~Narayanaswamy, A.~Smola, P.~Bailis, and
-  T.~Kraska, ``Visual {TCAV}: Accurate concept explanations for vision
-  models,'' in \emph{International Conference on Learning Representations},
-  2024.
-
-\bibitem{marconato2022glancenets}
-E.~Marconato, A.~Passerini, and S.~Teso, ``Glancenets: Interpretable,
-  leak-proof concept-based models,'' in \emph{Advances in Neural Information
-  Processing Systems}, 2022.
-
-\bibitem{kim2024shiftcbm}
-B.~Kim, K.~Gurumoorthy, T.~Nguyen, and P.~W. Koh, ``What changes when concepts
-  shift? robustness analysis of concept bottleneck models,'' \emph{arXiv
-  preprint arXiv:2402.01234}, 2024.
-
-\bibitem{khandelwal2020negbert}
-A.~Khandelwal and S.~Sawant, ``Negbert: A transfer learning approach for
-  negation detection and scope resolution,'' \emph{arXiv preprint
-  arXiv:1911.04211}, 2020.
-
-\bibitem{radford2021clip}
-A.~Radford, J.~W. Kim, C.~Hallacy, A.~Ramesh, G.~Goh, S.~Agarwal, G.~Sastry,
-  A.~Askell, P.~Mishkin, J.~Clark \emph{et~al.}, ``Learning transferable visual
-  models from natural language supervision,'' in \emph{International Conference
-  on Machine Learning}, 2021, pp. 8748--8763.
+\bibitem{ma2025arkplus}
+D.~Ma, J.~Pang, M.~B. Gotway, and J.~Liang, ``A fully open {AI} foundation
+  model applied to chest radiography,'' \emph{Nature}, vol. 643, no. 8071, pp.
+  488--498, 2025.
 
 \bibitem{zhang2022convirt}
 Y.~Zhang, H.~Jiang, Y.~Miura, C.~D. Manning, and C.~P. Langlotz, ``Contrastive
@@ -293,6 +216,62 @@ S.~Zhang, Y.~Xu, N.~Usuyama, J.~Bagher, R.~Tinn, S.~Preston, R.~Rao, M.~Wei,
   N.~Valluri, C.~Wong \emph{et~al.}, ``Biomedclip: A multimodal biomedical
   foundation model pretrained from fifteen million scientific image-text
   pairs,'' \emph{arXiv preprint arXiv:2303.00915}, 2023.
+
+\bibitem{zarlenga2022cem}
+M.~E. Zarlenga, P.~Barbiero, G.~Ciravegna \emph{et~al.}, ``Concept embedding
+  models: Beyond the accuracy-explainability trade-off,'' in \emph{Advances in
+  Neural Information Processing Systems}, 2022.
+
+\bibitem{yuksekgonul2023posthoc}
+M.~Yuksekgonul, M.~Wang, and J.~Zou, ``Post-hoc concept bottleneck models,'' in
+  \emph{International Conference on Learning Representations}, 2023.
+
+\bibitem{chauhan2023interactive}
+K.~Chauhan, R.~Tiwari, J.~Freyberg, P.~Shenoy, and K.~Dvijotham, ``Interactive
+  concept bottleneck models,'' in \emph{Proceedings of the AAAI Conference on
+  Artificial Intelligence}, vol.~37, 2023, pp. 5948--5955.
+
+\bibitem{panousis2024coarsetofineconceptbottleneckmodels}
+\BIBentryALTinterwordspacing
+K.~P. Panousis, D.~Ienco, and D.~Marcos, ``Coarse-to-fine concept bottleneck
+  models,'' 2024. [Online]. Available: \url{https://arxiv.org/abs/2310.02116}
+\BIBentrySTDinterwordspacing
+
+\bibitem{yang2023language}
+Y.~Yang, A.~Panagopoulou, S.~Sreekumar, I.~Chalkidis, M.~Yatskar, and
+  C.~Callison-Burch, ``Language in a bottle: Language model guided concept
+  bottlenecks for interpretable image classification,'' \emph{Proceedings of
+  the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, pp.
+  19\,187--19\,197, 2023.
+
+\bibitem{yan2024ahive}
+S.~Yan, W.~K. Cheung, I.~W. Tsang, K.~Chiu, T.~M. Tong, K.~C. Cheung, and
+  S.~See, ``{AHIVE}: Anatomy-aware hierarchical vision encoding for interactive
+  radiology report retrieval,'' in \emph{Proceedings of the IEEE/CVF Conference
+  on Computer Vision and Pattern Recognition (CVPR)}, June 2024, pp.
+  14\,324--14\,333.
+
+\bibitem{delbrouck2024radgraphxl}
+J.-B. Delbrouck, P.~Chambon, Z.~Chen, M.~Varma, A.~Johnston, L.~Blankemeier,
+  D.~Van~Veen, T.~Bui, S.~Truong, and C.~Langlotz, ``{RadGraph-XL}: A
+  large-scale expert-annotated dataset for entity and relation extraction from
+  radiology reports,'' in \emph{Findings of the Association for Computational
+  Linguistics: ACL 2024}.\hskip 1em plus 0.5em minus 0.4em\relax Bangkok,
+  Thailand: Association for Computational Linguistics, 2024, pp.
+  12\,902--12\,915.
+
+\bibitem{khanna2023radgraph2}
+S.~Khanna, A.~Dejl, K.~Yoon, S.~Q. Truong, H.~Duong, A.~Saenz, and
+  P.~Rajpurkar, ``{RadGraph2}: Modeling disease progression in radiology
+  reports via hierarchical information extraction,'' in \emph{Proceedings of
+  the 8th Machine Learning for Healthcare Conference}, ser. Proceedings of
+  Machine Learning Research, vol. 219.\hskip 1em plus 0.5em minus 0.4em\relax
+  PMLR, 2023, pp. 381--402.
+
+\bibitem{donnelly2006snomed}
+K.~Donnelly, ``Snomed-ct: The advanced terminology and coding system for
+  ehealth,'' \emph{Studies in Health Technology and Informatics}, vol. 121, pp.
+  279--290, 2006.
 
 \bibitem{nguyen2021vindrcxr}
 \BIBentryALTinterwordspacing

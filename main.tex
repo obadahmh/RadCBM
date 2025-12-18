@@ -13,12 +13,18 @@
 \usepackage{mathtools}
 \usepackage{float}
 \usepackage{enumitem}
+\usepackage{xcolor}
 \usepackage[pagebackref,breaklinks,colorlinks]{hyperref}
 \usepackage{cleveref}
 
 \usepackage{pifont}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+
+% Slightly emphasize algorithmicx \Comment{...} text.
+% NeurIPS/ICML-style: small italic, subtle gray, ▷ marker.
+\definecolor{algcommentcolor}{gray}{0.45}
+\algrenewcommand\algorithmiccomment[1]{\hfill{\footnotesize\itshape\textcolor{algcommentcolor}{\(\triangleright\)~#1}}}
 
 \graphicspath{{figures/}}
 \newcommand{\radcbm}{RadCBM}
@@ -51,9 +57,9 @@ Khalifa University, Abu Dhabi, UAE}
 \label{sec:results}
 \input{sections/4_results}
 
-% \section{Conclusion}
-% \label{sec:conclusion}
-% \input{sections/5_conclusion}
+\section{Conclusion}
+\label{sec:conclusion}
+\input{sections/5_conclusion}
 
 \appendices
 \section{Supplementary Material}

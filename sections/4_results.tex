@@ -15,14 +15,14 @@ CheXpert Plus (expert subset), VinDr-CXR, and RSNA Pneumonia provide radiologist
 We extract concepts exclusively from MIMIC-CXR training reports using RadGraph~\cite{jain2021radgraph}, yielding \placeholder{127,834} unique observation-anatomy pairs. After UMLS normalization, semantic type filtering, and frequency thresholding (minimum 50 occurrences), the final vocabulary contains 1,312 region-specific concepts organized into six anatomical regions: lung (\placeholder{XXX} concepts), heart (\placeholder{XXX} concepts), pleura (\placeholder{XXX} concepts), mediastinum (\placeholder{XXX} concepts), bone (\placeholder{XXX} concepts), and other (\placeholder{XXX} concepts). Assertion status (present, absent, uncertain) is preserved for each concept mention.
 
 \subsubsection{Implementation Details}
-We implement \radcbm\ with frozen radiology-pretrained vision backbones, including MedCLIP~\cite{wang2022medclip}, CXR-CLIP~\cite{you2023cxrclip}, and CheXzero~\cite{tiu2022chexzero}. Images are resized to the backbone's native resolution and normalized accordingly. We apply standard augmentations during training: random horizontal flipping, rotation ($\pm 10^{\circ}$), and color jittering.
+We implement \radcbm\ with a frozen radiology-pretrained MedCLIP vision backbone~\cite{wang2022medclip} (Swin-T). Unless stated otherwise, all CBM comparisons in this section use the same MedCLIP transformer backbone (Swin-T) frozen to isolate bottleneck design effects. We additionally report black-box VLM baselines using CXR-CLIP~\cite{you2023cxrclip} and CheXzero~\cite{tiu2022chexzero}. Images are resized to the backbone's native resolution and normalized accordingly. We apply standard augmentations during training: random horizontal flipping, rotation ($\pm 10^{\circ}$), and color jittering.
 
 Models are trained using Adam~\cite{kingma2015adam} with learning rate $10^{-4}$, batch size 32, and early stopping based on validation macro AUC (patience 10 epochs). We set region loss weight $\lambda_r = 0.1$, temperature $\tau = 1.0$, and gate floor $\epsilon = 0.01$ based on validation performance; sensitivity analyses are in the supplement. All experiments were conducted on an NVIDIA GeForce RTX 3080 GPU (16GB). We report results averaged over 3 random seeds.
 
 \subsubsection{Baselines and Comparison Protocol}
 We compare against concept bottleneck models (CBMs) and black-box baselines.
 
-\textbf{CBM baselines.} (1)~\textbf{Post-hoc CBM}~\cite{yuksekgonul2023posthoc}, which retrofits concept bottlenecks onto pretrained models; (2)~\textbf{LaBo}~\cite{yang2023labo}, which constructs text-defined bottlenecks with linear concept-to-class predictors; (3)~\textbf{AdaCBM}~\cite{xu2024adacbm}, which adds an adaptive module to reduce domain mismatch; and (4)~\textbf{C2F-CBM}~\cite{panousis2024coarsetofineconceptbottleneckmodels}, which builds two-level bottlenecks with coarse-to-fine prediction.
+\textbf{CBM baselines.} (1)~\textbf{Post-hoc CBM}~\cite{yuksekgonul2023posthoc}, which retrofits concept bottlenecks onto pretrained models; \textbf{LaBo}~\cite{yang2023labo}, which constructs text-defined bottlenecks with linear concept-to-class predictors (Following LaBo's prompts and 500-sentences/class budget, we use OpenAI \texttt{gpt-3.5-turbo} to generate candidate sentences and extract short concepts; this substitutes for LaBo's deprecated GPT-3 generator and unreleased fine-tuned T5 extractor, and we keep LaBo's cleaning heuristics unchanged); (3)~\textbf{AdaCBM}~\cite{xu2024adacbm}, which adds an adaptive module to reduce domain mismatch; and (4)~\textbf{C2F-CBM}~\cite{panousis2024coarsetofineconceptbottleneckmodels}, which builds two-level bottlenecks with coarse-to-fine prediction.
 
 \textbf{Black-box baselines.} Supervised CNNs (ResNet-50, DenseNet-121)~\cite{cohen2022xrv} and vision-language models used as black-box encoders (MedCLIP, CXR-CLIP, CheXzero).
 
@@ -52,13 +52,13 @@ For label-level evaluation (Tables~\ref{tab:classification},~\ref{tab:external_v
 
 \subsection{Classification Performance}
 
-Table~\ref{tab:classification} presents classification performance on the five CheXpert competition labels. \radcbm\ matches or exceeds all CBM baselines while providing interpretable concept-mediated predictions. On MIMIC-CXR, \radcbm\ achieves a macro AUC of \placeholder{0.XXX}, comparable to the supervised DenseNet-121 baseline (\placeholder{0.XXX}) and outperforming all other CBM methods. Hierarchical gating improves over the flat variant by \placeholder{X.X} points in macro AUC, with notable gains on region-specific pathologies such as Pleural Effusion (\placeholder{+X.X}) and Edema (\placeholder{+X.X}).
+Table~\ref{tab:classification} presents classification performance on the five CheXpert competition labels. \radcbm\ matches or exceeds all CBM baselines while providing interpretable concept-mediated predictions. On MIMIC-CXR, \radcbm\ achieves a macro AUC of \placeholder{0.XXX}, comparable to the supervised DenseNet-121 baseline (\placeholder{0.684}) and outperforming all other CBM methods. Hierarchical gating improves over the flat variant by \placeholder{X.X} points in macro AUC, with notable gains on region-specific pathologies such as Pleural Effusion (\placeholder{+X.X}) and Edema (\placeholder{+X.X}).
 
 Among CBM approaches, methods relying on small or automatically generated concept vocabularies exhibit lower classification performance, suggesting that ontology-grounded concept banks with broader coverage provide stronger supervisory signal.
 
 \begin{table}[htbp]
 \centering
-\caption{Classification performance (AUC-ROC) on MIMIC-CXR test set and CheXpert Plus expert subset for five competition labels. Best in \textbf{bold}, second-best \underline{underlined}. All concept-based methods share the same frozen backbone. Results are mean over 3 seeds; std $<$0.01 omitted.}
+\caption{Classification performance (AUC-ROC) on MIMIC-CXR test set and CheXpert Plus expert subset for five competition labels. Best in \textbf{bold}, second-best \underline{underlined}. All concept-based methods share the same frozen backbone (MedCLIP Swin-T). Results are mean over 3 seeds; std $<$0.01 omitted.}
 \label{tab:classification}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{llccccc|c}
@@ -67,9 +67,11 @@ Among CBM approaches, methods relying on small or automatically generated concep
 \midrule
 \multicolumn{8}{l}{\textit{MIMIC-CXR Test Set}} \\
 \midrule
-ResNet-50 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-DenseNet-121 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-MedCLIP & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+ResNet-50 & CNN & 0.66 & 0.71 & 0.67 & 0.76 & 0.80 & 0.721 \\
+DenseNet-121 & CNN & 0.62 & 0.70 & 0.59 & 0.75 & 0.75 & 0.684 \\
+MedCLIP (Swin-T) & VLM & 0.74 & 0.75 & 0.77 & 0.85 & 0.89 & 0.797 \\
+CXR-CLIP (Swin-T) & VLM & 0.45 & 0.58 & 0.52 & 0.64 & 0.51 & 0.539 \\
+CheXzero (ViT-B/32) & VLM & 0.65 & 0.72 & 0.70 & 0.82 & 0.84 & 0.749 \\
 \midrule
 Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 LaBo & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
@@ -81,9 +83,11 @@ C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \p
 \midrule
 \multicolumn{8}{l}{\textit{CheXpert Plus Expert Subset}} \\
 \midrule
-ResNet-50 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-DenseNet-121 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-MedCLIP & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+ResNet-50 & CNN & 0.56 & 0.48 & 0.42 & 0.52 & 0.55 & 0.506 \\
+DenseNet-121 & CNN & 0.53 & 0.42 & 0.49 & 0.60 & 0.57 & 0.521 \\
+MedCLIP (Swin-T) & VLM & 0.49 & 0.59 & 0.63 & 0.49 & 0.49 & 0.539 \\
+CXR-CLIP (Swin-T) & VLM & 0.50 & 0.44 & 0.60 & 0.50 & 0.50 & 0.509 \\
+CheXzero (ViT-B/32) & VLM & 0.54 & 0.49 & 0.58 & 0.55 & 0.55 & 0.543 \\
 \midrule
 Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 LaBo & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
@@ -134,11 +138,11 @@ Table~\ref{tab:external_validation} reports generalization to external benchmark
 
 \radcbm\ generalizes competitively across all benchmarks, with smaller performance drops than black-box baselines on distribution shift (VinDr-CXR, NIH). This suggests that ontology-grounded concepts provide more transferable intermediate representations than end-to-end learned features.
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
-\caption{External validation (AUC-ROC). Multi-label columns: macro AUC over five CheXpert labels; RSNA: binary pneumonia AUC.}
+\caption{External validation (AUC-ROC). Multi-label columns: macro AUC over five CheXpert labels; RSNA: binary pneumonia AUC. Post-hoc CBM is omitted since its predictions match its underlying black-box model by construction.}
 \label{tab:external_validation}
-\resizebox{\textwidth}{!}{%
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{llccccc}
 \toprule
 \textbf{Method} & \textbf{Type} & \textbf{MIMIC} & \textbf{CheXpert Plus} & \textbf{VinDr-CXR} & \textbf{NIH} & \textbf{RSNA} \\
@@ -155,7 +159,7 @@ C2F-CBM & H-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} &
 \bottomrule
 \end{tabular}%
 }
-\end{table*}
+\end{table}
 
 % =============================================================================
 % TABLE 4: Interpretability

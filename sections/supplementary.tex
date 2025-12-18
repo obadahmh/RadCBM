@@ -26,9 +26,9 @@ Table~\ref{tab:label_provenance} summarizes which benchmarks provide radiologist
 \toprule
 \textbf{Benchmark} & \textbf{Label Source} & \textbf{Level} & \textbf{Label Set} \\
 \midrule
-MIMIC-CXR & radiologist-annotated & report & CheXpert-14 \\
+MIMIC-CXR & radiologist-annotated (reports; test split) & study & CheXpert-14 \\
 CheXpert Plus & radiologist-annotated & study & CheXpert-14 \\
-VinDr-CXR & radiologist-annotated & image & CheXpert-5 \\
+VinDr-CXR & radiologist-annotated & image+bbox & VinDr-28 (mapped to CheXpert-5) \\
 RSNA Pneumonia & radiologist-annotated & image+bbox & Pneumonia \\
 NIH ChestX-ray14 & report-derived & image & NIH-14 \\
 \bottomrule
@@ -36,7 +36,7 @@ NIH ChestX-ray14 & report-derived & image & NIH-14 \\
 }
 \end{table}
 
-For MIMIC-CXR, test reports were annotated by a radiologist into CheXpert-14 categories; these are radiologist-annotated report labels rather than independent image readouts. NIH ChestX-ray14 labels are report-derived; we treat them as complementary evidence and emphasize radiologist-labeled subsets as primary validation.
+For MIMIC-CXR, we evaluate using radiologist-annotated report labels released with the PhysioNet MIMIC-CXR-JPG test split (CheXpert-14 categories). These are report annotations rather than independent radiologist re-reads of the images. NIH ChestX-ray14 labels are report-derived; we treat them as complementary evidence and emphasize radiologist-labeled subsets as primary validation.
 
 \subsection{Region Consistency Metric}
 
