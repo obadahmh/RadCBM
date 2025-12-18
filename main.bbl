@@ -244,6 +244,11 @@ Y.~Yang, A.~Panagopoulou, S.~Sreekumar, I.~Chalkidis, M.~Yatskar, and
   the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, pp.
   19\,187--19\,197, 2023.
 
+\bibitem{debole2025vlmcbm}
+N.~Debole, P.~Barbiero, F.~Giannini, A.~Passeggini, G.~Ciravegna, and
+  F.~Precioso, ``If concept bottlenecks are the question, are foundation models
+  the answer?'' \emph{arXiv preprint arXiv:2504.19774}, 2025.
+
 \bibitem{yan2024ahive}
 S.~Yan, W.~K. Cheung, I.~W. Tsang, K.~Chiu, T.~M. Tong, K.~C. Cheung, and
   S.~See, ``{AHIVE}: Anatomy-aware hierarchical vision encoding for interactive

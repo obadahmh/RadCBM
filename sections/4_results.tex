@@ -73,9 +73,9 @@ MedCLIP (Swin-T) & VLM & 0.74 & 0.75 & 0.77 & 0.85 & 0.89 & 0.797 \\
 CXR-CLIP (Swin-T) & VLM & 0.45 & 0.58 & 0.52 & 0.64 & 0.51 & 0.539 \\
 CheXzero (ViT-B/32) & VLM & 0.65 & 0.72 & 0.70 & 0.82 & 0.84 & 0.749 \\
 \midrule
-Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-LaBo & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+Post-hoc CBM & CBM & 0.77 & 0.77 & 0.72 & 0.86 & 0.90 & 0.803 \\
+LaBo & CBM & 0.63 & 0.74 & 0.53 & 0.72 & 0.88 & 0.702 \\
+AdaCBM & CBM & 0.74 & 0.78 & 0.64 & 0.83 & 0.89 & 0.775 \\
 C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 \midrule
 \radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
@@ -89,9 +89,9 @@ MedCLIP (Swin-T) & VLM & 0.49 & 0.59 & 0.63 & 0.49 & 0.49 & 0.539 \\
 CXR-CLIP (Swin-T) & VLM & 0.50 & 0.44 & 0.60 & 0.50 & 0.50 & 0.509 \\
 CheXzero (ViT-B/32) & VLM & 0.54 & 0.49 & 0.58 & 0.55 & 0.55 & 0.543 \\
 \midrule
-Post-hoc CBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-LaBo & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+Post-hoc CBM & CBM & 0.58 & 0.38 & 0.42 & 0.53 & 0.53 & 0.487 \\
+LaBo & CBM & 0.45 & 0.48 & 0.47 & 0.53 & 0.49 & 0.483 \\
+AdaCBM & CBM & 0.56 & 0.36 & 0.59 & 0.55 & 0.54 & 0.518 \\
 C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
 \midrule
 \radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
@@ -107,7 +107,7 @@ C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \p
 
 \subsection{Concept Quality}
 
-Table~\ref{tab:concept_quality} compares concept prediction on the shared 1,312-concept target set. \radcbm\ achieves the highest overall concept AUC (\placeholder{0.XXX}) and AUPRC (\placeholder{0.XXX}). The improvement is pronounced for rare concepts: \radcbm\ attains \placeholder{0.XXX} AUC on rare findings compared to \placeholder{0.XXX} for the flat variant, consistent with hierarchical gating suppressing spurious activations when regions are predicted normal.
+Table~\ref{tab:concept_quality} compares concept prediction on the shared 1,312-concept target set. We report concept quality only for intrinsic CBMs; post-hoc CBMs are omitted since their concept scores are not trained to match a target concept bank. \radcbm\ achieves the highest overall concept AUC (\placeholder{0.XXX}) and AUPRC (\placeholder{0.XXX}). The improvement is pronounced for rare concepts: \radcbm\ attains \placeholder{0.XXX} AUC on rare findings compared to \placeholder{0.XXX} for the flat variant, consistent with hierarchical gating suppressing spurious activations when regions are predicted normal.
 
 \begin{table}[t]
 \centering
@@ -117,9 +117,8 @@ Table~\ref{tab:concept_quality} compares concept prediction on the shared 1,312-
 \toprule
 \textbf{Method} & \textbf{AUC} & \textbf{AUPRC} & \textbf{Rare AUC} & \textbf{Rare AUPRC} \\
 \midrule
-Post-hoc CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
 LaBo\textsuperscript{\dag} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-AdaCBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+AdaCBM & 0.622 $\pm$ 0.003 & 0.854 $\pm$ 0.001 & 0.614 $\pm$ 0.011 & 0.781 $\pm$ 0.002 \\
 C2F-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
 \midrule
 \radcbm\ (flat) & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
