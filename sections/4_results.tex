@@ -113,6 +113,7 @@ Table~\ref{tab:concept_quality} compares concept prediction on the shared 1,312-
 \centering
 \caption{Concept prediction quality on MIMIC-CXR test set (shared 1,312-concept bank). \textsuperscript{\dag}LaBo evaluated with ontology-aligned variant. Results: mean $\pm$ std over 3 seeds.}
 \label{tab:concept_quality}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Method} & \textbf{AUC} & \textbf{AUPRC} & \textbf{Rare AUC} & \textbf{Rare AUPRC} \\
@@ -124,7 +125,8 @@ C2F-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeh
 \radcbm\ (flat) & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
 \radcbm\ & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 % =============================================================================
