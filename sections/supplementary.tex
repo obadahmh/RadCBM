@@ -43,7 +43,7 @@ For MIMIC-CXR, we evaluate using radiologist-annotated report labels released wi
 We quantify alignment between coarse region gates and fine concept evidence using:
 \begin{equation}
 \label{eq:region_consistency}
-\mathrm{RC} = 1 - \frac{1}{N|\mathcal{R}|} \sum_{i=1}^{N} \sum_{r \in \mathcal{R}} \left| \hat{z}_{ir} - \max_{k: g(k)=r} \hat{c}_{ik} \right|.
+\mathrm{RC} = 1 - \frac{1}{N|\mathcal{R}|} \sum_{i=1}^{N} \sum_{r \in \mathcal{R}} \left| (\hat{z}_i)_r - \max_{k: g(k)=r} (\hat{c}_i)_k \right|.
 \end{equation}
 Values near 1 indicate that region gates faithfully summarize the underlying concept activations.
 
@@ -258,7 +258,7 @@ MedCLIP & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placehold
 
 \subsection{Uncertainty Handling Protocol}
 
-Unless otherwise stated, we map labeler outputs to \{positive, negative, uncertain\}. For training labels derived from reports, we optionally use an ensemble of labelers (CheXpert, CheXbert, NegBio); disagreements are marked uncertain. For disease labels, uncertain values are treated as missing and excluded from loss and evaluation. For concept targets, uncertain assertions receive soft targets (0.5) with downweighted loss. Decision thresholds are tuned on MIMIC-CXR validation and fixed for all evaluations.
+Unless otherwise stated, we map labeler outputs to \{positive, negative, uncertain\}. For training labels derived from reports, we optionally use an ensemble of labelers (CheXpert, CheXbert, NegBio); disagreements are marked uncertain. For disease labels, uncertain values are treated as missing and excluded from loss and evaluation. For concept targets, uncertain assertions receive soft targets (0.5). Decision thresholds are tuned on MIMIC-CXR validation and fixed for all evaluations.
 
 \subsection{Full CheXpert-14 Results}
 

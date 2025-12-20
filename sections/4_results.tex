@@ -38,12 +38,12 @@ For label-level evaluation (Tables~\ref{tab:classification},~\ref{tab:external_v
 \subsubsection{Evaluation Metrics}
 \textbf{Classification performance} is reported using per-label and macro-averaged AUC-ROC on the five CheXpert competition labels (Atelectasis, Cardiomegaly, Consolidation, Edema, Pleural Effusion). Full 14-label results are in the supplement. When thresholded metrics are reported, per-label thresholds are tuned on MIMIC-CXR validation and fixed for all test sets.
 
-\textbf{Concept quality} is assessed on the shared 1,312-concept bank using macro AUC-ROC and macro AUPRC, reported overall and on rare concepts (50--200 training occurrences).
+\textbf{Concept quality} is assessed on the shared 1,312-concept bank using macro AUC-ROC and macro AUPRC, reported overall and on rare concepts (50--200 training occurrences). We compute concept metrics only on explicitly asserted mentions; unmentioned concepts are unlabeled. Macro averages include only concepts with at least one labeled positive and one labeled negative example.
 
-\textbf{Interpretability} is evaluated via three metrics:
-(1)~\emph{Intervention faithfulness}: Pearson correlation between predicted concept contribution ($W_{jk} \cdot \hat{c}^{\text{gated}}_k$) and observed label change upon setting $\hat{c}_k$ to 0 or 1. For the linear head, this correlation is 1.0 by construction.
-(2)~\emph{Plausibility}: fraction of activated findings ($\hat{c}_k > 0.5$) whose parent region gate exceeds 0.5.
-(3)~\emph{Implausible activation rate}: fraction of finding activations occurring when the parent region gate is below 0.3.
+\textbf{Interpretability} is evaluated via four metrics:
+(1)~\emph{Intervention faithfulness}: Pearson correlation between predicted concept contribution ($W_{jk} \cdot (\hat{c}^{\text{gated}}_i)_k$) and observed label change upon intervening on concept $k$ (setting $(\hat{c}_i)_k$ to 0 or 1). For the linear head, this correlation is 1.0 by construction.
+(2)~\emph{Plausibility}: fraction of activated findings ($(\hat{c}_i)_k > 0.5$) whose parent region gate satisfies $(\hat{z}_i)_{g(k)} > 0.5$.
+(3)~\emph{Implausible activation rate}: fraction of activations where $(\hat{c}_i)_k > 0.5$ but $(\hat{z}_i)_{g(k)} < 0.3$.
 (4)~\emph{Region consistency}: agreement between region gates and max-pooled concept activations (Eq.~\ref{eq:region_consistency} in supplement).
 
 % =============================================================================

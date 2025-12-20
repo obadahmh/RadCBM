@@ -9,7 +9,7 @@
     \label{fig:architecture}
 \end{figure*}
 
-\radcbm\ predicts diagnoses through a two-stage concept bottleneck with anatomical gating (Fig.~\ref{fig:architecture}). Stage~1 trains an image encoder to predict both fine-grained concepts and coarse region abnormality scores from report-derived supervision. Stage~2 trains a linear diagnosis head on region-gated concepts, with the concept predictor frozen. We first describe concept bank construction, then detail the model architecture and training procedure.
+\radcbm\ predicts diagnoses through a two-stage concept bottleneck with anatomical gating (Fig.~\ref{fig:architecture}). Stage~1 trains a concept predictor (with a frozen pretrained image encoder) to predict both fine-grained concepts and coarse region abnormality scores from report-derived supervision. Stage~2 trains a linear diagnosis head on region-gated concepts, with the concept predictor frozen. We use $i$ for studies, $k$ for concepts, $r$ for regions, and $j$ for diagnosis labels. We first describe concept bank construction, then detail the model architecture and training procedure.
 
 % -----------------------------------------------------------------------------
 \subsection{Concept Bank Construction}
@@ -25,18 +25,18 @@ RadGraph-XL~\cite{jain2021radgraph} parses report findings and impression sectio
 Extracted mentions vary in surface form: ``opacity,'' ``opacification,'' and ``opacities'' may refer to the same finding. We standardize terminology by linking each mention to a UMLS Concept Unique Identifier (CUI). Specifically, we embed mentions using SapBERT~\cite{liu2021sapbert} and retrieve the nearest neighbor from an index of SNOMED-CT synonyms~\cite{donnelly2006snomed}. To reduce off-domain matches, we restrict candidates to clinically relevant semantic types: observations (T047: Disease/Syndrome, T046: Pathologic Function, T033: Finding) and anatomy (T017: Anatomical Structure, T023: Body Part, T029: Body Location). Matches with cosine similarity below 0.8 are discarded.
 
 \textbf{Vocabulary construction.}
-Linked concepts are aggregated across all studies. We retain concepts exceeding a frequency threshold with at least one positive assertion, and filter uninformative normality phrases (e.g., ``unremarkable,'' ``no acute findings'') by name matching. The resulting concept bank $\mathcal{C}$ contains 1,312 ontology-grounded findings, two orders of magnitude larger than the 14-class vocabularies in standard benchmarks.
+Linked concepts are aggregated across all studies. We retain concepts exceeding a frequency threshold with at least one positive assertion, and filter uninformative normality phrases (e.g., ``unremarkable,'' ``no acute findings'') by name matching. The resulting concept bank $\mathcal{C}=\{c_k\}_{k=1}^{K}$ contains 1,312 ontology-grounded findings, two orders of magnitude larger than the 14-class vocabularies in standard benchmarks.
 
 \textbf{Mention masking and uncertainty.}
-Because radiologists document selectively, missing mentions cannot be treated as negative labels. We therefore construct a mention mask $m_{ik} \in \{0,1\}$ indicating whether concept $k$ was explicitly asserted in study $i$. Unmentioned concepts ($m_{ik}{=}0$) are excluded from the loss. For mentioned concepts, we derive targets $t_{ik} \in \{0, 0.5, 1\}$: absent assertions map to 0, present to 1, and uncertain to 0.5 with downweighted loss contribution.
+Because radiologists document selectively, missing mentions cannot be treated as negative labels. For each study $i$, we construct a mention mask vector $m_i \in \{0,1\}^K$ indicating which concepts were explicitly asserted. Unmentioned concepts ($(m_i)_k{=}0$) are excluded from the loss. For mentioned concepts, we derive targets $t_i \in \{0, 0.5, 1\}^K$: absent assertions map to 0, present to 1, and uncertain to 0.5 as a soft target.
 
 \textbf{Anatomical grouping.}
-Each concept is assigned to one of six anatomical regions $\mathcal{R}$: lung, pleura, heart, mediastinum, bone, or other. Assignment uses location strings extracted from report modifiers and name heuristics (e.g., ``pleur-'' $\to$ pleura, ``pulmon-'' $\to$ lung). This defines a fixed parent mapping $g: \mathcal{C} \to \mathcal{R}$. Region-level targets are obtained by max-pooling over constituent concepts:
+Each concept is assigned to one of six anatomical regions $\mathcal{R}$: lung, pleura, heart, mediastinum, bone, or other. Assignment uses location strings extracted from report modifiers and name heuristics (e.g., ``pleur-'' $\to$ pleura, ``pulmon-'' $\to$ lung). This defines a fixed parent mapping $g: \{1,\dots,K\} \to \mathcal{R}$ from concept index $k$ to its region. Region-level targets are obtained by max-pooling over constituent concepts:
 \begin{equation}
 \label{eq:region_targets}
-\tilde{z}_{ir} = \max_{k:\, g(k)=r} t_{ik}.
+(\tilde{z}_i)_r = \max_{k:\, g(k)=r} (t_i)_k.
 \end{equation}
-Regions containing no mentioned concepts are masked from region supervision.
+We similarly define a region mask $\tilde{m}_i \in \{0,1\}^{|\mathcal{R}|}$ with entries $(\tilde{m}_i)_r = \max_{k:\, g(k)=r} (m_i)_k$; regions containing no mentioned concepts are masked from region supervision.
 
 % -----------------------------------------------------------------------------
 \subsection{Model Architecture}
@@ -44,7 +44,7 @@ Regions containing no mentioned concepts are masked from region supervision.
 % -----------------------------------------------------------------------------
 
 \textbf{Stage 1: Image to concepts and regions.}
-A frozen pretrained vision encoder $f_\theta$ extracts image features. A two-layer MLP produces concept logits $s_i \in \mathbb{R}^K$ with probabilities $\hat{c}_i = \sigma(s_i)$.
+Given an image $x_i$, a frozen pretrained vision encoder extracts features $h_i = f_\theta(x_i)$. A two-layer MLP produces concept logits $s_i \in \mathbb{R}^K$ with probabilities $\hat{c}_i = \sigma(s_i)$.
 
 Region gates are derived from concept probabilities rather than image features, so that gating reflects the model's own concept-level evidence. Region logits $u_i = W_r \hat{c}_i$ are converted to gate probabilities:
 \begin{equation}
@@ -54,26 +54,67 @@ Region gates are derived from concept probabilities rather than image features, 
 where $\tau$ is a temperature parameter and $\epsilon$ is a floor preventing full gate closure. Each concept is then gated by its parent region:
 \begin{equation}
 \label{eq:gated_concepts}
-\hat{c}^{\,\text{gated}}_{ik} = \hat{z}_{i,g(k)} \cdot \hat{c}_{ik}.
+(\hat{c}^{\,\text{gated}}_i)_k = (\hat{z}_i)_{g(k)} \cdot (\hat{c}_i)_k.
 \end{equation}
 This enforces anatomical consistency: a pleural finding cannot contribute to predictions when the pleura gate is low.
 
 The Stage~1 objective combines mention-masked concept and region losses:
+% Expanded version (kept for reference).
+% \iffalse
+% \begin{equation}
+% \label{eq:stage1_loss}
+% \begin{aligned}
+% \mathcal{L}_{\text{stage1}} =\;&
+% \underbrace{\frac{1}{\sum_{i,k} (m_i)_k} \sum_{i,k} (m_i)_k \cdot \mathrm{BCE}((s_i)_k, (t_i)_k)}_{\mathcal{L}_{\text{concept}}} \\
+% &+ \lambda_r \underbrace{\frac{1}{\sum_{i,r} (\tilde{m}_i)_r} \sum_{i,r} (\tilde{m}_i)_r \cdot \mathrm{BCE}((u_i)_r, (\tilde{z}_i)_r)}_{\mathcal{L}_{\text{region}}},
+% \end{aligned}
+% \end{equation}
+% where $(\tilde{m}_i)_r = \max_{k:\, g(k)=r} (m_i)_k$ masks regions without mentioned concepts.
+% \fi
+
+% Alternative compact form.
+% \iffalse
+% \begin{equation}
+% \label{eq:stage1_loss}
+% \mathcal{L}_{\text{stage1}} = \mathcal{L}_{\text{concept}} + \lambda_r \mathcal{L}_{\text{region}}.
+% \end{equation}
+% where
+% \begin{align*}
+% \mathcal{L}_{\text{concept}} &\coloneqq \frac{1}{\sum_{i,k} (m_i)_k} \sum_{i,k} (m_i)_k\,\mathrm{BCE}((s_i)_k, (t_i)_k), \\
+% \mathcal{L}_{\text{region}} &\coloneqq \frac{1}{\sum_{i,r} (\tilde{m}_i)_r} \sum_{i,r} (\tilde{m}_i)_r\,\mathrm{BCE}((u_i)_r, (\tilde{z}_i)_r).
+% \end{align*}
+% and $(\tilde{m}_i)_r = \max_{k:\, g(k)=r} (m_i)_k$ masks regions without mentioned concepts.
+% \fi
+
+% Alternative operator form.
+% \iffalse
+% \begin{equation}
+% \label{eq:stage1_loss}
+% \mathcal{L}_{\text{stage1}} = \frac{1}{N}\sum_{i=1}^{N}\Big(\mathrm{mBCE}(s_i, t_i; m_i) + \lambda_r\,\mathrm{mBCE}(u_i, \tilde{z}_i; \tilde{m}_i)\Big)
+% \end{equation}
+% where $N$ is the number of studies, $\mathrm{mBCE}(a,b;m) \coloneqq \frac{\sum_j m_j\,\mathrm{BCE}(a_j,b_j)}{\sum_j m_j}$ averages BCE over unmasked dimensions, and $(\tilde{m}_i)_r = \max_{k:\, g(k)=r} (m_i)_k$ masks regions without mentioned concepts.
+% \fi
+
 \begin{equation}
 \label{eq:stage1_loss}
-\mathcal{L}_{\text{stage1}} = \underbrace{\frac{1}{\sum_{i,k} m_{ik}} \sum_{i,k} m_{ik} \cdot \mathrm{BCE}(s_{ik}, t_{ik})}_{\mathcal{L}_{\text{concept}}} + \; \lambda_r \, \mathcal{L}_{\text{region}},
+\mathcal{L}_{\text{stage1}} = \mathcal{L}_{\text{concept}} + \lambda_r \mathcal{L}_{\text{region}},
 \end{equation}
-where $\mathcal{L}_{\text{region}}$ is BCE between region logits and pooled targets $\tilde{z}_i$, masked for regions without mentioned concepts.
+where
+\begin{align*}
+\mathcal{L}_{\text{concept}} &\coloneqq \frac{1}{\sum_{i=1}^{N} \lVert m_i \rVert_1} \sum_{i=1}^{N} \lVert m_i \odot \mathrm{BCE}(s_i, t_i) \rVert_1, \\
+\mathcal{L}_{\text{region}} &\coloneqq \frac{1}{\sum_{i=1}^{N} \lVert \tilde{m}_i \rVert_1} \sum_{i=1}^{N} \lVert \tilde{m}_i \odot \mathrm{BCE}(u_i, \tilde{z}_i) \rVert_1,
+\end{align*}
+where $N$ is the number of studies, $\mathrm{BCE}(\cdot,\cdot)$ denotes binary cross-entropy on logits (applied element-wise), $\odot$ denotes element-wise multiplication, and $\lVert \cdot \rVert_1$ sums vector entries. If a denominator is zero, the corresponding term is omitted.
 
 \textbf{Stage 2: Gated concepts to diagnoses.}
 With the vision encoder and concept head frozen, we train a diagnosis head on the predicted (gated) concept probabilities. To preserve interpretability, we use a bias-free linear layer:
 \begin{equation}
 \label{eq:label_head}
-\ell_{ij} = \sum_k W_{jk} \cdot \hat{c}^{\,\text{gated}}_{ik}.
+\ell_{ij} = \sum_k W_{jk} \cdot (\hat{c}^{\,\text{gated}}_i)_k.
 \end{equation}
-The contribution of concept $k$ to diagnosis $j$ is directly readable as $W_{jk} \cdot \hat{c}^{\,\text{gated}}_{ik}$: positive weights indicate supportive findings, negative weights indicate contradictory ones. Omitting the bias ensures the model cannot predict disease without activated concepts.
+The contribution of concept $k$ to diagnosis $j$ is directly readable as $W_{jk} \cdot (\hat{c}^{\,\text{gated}}_i)_k$: positive weights indicate supportive findings, negative weights indicate contradictory ones. Omitting the bias ensures the model cannot predict disease without activated concepts.
 
-We train with binary cross-entropy on CheXpert-style multi-labels $y_i \in \{0, 1, -1\}^L$, where $-1$ denotes uncertainty. By default, uncertain labels are treated as missing and excluded from the loss; we report sensitivity analyses with alternative uncertainty mappings in the supplement.
+We train with binary cross-entropy on CheXpert-style multi-labels $y_i \in \{0, 1, -1\}^L$, where $L$ is the number of diagnosis labels and $-1$ denotes uncertainty. By default, uncertain labels are treated as missing and excluded from the loss; we report sensitivity analyses with alternative uncertainty mappings in the supplement.
 
 % -----------------------------------------------------------------------------
 \subsection{Training and Inference}
@@ -84,7 +125,7 @@ We train with binary cross-entropy on CheXpert-style multi-labels $y_i \in \{0, 
 Both stages are trained with Adam using learning rate search and early stopping on validation performance. All experiments use predefined train/validation/test splits; images, concept labels, and disease labels are aligned by study identifier to prevent leakage. Hyperparameters ($\tau$, $\epsilon$, $\lambda_r$) are selected via validation; details and sensitivity analyses are provided in the supplement.
 
 \textbf{Inference.}
-Given a test image $x$, we compute concept probabilities $\hat{c}$ and region gates $\hat{z}$, apply gating via Eq.~\eqref{eq:gated_concepts}, and obtain diagnosis probabilities $\hat{y} = \sigma(\ell)$ from Eq.~\eqref{eq:label_head}. For interpretability, we report the top-$k$ concept contributions $W_{jk} \cdot \hat{c}^{\,\text{gated}}_{k}$ per diagnosis and threshold activations at $\delta{=}0.5$ when summarizing.
+Given a test image $x$, we compute concept probabilities $\hat{c}$ and region gates $\hat{z}$, apply gating via Eq.~\eqref{eq:gated_concepts}, and obtain diagnosis probabilities $\hat{y} = \sigma(\ell)$ from Eq.~\eqref{eq:label_head}. For interpretability, we report the top-$k$ concept contributions $W_{jk} \cdot (\hat{c}^{\,\text{gated}})_k$ per diagnosis and threshold activations at $\delta{=}0.5$ when summarizing.
 
 Algorithm~\ref{alg:radcbm} summarizes the full procedure.
 
@@ -99,19 +140,19 @@ Algorithm~\ref{alg:radcbm} summarizes the full procedure.
 \State $h \gets f_\theta(x)$ \Comment{Frozen vision encoder}
 \State $\hat{c} \gets \sigma(\text{MLP}_\phi(h))$ \Comment{Concept probabilities}
 \State $\hat{z} \gets \epsilon + (1-\epsilon)\,\sigma(W_r \hat{c}\,/\,\tau)$ \Comment{Region gates}
-\State $\hat{c}^{\text{gated}}_k \gets \hat{z}_{g(k)} \cdot \hat{c}_k \quad \forall k$ \Comment{Gated concepts}
-\State Minimize $\mathcal{L}_{\text{concept}} + \lambda_r \mathcal{L}_{\text{region}}$ over $\phi, W_r$ \Comment{Mention-masked}
+\State $(\hat{c}^{\text{gated}})_k \gets (\hat{z})_{g(k)} \cdot (\hat{c})_k \quad \forall k$ \Comment{Gated concepts}
+\State Minimize $\mathcal{L}_{\text{stage1}}$ over $\phi, W_r$ \Comment{Mention-masked}
 
 \Statex
 \Statex \textbf{Stage 2: Learn diagnosis head}
 \State Freeze $\phi, W_r$
-\State $\ell_j \gets \sum_k W_{jk} \cdot \hat{c}^{\text{gated}}_k \quad \forall j$ \Comment{Linear, no bias}
+\State $\ell_j \gets \sum_k W_{jk} \cdot (\hat{c}^{\text{gated}})_k \quad \forall j$ \Comment{Linear, no bias}
 \State Minimize $\mathcal{L}_{\text{label}}$ over $W$ \Comment{Masked BCE on $y$}
 
 \Statex
 \Statex \textbf{Inference}
 \State Compute $\hat{c}, \hat{z}, \hat{c}^{\text{gated}}$ as above
 \State $\hat{y} \gets \sigma(\ell)$
-\State \Return $\hat{y}$, contributions $\{W_{jk} \cdot \hat{c}^{\text{gated}}_k\}_{j,k}$
+\State \Return $\hat{y}$, contributions $\{W_{jk} \cdot (\hat{c}^{\text{gated}})_k\}_{j,k}$
 \end{algorithmic}
 \end{algorithm}
