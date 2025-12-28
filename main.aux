@@ -201,22 +201,22 @@
 \@writefile{brf}{\backcite{debole2025ifconcept}{{5}{\mbox  {IV-A}4}{subsubsection.4.1.4}}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-A}5}Evaluation Metrics}{5}{subsubsection.4.1.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Classification Performance}{5}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Concept Quality}{5}{subsection.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}External Validation}{5}{subsection.4.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Classification performance (AUC-ROC) on MIMIC-CXR test set and CheXpert Plus expert subset for five competition labels. Best in \textbf  {bold}, second-best \underline  {underlined}. All concept-based methods share the same frozen backbone (MedCLIP Swin-T). Results are mean over 3 seeds; std $<$0.01 omitted.}}{6}{table.1}\protected@file@percent }
-\newlabel{tab:classification}{{I}{6}{Classification performance (AUC-ROC) on MIMIC-CXR test set and CheXpert Plus expert subset for five competition labels. Best in \textbf {bold}, second-best \underline {underlined}. All concept-based methods share the same frozen backbone (MedCLIP Swin-T). Results are mean over 3 seeds; std $<$0.01 omitted}{table.1}{}}
-\newlabel{tab:classification@cref}{{[table][1][]I}{[1][5][]6}}
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Concept prediction quality on MIMIC-CXR test set (shared 1,312-concept bank). \textsuperscript  {\dag  }LaBo evaluated with ontology-aligned variant. Results: mean $\pm $ std over 3 seeds.}}{6}{table.2}\protected@file@percent }
-\newlabel{tab:concept_quality}{{II}{6}{Concept prediction quality on MIMIC-CXR test set (shared 1,312-concept bank). \textsuperscript {\dag }LaBo evaluated with ontology-aligned variant. Results: mean $\pm $ std over 3 seeds}{table.2}{}}
-\newlabel{tab:concept_quality@cref}{{[table][2][]II}{[1][5][]6}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Classification performance (AUC-ROC) on MIMIC-CXR test set and CheXpert Plus expert subset for five competition labels. Best in \textbf  {bold}, second-best \underline  {underlined}. All concept-based methods share the same frozen backbone (MedCLIP Swin-T). Results are mean $\pm $ std over 3 seeds for seeded methods; single-run baselines are shown without std.}}{5}{table.1}\protected@file@percent }
+\newlabel{tab:classification}{{I}{5}{Classification performance (AUC-ROC) on MIMIC-CXR test set and CheXpert Plus expert subset for five competition labels. Best in \textbf {bold}, second-best \underline {underlined}. All concept-based methods share the same frozen backbone (MedCLIP Swin-T). Results are mean $\pm $ std over 3 seeds for seeded methods; single-run baselines are shown without std}{table.1}{}}
+\newlabel{tab:classification@cref}{{[table][1][]I}{[1][5][]5}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Concept prediction quality on MIMIC-CXR test set (shared 1,312-concept bank). \textsuperscript  {\dag  }LaBo evaluated with ontology-aligned variant. Results: mean $\pm $ std over 3 seeds when available.}}{6}{table.2}\protected@file@percent }
+\newlabel{tab:concept_quality}{{II}{6}{Concept prediction quality on MIMIC-CXR test set (shared 1,312-concept bank). \textsuperscript {\dag }LaBo evaluated with ontology-aligned variant. Results: mean $\pm $ std over 3 seeds when available}{table.2}{}}
+\newlabel{tab:concept_quality@cref}{{[table][2][]II}{[1][6][]6}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces External validation (AUC-ROC). Multi-label columns: macro AUC over five CheXpert labels; RSNA: binary pneumonia AUC. Post-hoc CBM is omitted since its predictions match its underlying black-box model by construction. RSNA values for LaBo and C2F are omitted (---) due to missing pneumonia heads.}}{6}{table.3}\protected@file@percent }
+\newlabel{tab:external_validation}{{III}{6}{External validation (AUC-ROC). Multi-label columns: macro AUC over five CheXpert labels; RSNA: binary pneumonia AUC. Post-hoc CBM is omitted since its predictions match its underlying black-box model by construction. RSNA values for LaBo and C2F are omitted (---) due to missing pneumonia heads}{table.3}{}}
+\newlabel{tab:external_validation@cref}{{[table][3][]III}{[1][6][]6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Concept Quality}{6}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}External Validation}{6}{subsection.4.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Interpretability}{6}{subsection.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Ablation Study}{6}{subsection.4.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces External validation (AUC-ROC). Multi-label columns: macro AUC over five CheXpert labels; RSNA: binary pneumonia AUC. Post-hoc CBM is omitted since its predictions match its underlying black-box model by construction.}}{6}{table.3}\protected@file@percent }
-\newlabel{tab:external_validation}{{III}{6}{External validation (AUC-ROC). Multi-label columns: macro AUC over five CheXpert labels; RSNA: binary pneumonia AUC. Post-hoc CBM is omitted since its predictions match its underlying black-box model by construction}{table.3}{}}
-\newlabel{tab:external_validation@cref}{{[table][3][]III}{[1][5][]6}}
 \@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Interpretability metrics on MIMIC-CXR (intrinsic CBMs only). \textsuperscript  {\dag  }LaBo evaluated with ontology-aligned variant. Results: mean $\pm $ std over 3 seeds.}}{6}{table.4}\protected@file@percent }
 \newlabel{tab:interpretability}{{IV}{6}{Interpretability metrics on MIMIC-CXR (intrinsic CBMs only). \textsuperscript {\dag }LaBo evaluated with ontology-aligned variant. Results: mean $\pm $ std over 3 seeds}{table.4}{}}
 \newlabel{tab:interpretability@cref}{{[table][4][]IV}{[1][6][]6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Ablation Study}{6}{subsection.4.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{6}{section.5}\protected@file@percent }
 \newlabel{sec:conclusion}{{V}{6}{Conclusion}{section.5}{}}
 \newlabel{sec:conclusion@cref}{{[section][5][]V}{[1][6][]6}}

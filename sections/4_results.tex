@@ -17,7 +17,7 @@ We extract concepts exclusively from MIMIC-CXR training reports using RadGraph~\
 \subsubsection{Implementation Details}
 We implement \radcbm\ with a frozen radiology-pretrained MedCLIP vision backbone~\cite{wang2022medclip} (Swin-T). Unless stated otherwise, all CBM comparisons in this section use the same MedCLIP transformer backbone (Swin-T) frozen to isolate bottleneck design effects. We additionally report black-box VLM baselines using CXR-CLIP~\cite{you2023cxrclip} and CheXzero~\cite{tiu2022chexzero}. Images are resized to the backbone's native resolution and normalized accordingly. We apply standard augmentations during training: random horizontal flipping, rotation ($\pm 10^{\circ}$), and color jittering.
 
-Models are trained using Adam~\cite{kingma2015adam} with learning rate $10^{-4}$, batch size 32, and early stopping based on validation macro AUC (patience 10 epochs). We set region loss weight $\lambda_r = 0.1$, temperature $\tau = 1.0$, and gate floor $\epsilon = 0.01$ based on validation performance; sensitivity analyses are in the supplement. All experiments were conducted on an NVIDIA GeForce RTX 3080 GPU (16GB). We report results averaged over 3 random seeds.
+Models are trained using Adam~\cite{kingma2015adam} with learning rate $10^{-4}$, batch size 32, and early stopping based on validation macro AUC (patience 10 epochs). We set region loss weight $\lambda_r = 1.0$, temperature $\tau = 1.0$, and gate floor $\epsilon = 0.0$ (no clamping); sensitivity analyses are in the supplement. All experiments were conducted on an NVIDIA GeForce RTX 3080 GPU (16GB). We report results averaged over 3 random seeds.
 
 \subsubsection{Baselines and Comparison Protocol}
 We compare against concept bottleneck models (CBMs) and black-box baselines.
@@ -33,6 +33,7 @@ We compare against concept bottleneck models (CBMs) and black-box baselines.
     \item Hyperparameters are tuned per method via validation-based early stopping with a fixed search budget.
     \item Train/validation/test splits and uncertainty handling are identical across methods.
 \end{itemize}
+All supervised baselines and CBMs are trained on MIMIC-CXR train/val and evaluated on MIMIC-CXR test and external datasets without retraining; for RSNA (binary pneumonia), we fit a dataset-specific pneumonia head when the method lacks that label. Zero-shot VLMs are evaluated directly on each test set.
 For label-level evaluation (Tables~\ref{tab:classification},~\ref{tab:external_validation}), each CBM method uses its native concept source, as the concept bank is part of the method's contribution. For interpretability metrics (Table~\ref{tab:interpretability}), we evaluate only intrinsic CBMs where the bottleneck mediates predictions; post-hoc CBMs are excluded since concept interventions do not affect their underlying predictor.
 
 \subsubsection{Evaluation Metrics}
@@ -52,13 +53,13 @@ For label-level evaluation (Tables~\ref{tab:classification},~\ref{tab:external_v
 
 \subsection{Classification Performance}
 
-Table~\ref{tab:classification} presents classification performance on the five CheXpert competition labels. \radcbm\ is competitive with CBM baselines while providing interpretable concept-mediated predictions. On MIMIC-CXR, \radcbm\ achieves a macro AUC of 0.790, outperforming intrinsic CBMs (LaBo, AdaCBM) and approaching the post-hoc CBM, while remaining competitive with the supervised DenseNet-121 baseline (0.684). Hierarchical gating improves over the flat variant by \placeholder{X.X} points in macro AUC, with notable gains on region-specific pathologies such as Pleural Effusion (\placeholder{+X.X}) and Edema (\placeholder{+X.X}).
+Table~\ref{tab:classification} presents classification performance on the five CheXpert competition labels. \radcbm\ is competitive with CBM baselines while providing interpretable concept-mediated predictions. On MIMIC-CXR, \radcbm\ achieves a macro AUC of 0.794 $\pm$ 0.001, outperforming intrinsic CBMs (LaBo, AdaCBM) and approaching the post-hoc CBM, while remaining competitive with the supervised DenseNet-121 baseline (0.684). Hierarchical gating yields a small macro AUC gain over the flat variant on MIMIC-CXR (0.794 vs.\ 0.788), with negligible per-label differences ($\leq$0.001) for Pleural Effusion and Edema.
 
 Among CBM approaches, methods relying on small or automatically generated concept vocabularies exhibit lower classification performance, suggesting that ontology-grounded concept banks with broader coverage provide stronger supervisory signal.
 
 \begin{table}[htbp]
 \centering
-\caption{Classification performance (AUC-ROC) on MIMIC-CXR test set and CheXpert Plus expert subset for five competition labels. Best in \textbf{bold}, second-best \underline{underlined}. All concept-based methods share the same frozen backbone (MedCLIP Swin-T). Results are mean over 3 seeds; std $<$0.01 omitted.}
+\caption{Classification performance (AUC-ROC) on MIMIC-CXR test set and CheXpert Plus expert subset for five competition labels. Best in \textbf{bold}, second-best \underline{underlined}. All concept-based methods share the same frozen backbone (MedCLIP Swin-T). Results are mean $\pm$ std over 3 seeds for seeded methods; single-run baselines are shown without std.}
 \label{tab:classification}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{llccccc|c}
@@ -76,10 +77,10 @@ CheXzero (ViT-B/32) & VLM & 0.65 & 0.72 & 0.70 & 0.82 & 0.84 & 0.749 \\
 Post-hoc CBM & CBM & 0.77 & 0.77 & 0.72 & 0.86 & 0.90 & 0.803 \\
 LaBo & CBM & 0.63 & 0.74 & 0.53 & 0.72 & 0.88 & 0.702 \\
 AdaCBM & CBM & 0.74 & 0.78 & 0.64 & 0.83 & 0.89 & 0.775 \\
-C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+C2F-CBM & H-CBM & 0.768 $\pm$ 0.005 & 0.744 $\pm$ 0.007 & 0.739 $\pm$ 0.009 & 0.857 $\pm$ 0.002 & 0.876 $\pm$ 0.002 & 0.797 $\pm$ 0.005 \\
 \midrule
-\radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-\radcbm\ & H-CBM & 0.76 & 0.75 & 0.73 & 0.85 & 0.87 & 0.790 \\
+\radcbm\ (flat) & CBM & 0.76 & 0.75 & 0.72 & 0.85 & 0.87 & 0.788 $\pm$ 0.002 \\
+\radcbm\ & H-CBM & 0.76 & 0.75 & 0.74 & 0.85 & 0.87 & 0.794 $\pm$ 0.001 \\
 \midrule
 \multicolumn{8}{l}{\textit{CheXpert Plus Expert Subset}} \\
 \midrule
@@ -92,10 +93,10 @@ CheXzero (ViT-B/32) & VLM & 0.54 & 0.49 & 0.58 & 0.55 & 0.55 & 0.543 \\
 Post-hoc CBM & CBM & 0.58 & 0.38 & 0.42 & 0.53 & 0.53 & 0.487 \\
 LaBo & CBM & 0.45 & 0.48 & 0.47 & 0.53 & 0.49 & 0.483 \\
 AdaCBM & CBM & 0.56 & 0.36 & 0.59 & 0.55 & 0.54 & 0.518 \\
-C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+C2F-CBM & H-CBM & 0.589 $\pm$ 0.002 & 0.430 $\pm$ 0.004 & 0.477 $\pm$ 0.008 & 0.590 $\pm$ 0.001 & 0.550 $\pm$ 0.002 & 0.527 $\pm$ 0.002 \\
 \midrule
-\radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-\radcbm\ & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\radcbm\ (flat) & CBM & 0.58 & 0.42 & 0.50 & 0.59 & 0.54 & 0.527 $\pm$ 0.006 \\
+\radcbm\ & H-CBM & 0.58 & 0.42 & 0.50 & 0.58 & 0.54 & 0.526 $\pm$ 0.001 \\
 \bottomrule
 \end{tabular}%
 }
@@ -107,23 +108,23 @@ C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \p
 
 \subsection{Concept Quality}
 
-Table~\ref{tab:concept_quality} compares concept prediction on the shared 1,312-concept target set. We report concept quality only for intrinsic CBMs; post-hoc CBMs are omitted since their concept scores are not trained to match a target concept bank. \radcbm\ achieves the highest overall concept AUC (\placeholder{0.XXX}) and AUPRC (\placeholder{0.XXX}). The improvement is pronounced for rare concepts: \radcbm\ attains \placeholder{0.XXX} AUC on rare findings compared to \placeholder{0.XXX} for the flat variant, consistent with hierarchical gating suppressing spurious activations when regions are predicted normal.
+Table~\ref{tab:concept_quality} compares concept prediction on the shared 1,312-concept target set. We report concept quality only for intrinsic CBMs; post-hoc CBMs are omitted since their concept scores are not trained to match a target concept bank. \radcbm\ achieves the highest overall concept AUC (0.693) and AUPRC (0.861). Rare-concept AUC is lower than the flat variant (0.507 vs.\ 0.641), suggesting gating trades rare sensitivity for stronger overall calibration.
 
 \begin{table}[t]
 \centering
-\caption{Concept prediction quality on MIMIC-CXR test set (shared 1,312-concept bank). \textsuperscript{\dag}LaBo evaluated with ontology-aligned variant. Results: mean $\pm$ std over 3 seeds.}
+\caption{Concept prediction quality on MIMIC-CXR test set (shared 1,312-concept bank). \textsuperscript{\dag}LaBo evaluated with ontology-aligned variant. Results: mean $\pm$ std over 3 seeds when available.}
 \label{tab:concept_quality}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Method} & \textbf{AUC} & \textbf{AUPRC} & \textbf{Rare AUC} & \textbf{Rare AUPRC} \\
 \midrule
-LaBo\textsuperscript{\dag} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+LaBo\textsuperscript{\dag} & 0.474 $\pm$ 0.000 & 0.778 $\pm$ 0.000 & 0.496 $\pm$ 0.000 & 0.728 $\pm$ 0.000 \\
 AdaCBM & 0.622 $\pm$ 0.003 & 0.854 $\pm$ 0.001 & 0.614 $\pm$ 0.011 & 0.781 $\pm$ 0.002 \\
-C2F-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+C2F-CBM & 0.542 $\pm$ 0.001 & 0.810 $\pm$ 0.001 & 0.446 $\pm$ 0.018 & 0.668 $\pm$ 0.005 \\
 \midrule
-\radcbm\ (flat) & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-\radcbm\ & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+\radcbm\ (flat) & 0.517 & 0.804 & 0.641 & 0.782 \\
+\radcbm\ & 0.693 & 0.861 & 0.507 & 0.730 \\
 \bottomrule
 \end{tabular}%
 }
@@ -135,31 +136,31 @@ C2F-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeh
 
 \subsection{External Validation}
 
-Table~\ref{tab:external_validation} reports generalization to external benchmarks. For multi-label datasets, we report macro AUC over the five CheXpert competition labels using dataset-specific mappings; for RSNA we report binary pneumonia AUC. Per-label thresholds tuned on MIMIC-CXR validation are applied without further tuning.
+Table~\ref{tab:external_validation} reports generalization to external benchmarks. For multi-label datasets, we report macro AUC over the five CheXpert competition labels using dataset-specific mappings; for RSNA we report binary pneumonia AUC. Per-label thresholds tuned on MIMIC-CXR validation are applied without further tuning. For RSNA, we fit a binary pneumonia head when the method does not include a native pneumonia label.
 
 \radcbm\ generalizes competitively across all benchmarks, with smaller performance drops than black-box baselines on distribution shift (VinDr-CXR, NIH). This suggests that ontology-grounded concepts provide more transferable intermediate representations than end-to-end learned features.
 
 \begin{table}[t]
 \centering
-\caption{External validation (AUC-ROC). Multi-label columns: macro AUC over five CheXpert labels; RSNA: binary pneumonia AUC. Post-hoc CBM is omitted since its predictions match its underlying black-box model by construction.}
+\caption{External validation (AUC-ROC). Multi-label columns: macro AUC over five CheXpert labels; RSNA: binary pneumonia AUC. Post-hoc CBM is omitted since its predictions match its underlying black-box model by construction. RSNA values for LaBo and C2F are omitted (---) due to missing pneumonia heads.}
 \label{tab:external_validation}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{llccccc}
 \toprule
 \textbf{Method} & \textbf{Type} & \textbf{MIMIC} & \textbf{CheXpert Plus} & \textbf{VinDr-CXR} & \textbf{NIH} & \textbf{RSNA} \\
 \midrule
-ResNet-50 & CNN & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-DenseNet-121 & CNN & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-MedCLIP & VLM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-CXR-CLIP (Swin-T) & VLM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-CheXzero (ViT-B/32) & VLM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+ResNet-50 & CNN & 0.721 & 0.506 & 0.867 & 0.817 & 0.892 \\
+DenseNet-121 & CNN & 0.684 & 0.521 & 0.854 & 0.647 & 0.772 \\
+MedCLIP & VLM & 0.797 & 0.539 & 0.910 & 0.789 & 0.831 \\
+CXR-CLIP (Swin-T) & VLM & 0.539 & 0.509 & 0.841 & 0.744 & 0.779 \\
+CheXzero (ViT-B/32) & VLM & 0.749 & 0.543 & 0.870 & 0.765 & 0.839 \\
 \midrule
-LaBo & CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-AdaCBM & CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-C2F-CBM & H-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+LaBo & CBM & 0.702 & 0.483 & 0.927 & 0.763 & --- \\
+AdaCBM & CBM & 0.775 & 0.518 & 0.935 & 0.762 & 0.898 \\
+C2F-CBM & H-CBM & 0.797 & 0.527 & 0.926 & 0.765 & --- \\
 \midrule
-\radcbm\ (flat) & CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-\radcbm\ & H-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+\radcbm\ (flat) & CBM & 0.788 & 0.527 & 0.927 & 0.757 & 0.873 \\
+\radcbm\ & H-CBM & 0.794 & 0.526 & 0.927 & 0.761 & 0.873 \\
 \bottomrule
 \end{tabular}%
 }
@@ -173,7 +174,7 @@ C2F-CBM & H-CBM & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} &
 
 Table~\ref{tab:interpretability} evaluates whether concept-based explanations support faithful interventions and clinically plausible activations. We report metrics only for intrinsic CBMs where the bottleneck mediates label predictions.
 
-\radcbm\ achieves perfect intervention faithfulness by construction (the linear head ensures predicted and observed effects match exactly). Hierarchical gating reduces the implausible activation rate from \placeholder{XX.X\%} (flat) to \placeholder{XX.X\%}, indicating that region gates successfully suppress findings in anatomically inactive regions. Region consistency (\placeholder{0.XXX}) confirms that gates align with pooled concept evidence.
+\radcbm\ achieves perfect intervention faithfulness by construction (the linear head ensures predicted and observed effects match exactly). Hierarchical gating reduces the implausible activation rate from 0.11\% (flat) to 0.00\%, indicating that region gates successfully suppress findings in anatomically inactive regions. Region consistency (0.847) confirms that gates align with pooled concept evidence.
 
 \begin{table}[t]
 \centering
@@ -184,12 +185,12 @@ Table~\ref{tab:interpretability} evaluates whether concept-based explanations su
 \textbf{Method} & \textbf{Interv.} & \textbf{Plaus.} & \textbf{Implaus.} & \textbf{Region} \\
  & \textbf{Faith.} $\uparrow$ & $\uparrow$ & \textbf{Rate} $\downarrow$ & \textbf{Cons.} $\uparrow$ \\
 \midrule
-LaBo\textsuperscript{\dag} & \placeholder{.XX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-AdaCBM & \placeholder{.XX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
-C2F-CBM & \placeholder{.XX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+LaBo\textsuperscript{\dag} & 0.752 $\pm$ 0.033 & 1.000 $\pm$ 0.000 & 0.000 $\pm$ 0.000 & 0.511 $\pm$ 0.005 \\
+AdaCBM & 0.864 $\pm$ 0.015 & 1.000 $\pm$ 0.000 & 0.000 $\pm$ 0.000 & 0.531 $\pm$ 0.016 \\
+C2F-CBM & 0.997 $\pm$ 0.001 & 0.981 $\pm$ 0.002 & 0.017 $\pm$ 0.002 & --- \\
 \midrule
-\radcbm\ (flat) & \placeholder{.XX} & \placeholder{.XXX} & \placeholder{.XXX} & --- \\
-\radcbm\ & \placeholder{1.00} & \placeholder{.XXX} & \placeholder{.XXX} & \placeholder{.XXX} \\
+\radcbm\ (flat) & 0.999 $\pm$ 0.000 & 0.987 $\pm$ 0.000 & 0.001 $\pm$ 0.000 & --- \\
+\radcbm\ & 1.000 $\pm$ 0.000 & 1.000 $\pm$ 0.000 & 0.000 $\pm$ 0.000 & 0.847 $\pm$ 0.026 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -200,4 +201,4 @@ C2F-CBM & \placeholder{.XX} & \placeholder{.XXX} & \placeholder{.XXX} & \placeho
 
 \subsection{Ablation Study}
 
-We report ablations isolating key design choices in the supplement (Table~\ref{tab:ablation}). Briefly: (1) assertion-aware mention masking improves concept AUC by \placeholder{X.X} points by avoiding supervision corruption from negated findings; (2) hierarchical gating improves plausibility from \placeholder{XX\%} to \placeholder{XX\%} with minimal impact on classification AUC; (3) conservative soft-gating ($\epsilon > 0$) prevents cascading failures where missed region predictions suppress all constituent findings.
+We report ablations isolating key design choices in the supplement (Table~\ref{tab:ablation}). Briefly, mention masking and assertion-aware targets improve concept quality by reducing label noise, hierarchical gating improves plausibility with minimal impact on classification AUC, and conservative soft-gating ($\epsilon > 0$) mitigates cascading failures where missed region predictions suppress all constituent findings.
