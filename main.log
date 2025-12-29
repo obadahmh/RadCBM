@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.3)  26 DEC 2025 15:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.3)  29 DEC 2025 01:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -588,9 +588,8 @@ Underfull \hbox (badness 4805) in paragraph at lines 27--28
 []\OT1/ptm/b/n/10 (+20) Black-box base-lines. \OT1/ptm/m/n/10 (+20) Su-per-vised CNNs (ResNet-50,
  []
 
-[5]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 115.
- (C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+(C:\Users\Obadah\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 
@@ -598,13 +597,16 @@ LaTeX Font Warning: Font shape `TS1/ptm/m/sc' undefined
 (Font)              using `TS1/ptm/m/n' instead
 (Font)              for symbol `textdagger' on input line 115.
 
-
+[5]
 Overfull \hbox (49.8688pt too wide) in paragraph at lines 183--196
  [][] 
  []
 
-) (sections/5_conclusion.tex) (sections/supplementary.tex [6] [7]
-Underfull \vbox (badness 1014) has occurred while \output is active []
+) [6] (sections/5_conclusion.tex) (sections/supplementary.tex
+Underfull \vbox (badness 7081) has occurred while \output is active []
+
+ [7]
+Underfull \vbox (badness 5985) has occurred while \output is active []
 
  [8]
 LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 261.
@@ -615,13 +617,15 @@ LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 261.
 
 
-LaTeX Warning: Reference `tab:classification_chexpert14' on page 9 undefined on input line 265.
+LaTeX Warning: Reference `tab:classification_chexpert14' on page 9 undefined on input line 279.
 
 ) (main.bbl (main.brf)
 \tf@brf=\write4
 \openout4 = `main.brf'.
 
- [9]) [10] (main.aux)
+ [9] [10]) [11
+
+] (main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -642,17 +646,17 @@ Package rerunfilecheck Info: File `main.brf' has not changed.
 (rerunfilecheck)             Checksum: 83A04E0EFE0F5DBBA961C266C9422587;4570.
  ) 
 Here is how much of TeX's memory you used:
- 17764 strings out of 474486
- 299828 string characters out of 5743283
- 1963542 words of memory out of 5000000
- 39224 multiletter control sequences out of 15000+600000
- 622808 words of font info for 388 fonts, out of 8000000 for 9000
+ 17780 strings out of 474486
+ 300016 string characters out of 5743283
+ 1969542 words of memory out of 5000000
+ 39226 multiletter control sequences out of 15000+600000
+ 623464 words of font info for 397 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,13n,93p,1512b,621s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,13n,93p,1512b,626s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmss17.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Obadah/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (10 pages, 350747 bytes).
+Output written on main.pdf (11 pages, 353901 bytes).
 PDF statistics:
- 602 PDF objects out of 1000 (max. 8388607)
- 136 named destinations out of 1000 (max. 500000)
+ 607 PDF objects out of 1000 (max. 8388607)
+ 138 named destinations out of 1000 (max. 500000)
  73046 words of extra memory for PDF output out of 74296 (max. 10000000)
 

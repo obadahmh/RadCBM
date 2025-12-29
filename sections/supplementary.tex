@@ -81,20 +81,20 @@ Table~\ref{tab:region_performance} reports performance decomposed by anatomical 
 
 \begin{table}[H]
 \centering
-\caption{Region-level performance on MIMIC-CXR test set. Results averaged over 3 seeds. The ``other'' category (\placeholder{XXX} concepts) is excluded as it aggregates heterogeneous findings without clear anatomical localization.}
+\caption{Region-level performance on MIMIC-CXR test set. Results averaged over 3 seeds. The ``other'' category (581 concepts) is excluded as it aggregates heterogeneous findings without clear anatomical localization.}
 \label{tab:region_performance}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Region} & \textbf{\#Concepts} & \textbf{Region AUC} & \textbf{Finding AUC} & \textbf{Prevalence (\%)} \\
 \midrule
-Lung & \placeholder{XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
-Heart & \placeholder{XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
-Pleura & \placeholder{XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
-Mediastinum & \placeholder{XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
-Bone & \placeholder{XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{XX.X} \\
+Lung & 259 & 0.684$\pm$0.000 & 0.691$\pm$0.000 & 92.1 \\
+Heart & 143 & 0.822$\pm$0.000 & 0.770$\pm$0.000 & 81.1 \\
+Pleura & 69 & 0.727$\pm$0.000 & 0.698$\pm$0.000 & 81.9 \\
+Mediastinum & 116 & 0.592$\pm$0.000 & 0.701$\pm$0.000 & 89.7 \\
+Bone & 144 & 0.702$\pm$0.000 & 0.676$\pm$0.000 & 78.6 \\
 \midrule
-\textbf{Overall} & 1,312 & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & --- \\
+\textbf{Overall} & 1,312 & 0.678$\pm$0.000 & 0.693$\pm$0.000 & --- \\
 \bottomrule
 \end{tabular}
 }
@@ -174,11 +174,11 @@ Bone & \placeholder{XXX} & \placeholder{.XXX}$\pm$\placeholder{.XXX} & \placehol
 \toprule
 \textbf{Method} & \textbf{Train $\rightarrow$ Test} & \textbf{Macro AUC} & \textbf{$\Delta$} \\
 \midrule
-DenseNet-121 & MIMIC $\rightarrow$ CheXpert & \placeholder{.XXX} & \placeholder{$-$X.X\%} \\
-\radcbm\ & MIMIC $\rightarrow$ CheXpert & \placeholder{.XXX} & \placeholder{$-$X.X\%} \\
+DenseNet-121 & MIMIC $\rightarrow$ CheXpert & 0.521 & $-23.8\%$ \\
+\radcbm\ & MIMIC $\rightarrow$ CheXpert & 0.526 & $-33.7\%$ \\
 \midrule
-DenseNet-121 & CheXpert $\rightarrow$ MIMIC & \placeholder{.XXX} & \placeholder{$-$X.X\%} \\
-\radcbm\ & CheXpert $\rightarrow$ MIMIC & \placeholder{.XXX} & \placeholder{$-$X.X\%} \\
+DenseNet-121 & CheXpert $\rightarrow$ MIMIC & 0.684 & $+31.3\%$ \\
+\radcbm\ & CheXpert $\rightarrow$ MIMIC & 0.659 & $+18.9\%$ \\
 \bottomrule
 \end{tabular}
 }
@@ -188,17 +188,17 @@ DenseNet-121 & CheXpert $\rightarrow$ MIMIC & \placeholder{.XXX} & \placeholder{
 
 \begin{table}[H]
 \centering
-\caption{Computational requirements on MIMIC-CXR. Inference measured on NVIDIA RTX 3080 with batch size 1.}
+\caption{Computational requirements on MIMIC-CXR. Params count trainable parameters only (frozen MedCLIP backbones are shared across CBMs and excluded). Inference measured on NVIDIA RTX 3080 with batch size 1 using the full pipeline.}
 \label{tab:computational}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
 \textbf{Method} & \textbf{Params (M)} & \textbf{Inference (ms)} & \textbf{Training (GPU-hrs)} \\
 \midrule
-DenseNet-121 & \placeholder{7.0} & \placeholder{XX.X} & \placeholder{XX} \\
-AdaCBM & \placeholder{X.X} & \placeholder{XX.X} & \placeholder{XX} \\
-\radcbm\ (flat) & \placeholder{X.X} & \placeholder{XX.X} & \placeholder{XX} \\
-\radcbm\ & \placeholder{X.X} & \placeholder{XX.X} & \placeholder{XX} \\
+DenseNet-121 & 7.0 & 9.9 & 0.0 \\
+AdaCBM & 0.5 & 9.5 & 0.02 \\
+\radcbm\ (flat) & 4.4 & 12.7 & 2.1 \\
+\radcbm\ & 2.7 & 16.6 & 2.3 \\
 \bottomrule
 \end{tabular}
 }
@@ -223,9 +223,9 @@ AdaCBM & \placeholder{X.X} & \placeholder{XX.X} & \placeholder{XX} \\
 \toprule
 \textbf{Method} & \textbf{ECE} $\downarrow$ & \textbf{Brier} $\downarrow$ \\
 \midrule
-DenseNet-121 & \placeholder{.XXX} & \placeholder{.XXX} \\
-MedCLIP & \placeholder{.XXX} & \placeholder{.XXX} \\
-\radcbm\ & \placeholder{.XXX} & \placeholder{.XXX} \\
+DenseNet-121 & 0.287 & 0.291 \\
+MedCLIP & 0.174 & 0.237 \\
+\radcbm\ & 0.430 & 0.402 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -241,16 +241,16 @@ MedCLIP & \placeholder{.XXX} & \placeholder{.XXX} \\
 
 \begin{table}[H]
 \centering
-\caption{PR-AUC on rare labels (CheXpert Plus expert subset).}
+\caption{PR-AUC on rare labels (CheXpert Plus expert subset). Lung Lesion and Pleural Other have no positives in this subset, so values are reported as --- and excluded from the macro average.}
 \label{tab:prauc}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Method} & \rotatebox{90}{Fracture} & \rotatebox{90}{Pneumothorax} & \rotatebox{90}{Pneumonia} & \rotatebox{90}{Lung Lesion} & \rotatebox{90}{Pleural Other} & \textbf{Macro} \\
 \midrule
-DenseNet-121 & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-MedCLIP & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-\radcbm\ & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+DenseNet-121 & 0.69 & 0.26 & 0.92 & --- & --- & 0.623 \\
+MedCLIP & 0.54 & 0.27 & 1.00 & --- & --- & 0.602 \\
+\radcbm\ & 0.79 & 0.25 & 0.92 & --- & --- & 0.650 \\
 \bottomrule
 \end{tabular}%
 }
@@ -260,13 +260,27 @@ MedCLIP & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placehold
 
 Unless otherwise stated, we map labeler outputs to \{positive, negative, uncertain\}. For training labels derived from reports, we optionally use an ensemble of labelers (CheXpert, CheXbert, NegBio); disagreements are marked uncertain. For disease labels, uncertain values are treated as missing and excluded from loss and evaluation. For concept targets, uncertain assertions receive soft targets (0.5). Decision thresholds are tuned on MIMIC-CXR validation and fixed for all evaluations.
 
+\begin{table}[H]
+\centering
+\caption{Sensitivity to disease-label uncertainty handling on CheXpert Plus expert subset (macro AUC).}
+\label{tab:uncertainty_sensitivity}
+\begin{tabular}{lc}
+\toprule
+\textbf{Setting} & \textbf{Macro AUC} \\
+\midrule
+U-Ignore (default) & 0.526 \\
+U-Zero & 0.526 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Full CheXpert-14 Results}
 
 Table~\ref{tab:classification_chexpert14} reports per-label AUC on all 14 CheXpert observations, complementing the main paper's focus on the five competition labels.
 
 \begin{table*}[H]
 \centering
-\caption{Full CheXpert-14 classification (AUC-ROC) on MIMIC-CXR test and CheXpert Plus validation. Best in \textbf{bold}, second-best \underline{underlined}. All CBMs share the same frozen backbone. Mean over 3 seeds; std $<$0.01 omitted.}
+\caption{Full CheXpert-14 classification (AUC-ROC) on MIMIC-CXR test and CheXpert Plus validation. Best in \textbf{bold}, second-best \underline{underlined}. All CBMs share the same frozen backbone. Mean over 3 seeds; std $<$0.01 omitted. DenseNet-121 does not predict No Finding, Pleural Other, or Support Devices, so those entries are reported as --- and excluded from the macro. Labels without positives in the CheXpert Plus expert subset are reported as --- and excluded from the macro.}
 \label{tab:classification_chexpert14}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llcccccccccccccc|c}
@@ -275,27 +289,27 @@ Table~\ref{tab:classification_chexpert14} reports per-label AUC on all 14 CheXpe
 \midrule
 \multicolumn{17}{l}{\textit{MIMIC-CXR Test Set}} \\
 \midrule
-DenseNet-121 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-MedCLIP & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+DenseNet-121 & CNN & 0.62 & 0.80 & 0.74 & 0.80 & 0.74 & 0.50 & 0.52 & 0.61 & --- & 0.80 & --- & 0.65 & 0.58 & --- & 0.669 \\
+MedCLIP & VLM & 0.58 & \underline{0.87} & 0.88 & 0.84 & 0.53 & 0.61 & 0.45 & \textbf{0.73} & --- & \textbf{0.92} & --- & 0.57 & 0.75 & 0.80 & 0.712 \\
 \midrule
-LaBo & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+LaBo & CBM & 0.59 & 0.76 & 0.87 & 0.70 & 0.66 & 0.44 & \textbf{0.75} & 0.71 & --- & 0.71 & --- & \underline{0.76} & 0.43 & 0.80 & 0.682 \\
+AdaCBM & CBM & \underline{0.73} & \textbf{0.88} & \textbf{0.88} & 0.84 & 0.72 & 0.42 & 0.64 & 0.65 & --- & \underline{0.91} & --- & \textbf{0.77} & 0.76 & 0.76 & 0.747 \\
+C2F-CBM & H-CBM & \textbf{0.77} & 0.74 & 0.76 & 0.86 & 0.64 & \textbf{0.62} & \underline{0.71} & 0.71 & \textbf{0.81} & 0.88 & \textbf{0.83} & 0.72 & \textbf{0.86} & \textbf{0.89} & \underline{0.772} \\
 \midrule
-\radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-\radcbm\ & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\radcbm\ (flat) & CBM & 0.72 & 0.85 & 0.88 & \underline{0.87} & \underline{0.74} & 0.57 & 0.67 & 0.70 & --- & 0.91 & --- & 0.75 & 0.76 & 0.81 & 0.769 \\
+\radcbm\ & H-CBM & 0.71 & 0.85 & \underline{0.88} & \textbf{0.88} & \textbf{0.74} & \underline{0.61} & 0.68 & \underline{0.72} & --- & 0.91 & --- & 0.75 & \underline{0.77} & \underline{0.82} & \textbf{0.777} \\
 \midrule
 \multicolumn{17}{l}{\textit{CheXpert Plus Expert Subset}} \\
 \midrule
-DenseNet-121 & CNN & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-MedCLIP & VLM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+DenseNet-121 & CNN & 0.53 & 0.50 & 0.53 & \underline{0.55} & 0.52 & 0.40 & --- & \textbf{0.50} & --- & \textbf{0.58} & --- & \underline{0.67} & 0.55 & --- & 0.532 \\
+MedCLIP & VLM & \underline{0.60} & 0.40 & 0.40 & 0.48 & \underline{0.62} & 0.20 & --- & \underline{0.50} & --- & 0.52 & --- & \textbf{1.00} & 0.51 & \textbf{0.77} & 0.546 \\
 \midrule
-LaBo & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-AdaCBM & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-C2F-CBM & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+LaBo & CBM & 0.51 & 0.53 & 0.41 & 0.48 & \textbf{0.65} & \textbf{0.73} & --- & 0.46 & --- & 0.51 & --- & \underline{0.67} & 0.48 & \underline{0.74} & 0.561 \\
+AdaCBM & CBM & 0.46 & 0.51 & \textbf{0.57} & 0.52 & 0.57 & \underline{0.69} & --- & 0.45 & --- & 0.55 & --- & \underline{0.67} & \underline{0.55} & 0.66 & \textbf{0.563} \\
+C2F-CBM & H-CBM & \textbf{0.60} & 0.42 & 0.46 & \textbf{0.59} & 0.51 & 0.53 & \textbf{0.40} & 0.47 & \textbf{0.52} & 0.53 & \textbf{0.41} & 0.54 & \textbf{0.59} & 0.49 & 0.505 \\
 \midrule
-\radcbm\ (flat) & CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
-\radcbm\ & H-CBM & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XX} & \placeholder{.XXX} \\
+\radcbm\ (flat) & CBM & 0.51 & \underline{0.53} & 0.53 & 0.50 & 0.59 & \underline{0.69} & --- & 0.42 & --- & 0.57 & --- & \underline{0.67} & 0.52 & 0.67 & \underline{0.563} \\
+\radcbm\ & H-CBM & 0.52 & \textbf{0.54} & \underline{0.53} & 0.50 & 0.59 & 0.67 & --- & 0.40 & --- & \underline{0.57} & --- & \underline{0.67} & 0.53 & 0.68 & 0.563 \\
 \bottomrule
 \end{tabular}%
 }
