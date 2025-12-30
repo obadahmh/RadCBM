@@ -268,11 +268,13 @@ Unless otherwise stated, we map labeler outputs to \{positive, negative, uncerta
 \toprule
 \textbf{Setting} & \textbf{Macro AUC} \\
 \midrule
-U-Ignore (default) & 0.526 \\
-U-Zero & 0.526 \\
+U-Ignore (default) & 0.5265 \\
+U-Zero & 0.5259 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+We find that treating uncertain disease labels as missing (U-Ignore) is not sensitive to this choice: on the CheXpert Plus expert subset, U-Zero changes macro AUC by less than 0.001.
 
 \subsection{Full CheXpert-14 Results}
 
